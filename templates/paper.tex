@@ -27,13 +27,6 @@
 %%   label          : Matches the label(s) used in authors (optional for single affil.)
 %%   institution    : Affiliation text
 
-$if(booktitle)$
-\booktitle{$booktitle$}
-$endif$
-$if(bookeditors)$
-\bookeditors{$bookeditors$}
-$endif$
-
 \documentclass{IOS-Book-Article}
 
 \usepackage{mathptmx}
@@ -42,6 +35,8 @@ $endif$
 \usepackage{amssymb}
 \usepackage{longtable}
 \usepackage{booktabs}
+\usepackage{array}
+\usepackage{calc}
 \usepackage{listings}
 
 %% Code highlighting (from pandoc)
@@ -51,7 +46,18 @@ $endif$
 
 %%%%%%%%%%% Put your definitions here
 
+%% Pandoc tight-list fix
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
 %%%%%%%%%%% End of definitions
+
+$if(booktitle)$
+\booktitle{$booktitle$}
+$endif$
+$if(bookeditors)$
+\bookeditors{$bookeditors$}
+$endif$
 
 \begin{document}
 
