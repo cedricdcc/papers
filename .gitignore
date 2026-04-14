@@ -20,3 +20,4 @@ build/
 *.bcf
 *.blg
 *.run.xml
+*.pdf
