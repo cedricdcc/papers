@@ -46,7 +46,7 @@ $(BUILD_DIR)/%.pdf: $(PAPERS_DIR)/%.md $(TEMPLATE) $(IOS_CLS) $(VANCOUVER_BST) |
 	  --template=$(TEMPLATE) \
 	  --standalone \
 	  --from=markdown \
-	  --pdf-engine=pdflatex \
+	  --pdf-engine=lualatex \
 	  --pdf-engine-opt=-output-directory=$(dir $@) \
 	  -o "$@"
 	@echo "Generated PDF: $@"
