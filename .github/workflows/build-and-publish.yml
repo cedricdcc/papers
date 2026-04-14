@@ -44,6 +44,69 @@ jobs:
       - name: Build all papers
         run: make all
 
+      - name: Generate RDF catalog
+        env:
+          BASE_URL: "https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}"
+        run: |
+          python3 << 'PYEOF'
+          import os, re
+
+          papers_dir = 'papers'
+          base_url = os.environ['BASE_URL']
+
+          NS_DCAT = 'https://www.w3.org/ns/dcat#'
+          NS_DCT  = 'http://purl.org/dc/terms/'
+
+          entries = []
+          for name in sorted(os.listdir(papers_dir)):
+              md_path = os.path.join(papers_dir, name, f'{name}.md')
+              if os.path.isfile(md_path):
+                  with open(md_path) as f:
+                      content = f.read()
+                  m = re.search(r'^---\n(.*?)\n---', content, re.DOTALL)
+                  title = name
+                  if m:
+                      for line in m.group(1).splitlines():
+                          tm = re.match(r'^title:\s*(?:"(.*?)"|\'(.*?)\'|(.*?))\s*$', line)
+                          if tm:
+                              title = next(g for g in tm.groups() if g is not None)
+                              break
+                  entries.append((name, title))
+
+          lines = [
+              f'@prefix dcat: <{NS_DCAT}> .',
+              f'@prefix dct:  <{NS_DCT}> .',
+              '',
+              f'<{base_url}/> a dcat:Catalog ;',
+              '    dct:title "Papers"@en ;',
+              '    dct:description "A collection of published academic papers."@en ;',
+          ]
+          for i, (name, title) in enumerate(entries):
+              url = f'{base_url}/{name}/{name}.pdf'
+              sep = ' ;' if i < len(entries) - 1 else ' .'
+              lines.append(f'    dcat:dataset <{url}>{sep}')
+
+          for name, title in entries:
+              url = f'{base_url}/{name}/{name}.pdf'
+              escaped_title = title.replace('\\', '\\\\').replace('"', '\\"')
+              lines += [
+                  '',
+                  f'<{url}> a dcat:Dataset ;',
+                  f'    dct:title "{escaped_title}"@en ;',
+                  f'    dcat:distribution [',
+                  f'        a dcat:Distribution ;',
+                  f'        dcat:accessURL <{url}> ;',
+                  f'        dcat:mediaType "application/pdf"',
+                  f'    ] .',
+              ]
+
+          os.makedirs('build', exist_ok=True)
+          with open('build/catalog.ttl', 'w') as f:
+              f.write('\n'.join(lines) + '\n')
+
+          print(f'Generated catalog.ttl with {len(entries)} paper(s)')
+          PYEOF
+
       - name: Generate index page
         run: |
           mkdir -p build
@@ -78,6 +141,7 @@ jobs:
 
           cat >> build/index.html << 'HTML'
             </ul>
+            <p><a href="catalog.ttl">RDF catalog (Turtle)</a></p>
           </body>
           </html>
           HTML
