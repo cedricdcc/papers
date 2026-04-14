@@ -1,0 +1,91 @@
+%% Pandoc LaTeX template for academic papers
+\documentclass[12pt, a4paper]{article}
+
+%% Encoding and fonts
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+
+%% Page geometry
+\usepackage[margin=2.5cm]{geometry}
+
+%% Mathematics
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+%% Graphics
+\usepackage{graphicx}
+\usepackage{float}
+
+%% Tables
+\usepackage{longtable}
+\usepackage{booktabs}
+
+%% Code listings
+\usepackage{listings}
+\usepackage{xcolor}
+
+%% Hyperlinks
+\usepackage[hidelinks, breaklinks=true]{hyperref}
+
+%% Bibliography
+\usepackage[backend=biber, style=ieee]{biblatex}
+$if(bibliography)$
+\addbibresource{$bibliography$}
+$endif$
+
+%% Headers and footers
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\small $if(title)$$title$$endif$}
+\lhead{\small $if(author)$$for(author)$$author$$sep$, $endfor$$endif$}
+\cfoot{\thepage}
+
+%% Title, author, date
+$if(title)$
+\title{$title$}
+$endif$
+$if(author)$
+\author{$for(author)$$author$$sep$ \and $endfor$}
+$endif$
+$if(date)$
+\date{$date$}
+$else$
+\date{\today}
+$endif$
+
+%% Abstract
+$if(abstract)$
+\usepackage{abstract}
+$endif$
+
+%% Code highlighting (from pandoc)
+$if(highlighting-macros)$
+$highlighting-macros$
+$endif$
+
+\begin{document}
+
+$if(title)$
+\maketitle
+$endif$
+
+$if(abstract)$
+\begin{abstract}
+$abstract$
+\end{abstract}
+$endif$
+
+$if(keywords)$
+\noindent\textbf{Keywords:} $for(keywords)$$keywords$$sep$, $endfor$
+\vspace{1em}
+$endif$
+
+$body$
+
+$if(bibliography)$
+\printbibliography
+$endif$
+
+\end{document}

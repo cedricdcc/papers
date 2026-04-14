@@ -1,0 +1,101 @@
+name: Build and Publish Papers
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "papers/**/*.md"
+      - "templates/**"
+      - "Makefile"
+      - ".github/workflows/build-and-publish.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Only allow one concurrent deployment
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build PDFs and site
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Pandoc and TeX Live
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends \
+            pandoc \
+            texlive-latex-base \
+            texlive-latex-recommended \
+            texlive-latex-extra \
+            texlive-fonts-recommended \
+            texlive-fonts-extra \
+            texlive-bibtex-extra \
+            biber
+
+      - name: Build all papers
+        run: make all
+
+      - name: Generate index page
+        run: |
+          mkdir -p build
+          cat > build/index.html << 'HTML'
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+            <meta charset="UTF-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+            <title>Papers</title>
+            <style>
+              body { font-family: sans-serif; max-width: 800px; margin: 40px auto; padding: 0 20px; }
+              h1 { border-bottom: 2px solid #333; padding-bottom: 8px; }
+              ul { list-style: none; padding: 0; }
+              li { margin: 12px 0; }
+              a { color: #0366d6; text-decoration: none; font-size: 1.1em; }
+              a:hover { text-decoration: underline; }
+              .meta { color: #666; font-size: 0.9em; margin-left: 8px; }
+            </style>
+          </head>
+          <body>
+            <h1>Papers</h1>
+            <ul>
+          HTML
+
+          # Add a link for each PDF found in build/
+          find build -name "*.pdf" | sort | while read pdf; do
+            name=$(basename "$pdf" .pdf)
+            rel="${pdf#build/}"
+            echo "      <li><a href=\"${rel}\">${name}</a></li>" >> build/index.html
+          done
+
+          cat >> build/index.html << 'HTML'
+            </ul>
+          </body>
+          </html>
+          HTML
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: build/
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
