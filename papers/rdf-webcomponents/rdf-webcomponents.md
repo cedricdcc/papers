@@ -439,7 +439,7 @@ and a live playground for each component.
 
 Key runtime dependencies include:
 
-- **@rdfjs/N3**: quad parsing and in-memory triple store.
+- **\@rdfjs/N3**: quad parsing and in-memory triple store.
 - **rdf-lens**: SHACL-based shape extraction library underlying `rdf-lens`.
 - **Mustache**: template rendering for `lens-display`.
 
