@@ -97,8 +97,9 @@ Every push to `main` that touches a `papers/**/*.md` file, a template, or the
 
 1. Installs Pandoc and TeX Live on the runner.
 2. Runs `make all` to build every paper to PDF.
-3. Generates an `index.html` with download links to all PDFs.
-4. Deploys the `build/` directory to **GitHub Pages**.
+3. Generates a `catalog.ttl` DCAT catalog describing all published papers.
+4. Generates an `index.html` with download links to all PDFs.
+5. Deploys the `build/` directory to **GitHub Pages**.
 
 > **Enable GitHub Pages**: go to *Settings → Pages* in your repository and set
 > the source to **GitHub Actions**.
@@ -126,7 +127,7 @@ The template supports:
 - Mathematics (`amsmath`, `amssymb`)
 - Code listings with syntax highlighting
 - Tables (`booktabs`, `longtable`)
-- BibTeX bibliography via `vancouver.bst` (add `bibliography: references.bib` to front matter)
+- Bibliography citations via Pandoc citeproc (add `bibliography: references.bib` to front matter and cite with `[@key]`)
 
 Feel free to modify the template to match your target journal or conference
 style.

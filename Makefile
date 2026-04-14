@@ -5,8 +5,9 @@ VANCOUVER_BST := templates/vancouver.bst
 PAPERS_DIR    := papers
 BUILD_DIR     := build
 
-## Find all papers: papers/<name>/<name>.md
-SOURCES := $(wildcard $(PAPERS_DIR)/*/*.md)
+## Find all papers: papers/<name>/<name>.md  (only the file matching the directory name)
+PAPER_DIRS := $(wildcard $(PAPERS_DIR)/*/)
+SOURCES    := $(foreach dir,$(PAPER_DIRS),$(wildcard $(dir)$(notdir $(patsubst %/,%,$(dir))).md))
 PDFS    := $(patsubst $(PAPERS_DIR)/%.md,$(BUILD_DIR)/%.pdf,$(SOURCES))
 TEXS    := $(patsubst $(PAPERS_DIR)/%.md,$(BUILD_DIR)/%.tex,$(SOURCES))
 
@@ -34,6 +35,7 @@ $(BUILD_DIR)/%.tex: $(PAPERS_DIR)/%.md $(TEMPLATE) $(IOS_CLS) $(VANCOUVER_BST) |
 	pandoc "$<" \
 	  --template=$(TEMPLATE) \
 	  --standalone \
+	  --citeproc \
 	  --from=markdown \
 	  --to=latex \
 	  -o "$@"
@@ -45,6 +47,7 @@ $(BUILD_DIR)/%.pdf: $(PAPERS_DIR)/%.md $(TEMPLATE) $(IOS_CLS) $(VANCOUVER_BST) |
 	pandoc "$<" \
 	  --template=$(TEMPLATE) \
 	  --standalone \
+	  --citeproc \
 	  --from=markdown \
 	  --pdf-engine=lualatex \
 	  --pdf-engine-opt=-output-directory=$(dir $@) \
