@@ -38,6 +38,7 @@ $(BUILD_DIR)/%.tex: $(PAPERS_DIR)/%.md $(TEMPLATE) $(IOS_CLS) $(VANCOUVER_BST) |
 	  --citeproc \
 	  --from=markdown \
 	  --to=latex \
+	  --resource-path=$(dir $<) \
 	  -o "$@"
 	@echo "Generated LaTeX: $@"
 
@@ -51,6 +52,7 @@ $(BUILD_DIR)/%.pdf: $(PAPERS_DIR)/%.md $(TEMPLATE) $(IOS_CLS) $(VANCOUVER_BST) |
 	  --from=markdown \
 	  --pdf-engine=lualatex \
 	  --pdf-engine-opt=-output-directory=$(dir $@) \
+	  --resource-path=$(dir $<) \
 	  -o "$@"
 	@echo "Generated PDF: $@"
 
