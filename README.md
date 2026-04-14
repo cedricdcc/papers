@@ -32,9 +32,39 @@ papers/
    ```bash
    cp papers/example/example.md papers/my-paper/my-paper.md
    ```
-3. Edit the YAML front matter at the top of the file (title, author, date,
-   abstract, keywords).
+3. Edit the YAML front matter at the top of the file.
 4. Write your paper in Markdown below the front matter.
+
+### Front Matter Reference
+
+```yaml
+title: "Full Paper Title"
+runningtitle: "Short Title for Header"
+runningauthor: "Smith et al."
+authors:
+  - fnms: "First"          # First / middle name(s)
+    snm: "Author"          # Surname
+    label: "A"             # Affiliation label
+    orcid: "0000-0000-0000-0000"   # optional
+    corresponding: true    # optional – adds corresponding-author note
+    note: "contact@example.org"    # optional – contact info for corresponding author
+  - fnms: "Second"
+    snm: "Author"
+    label: "B"
+addresses:
+  - label: "A"
+    institution: "Department of CS, University of X, City, Country"
+  - label: "B"
+    institution: "Institute of Y, City, Country"
+abstract: |
+  Your abstract text here.
+keywords:
+  - keyword one
+  - keyword two
+booktitle: "Title of the Book"     # optional
+bookeditors: "B. Editor et al."    # optional
+bibliography: references.bib       # optional – relative to the paper directory
+```
 
 ---
 
@@ -80,16 +110,23 @@ Once deployed, your papers are available at:
 
 ## LaTeX Template
 
-The template lives in `templates/paper.tex` and is a standard Pandoc-compatible
-LaTeX template that supports:
+The template lives in `templates/paper.tex` and targets the **IOS Press Book
+Article** format using the `IOS-Book-Article.cls` class file
+(from [vtex-soft/texsupport.IOS-Book-Article](https://github.com/vtex-soft/texsupport.IOS-Book-Article)).
+The class file (`IOS-Book-Article.cls`) and Vancouver bibliography style
+(`vancouver.bst`) are included in `templates/` and are automatically copied to
+the build directory at compile time.
 
-- Title, author, date
-- Abstract and keywords
+The template supports:
+
+- Title, running title, running author
+- Multiple authors with `\fnms{}` / `\snm{}`, ORCID, affiliations, corresponding-author footnote
+- Abstract and keywords (`\sep`-delimited)
+- Book title and editors (for book chapter attribution)
 - Mathematics (`amsmath`, `amssymb`)
 - Code listings with syntax highlighting
 - Tables (`booktabs`, `longtable`)
-- BibTeX/Biber bibliography (add `bibliography: references.bib` to front matter)
-- Hyperlinks
+- BibTeX bibliography via `vancouver.bst` (add `bibliography: references.bib` to front matter)
 
 Feel free to modify the template to match your target journal or conference
 style.

@@ -1,7 +1,9 @@
 ## Variables (override on the command line if needed)
-TEMPLATE   := templates/paper.tex
-PAPERS_DIR := papers
-BUILD_DIR  := build
+TEMPLATE      := templates/paper.tex
+IOS_CLS       := templates/IOS-Book-Article.cls
+VANCOUVER_BST := templates/vancouver.bst
+PAPERS_DIR    := papers
+BUILD_DIR     := build
 
 ## Find all papers: papers/<name>/<name>.md
 SOURCES := $(wildcard $(PAPERS_DIR)/*/*.md)
@@ -19,9 +21,16 @@ pdfs: $(PDFS)
 ## Build all LaTeX (.tex) files only
 texs: $(TEXS)
 
-## Convert a Markdown paper to LaTeX
-$(BUILD_DIR)/%.tex: $(PAPERS_DIR)/%.md $(TEMPLATE) | $(BUILD_DIR)
+## Shared helper: copy IOS style files into a build sub-directory
+define copy-ios-files
 	@mkdir -p $(dir $@)
+	cp $(IOS_CLS) $(dir $@)
+	cp $(VANCOUVER_BST) $(dir $@)
+endef
+
+## Convert a Markdown paper to LaTeX
+$(BUILD_DIR)/%.tex: $(PAPERS_DIR)/%.md $(TEMPLATE) $(IOS_CLS) $(VANCOUVER_BST) | $(BUILD_DIR)
+	$(copy-ios-files)
 	pandoc "$<" \
 	  --template=$(TEMPLATE) \
 	  --standalone \
@@ -31,13 +40,14 @@ $(BUILD_DIR)/%.tex: $(PAPERS_DIR)/%.md $(TEMPLATE) | $(BUILD_DIR)
 	@echo "Generated LaTeX: $@"
 
 ## Convert a Markdown paper to PDF (via LaTeX)
-$(BUILD_DIR)/%.pdf: $(PAPERS_DIR)/%.md $(TEMPLATE) | $(BUILD_DIR)
-	@mkdir -p $(dir $@)
+$(BUILD_DIR)/%.pdf: $(PAPERS_DIR)/%.md $(TEMPLATE) $(IOS_CLS) $(VANCOUVER_BST) | $(BUILD_DIR)
+	$(copy-ios-files)
 	pandoc "$<" \
 	  --template=$(TEMPLATE) \
 	  --standalone \
 	  --from=markdown \
 	  --pdf-engine=pdflatex \
+	  --pdf-engine-opt=-output-directory=$(dir $@) \
 	  -o "$@"
 	@echo "Generated PDF: $@"
 

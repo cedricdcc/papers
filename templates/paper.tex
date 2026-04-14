@@ -1,74 +1,97 @@
-%% Pandoc LaTeX template for academic papers
-\documentclass[12pt, a4paper]{article}
+%% Pandoc LaTeX template for IOS Press Book Articles
+%% Based on the IOS-Book-Article class (https://github.com/vtex-soft/texsupport.IOS-Book-Article)
+%%
+%% Required YAML front-matter keys:
+%%   title          : Full paper title
+%%   runningtitle   : Short title for running header
+%%   runningauthor  : Author(s) for running header, e.g. "Smith et al."
+%%   authors        : List of author objects (see below)
+%%   addresses      : List of affiliation objects (see below)
+%%   abstract       : Paper abstract (block scalar)
+%%   keywords       : List of keyword strings
+%%
+%% Optional front-matter keys:
+%%   booktitle      : Title of the book this chapter belongs to
+%%   bookeditors    : Editors of the book
+%%   bibliography   : Path to a .bib file (relative to the paper's directory)
+%%
+%% Author object fields:
+%%   fnms           : First / middle name(s)
+%%   snm            : Surname
+%%   label          : Affiliation label, e.g. "A"  (optional for single author)
+%%   orcid          : ORCID iD, e.g. "0000-0000-0000-0000" (optional)
+%%   corresponding  : true/false – adds a corresponding-author note (optional)
+%%   note           : Free-form footnote text for the author (optional)
+%%
+%% Address object fields:
+%%   label          : Matches the label(s) used in authors (optional for single affil.)
+%%   institution    : Affiliation text
 
-%% Encoding and fonts
-\usepackage[T1]{fontenc}
-\usepackage[utf8]{inputenc}
-\usepackage{lmodern}
+$if(booktitle)$
+\booktitle{$booktitle$}
+$endif$
+$if(bookeditors)$
+\bookeditors{$bookeditors$}
+$endif$
 
-%% Page geometry
-\usepackage[margin=2.5cm]{geometry}
+\documentclass{IOS-Book-Article}
 
-%% Mathematics
+\usepackage{mathptmx}
+\usepackage{graphicx}
 \usepackage{amsmath}
 \usepackage{amssymb}
-
-%% Graphics
-\usepackage{graphicx}
-\usepackage{float}
-
-%% Tables
 \usepackage{longtable}
 \usepackage{booktabs}
-
-%% Code listings
 \usepackage{listings}
-\usepackage{xcolor}
-
-%% Hyperlinks
-\usepackage[hidelinks, breaklinks=true]{hyperref}
-
-%% Bibliography
-\usepackage[backend=biber, style=ieee]{biblatex}
-$if(bibliography)$
-\addbibresource{$bibliography$}
-$endif$
-
-%% Headers and footers
-\usepackage{fancyhdr}
-\pagestyle{fancy}
-\fancyhf{}
-\rhead{\small $if(title)$$title$$endif$}
-\lhead{\small $if(author)$$for(author)$$author$$sep$, $endfor$$endif$}
-\cfoot{\thepage}
-
-%% Title, author, date
-$if(title)$
-\title{$title$}
-$endif$
-$if(author)$
-\author{$for(author)$$author$$sep$ \and $endfor$}
-$endif$
-$if(date)$
-\date{$date$}
-$else$
-\date{\today}
-$endif$
-
-%% Abstract
-$if(abstract)$
-\usepackage{abstract}
-$endif$
 
 %% Code highlighting (from pandoc)
 $if(highlighting-macros)$
 $highlighting-macros$
 $endif$
 
+%%%%%%%%%%% Put your definitions here
+
+%%%%%%%%%%% End of definitions
+
 \begin{document}
 
+\pagestyle{headings}
+
+\begin{frontmatter}
+
 $if(title)$
-\maketitle
+\title{$title$}
+$endif$
+$if(runningtitle)$
+\runningtitle{$runningtitle$}
+$endif$
+
+$-- Multiple structured authors
+$if(authors)$
+$for(authors)$
+\author$if(authors.label)$[$authors.label$]$endif${\fnms{$authors.fnms$} \snm{$authors.snm$}$if(authors.orcid)$\orcid{$authors.orcid$}$endif$$if(authors.corresponding)$\thanks{Corresponding Author: $authors.fnms$ $authors.snm$$if(authors.note)$, $authors.note$$endif$.}$endif$}$sep$,
+$endfor$
+$else$
+$-- Fallback: simple author string(s)
+$if(author)$
+\author{$for(author)$$author$$sep$ \and $endfor$}
+$endif$
+$endif$
+
+$if(runningauthor)$
+\runningauthor{$runningauthor$}
+$endif$
+
+$-- Affiliations
+$if(addresses)$
+$for(addresses)$
+\address$if(addresses.label)$[$addresses.label$]$endif${$addresses.institution$}
+$endfor$
+$else$
+$-- Fallback: single address string
+$if(address)$
+\address{$address$}
+$endif$
 $endif$
 
 $if(abstract)$
@@ -78,14 +101,19 @@ $abstract$
 $endif$
 
 $if(keywords)$
-\noindent\textbf{Keywords:} $for(keywords)$$keywords$$sep$, $endfor$
-\vspace{1em}
+\begin{keyword}
+$for(keywords)$$keywords$$sep$\sep $endfor$
+\end{keyword}
 $endif$
+
+\end{frontmatter}
 
 $body$
 
+$-- Bibliography
 $if(bibliography)$
-\printbibliography
+\bibliographystyle{vancouver}
+\bibliography{$bibliography$}
 $endif$
 
 \end{document}

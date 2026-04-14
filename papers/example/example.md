@@ -1,12 +1,35 @@
 ---
-title: "Example Paper"
-author: "Author Name"
-date: "2026-04-14"
+title: "Instructions for the Preparation of an Electronic Camera-Ready Manuscript"
+runningtitle: "Preparation of Electronic Camera-Ready Manuscripts"
+runningauthor: "A. Author et al."
+authors:
+  - fnms: "First"
+    snm: "Author"
+    label: "A"
+    orcid: "0000-0000-0000-0000"
+    corresponding: true
+    note: "contact@example.org"
+  - fnms: "Second"
+    snm: "Author"
+    label: "B"
+addresses:
+  - label: "A"
+    institution: "Department of Computer Science, University of Example, City, Country"
+  - label: "B"
+    institution: "Institute of Research, Another University, City, Country"
 abstract: |
   This is an example paper demonstrating how to write papers using Markdown
-  in this repository. The paper will be automatically converted to LaTeX and
-  compiled to a PDF when changes are pushed to the main branch.
-keywords: [example, markdown, latex, pandoc]
+  in this repository. The paper will be automatically converted to the IOS Press
+  LaTeX format and compiled to a PDF when changes are pushed to the main branch.
+  Papers are structured following the IOS Press Book Article format.
+keywords:
+  - example
+  - markdown
+  - latex
+  - pandoc
+  - IOS Press
+booktitle: "Example Book Title"
+bookeditors: "B. Editor and C. Editor"
 ---
 
 # Introduction
@@ -14,6 +37,9 @@ keywords: [example, markdown, latex, pandoc]
 This is the introduction section of your paper. Write your content here using
 standard Markdown syntax. All standard Markdown features are supported,
 including **bold text**, *italic text*, `inline code`, and more.
+
+Always give a label where possible and use cross-references. For example, see
+Section&nbsp;2 for background information.
 
 # Background
 
@@ -56,8 +82,12 @@ Discuss your findings here.
 
 Conclude your paper here.
 
-# References
+# References {-}
 
-Include your references here. You can also use a `.bib` file for BibTeX
-references by adding `bibliography: references.bib` to the front matter and
-citing with `[@key]`.
+<!-- 
+  For BibTeX references, add a `bibliography: references.bib` field to the
+  YAML front matter and cite with [@key]. The vancouver.bst style will be
+  used automatically.
+
+  Alternatively, write inline references here in any format.
+-->
