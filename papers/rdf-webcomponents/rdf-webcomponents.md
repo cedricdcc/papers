@@ -1,16 +1,24 @@
 ---
 title: "RDF Web Components: A Declarative, Framework-Agnostic Pipeline for Browser-Native Linked Data Rendering"
 runningtitle: "RDF Web Components"
-runningauthor: "Anonymous et al."
+runningauthor: "Decruw Cedric"
 authors:
-  - fnms: "Anonymous"
-    snm: "Author"
-    label: "A"
+  - fnms: "Decruw"
+    snm: "Cedric"
+    label: "VLIZ"
+    orcid: "0000-0001-6387-5988"
     corresponding: true
-    note: "Submission for double-anonymous review"
+    note: "cedric.decruw@vliz.be"
 addresses:
-  - label: "A"
-    institution: "Anonymous Institution"
+  - label: "VLIZ"
+    institution: "VLIZ - Flanders Marine Institute, Ostend, Belgium"
+keywords:
+  - Linked Data
+  - Web Components
+  - RDF
+  - SHACL
+  - FAIR Signposting
+  - Semantic Web
 abstract: |
   **Background/Motivation.** The Semantic Web and Linked Data ecosystem has
   grown substantially, yet consuming RDF data in web browsers remains a
