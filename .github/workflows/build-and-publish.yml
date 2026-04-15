@@ -132,11 +132,15 @@ jobs:
             <ul>
           HTML
 
-          # Add a link for each PDF found in build/
-          find build -name "*.pdf" | sort | while read pdf; do
-            name=$(basename "$pdf" .pdf)
-            rel="${pdf#build/}"
-            echo "      <li><a href=\"${rel}\">${name}</a></li>" >> build/index.html
+          # Add a link for each paper PDF found in build/ (skip intermediate files like input.pdf)
+          for dir in build/*/; do
+            [ -d "$dir" ] || continue
+            name=$(basename "$dir")
+            pdf="${dir}${name}.pdf"
+            if [ -f "$pdf" ]; then
+              rel="${pdf#build/}"
+              echo "      <li><a href=\"${rel}\">${name}</a></li>" >> build/index.html
+            fi
           done
 
           cat >> build/index.html << 'HTML'
