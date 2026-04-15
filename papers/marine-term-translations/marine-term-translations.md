@@ -1,10 +1,10 @@
 ---
 title: "Marine Term Translations (MTT): A Self-Hosted Platform for Multilingual Marine Terminology Interoperability"
 runningtitle: "Marine Term Translations (MTT)"
-runningauthor: "Decruw Cedric"
+runningauthor: "C. Decruw"
 authors:
-  - fnms: "Decruw"
-    snm: "Cedric"
+  - fnms: "Cedric"
+    snm: "Decruw"
     label: "VLIZ"
     orcid: "0000-0001-6387-5988"
     corresponding: true
