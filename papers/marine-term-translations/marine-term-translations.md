@@ -32,35 +32,37 @@ keywords:
   - SeaDataNet
   - EMODnet
 booktitle: "IMDIS 2026"
+bibliography: references.bib
 ---
 
 The management of marine data increasingly relies on consistent, multilingual
 terminology to achieve semantic interoperability across languages, institutions,
 and systems. Inconsistent terms hinder effective data integration in major
-initiatives such as EMODnet, SeaDataNet, and the UN Ocean Decade. The Marine
-Term Translations (MTT) platform addresses this by offering a lightweight,
-self-hostable open-source solution for creating, managing, translating, and
-publishing controlled marine vocabularies.
+initiatives such as EMODnet [@emodnet], SeaDataNet [@seadatanet], and the UN
+Ocean Decade. The Marine Term Translations (MTT) platform addresses this by
+offering a lightweight, self-hostable open-source solution for creating,
+managing, translating, and publishing controlled marine vocabularies.
 
-MTT (available at mtt.vliz.be and https://github.com/marine-term-translations/mtt-self-host-platform)
+MTT (available at mtt.vliz.be [@mtt_platform] and on GitHub [@mtt_github])
 is built with a modern technology stack including a React frontend, Node.js
-backend, PostgreSQL database, and ORCID authentication for secure editorial
-workflows. Core features comprise collaborative term editing with definitions
-and translations, AI-assisted translation suggestions, versioning, and export
-in common formats (CSV, SKOS, JSON-LD). A key innovation is the automatic
-generation of Linked Data Event Streams (LDES), enabling real-time,
-machine-readable publication of terminology that other systems can harvest and
-synchronize efficiently.
+backend, PostgreSQL database, and ORCID [@orcid] authentication for secure
+editorial workflows. Core features comprise collaborative term editing with
+definitions and translations, AI-assisted translation suggestions, versioning,
+and export in common formats (CSV, SKOS [@skos], JSON-LD [@jsonld]). A key
+innovation is the automatic generation of Linked Data Event Streams (LDES)
+[@ldes_spec], enabling real-time, machine-readable publication of terminology
+that other systems can harvest and synchronize efficiently.
 
-This design strongly supports FAIR principles, with particular emphasis on
-Interoperability and Reusability, while allowing institutions to maintain
-sovereign control over their data. MTT complements existing marine
-infrastructures by focusing on the semantic layer rather than raw observations.
+This design strongly supports FAIR principles [@wilkinson2016fair], with
+particular emphasis on Interoperability and Reusability, while allowing
+institutions to maintain sovereign control over their data. MTT complements
+existing marine infrastructures by focusing on the semantic layer rather than
+raw observations.
 
 In beta testing, 25% of the BODC P02 Parameter Discovery Vocabulary collection
-was translated into Dutch and French. The resulting terminology is published as
-an LDES feed at https://mtt.vliz.be/api/ldes/data/1/latest.ttl, demonstrating
-practical multilingual enrichment of widely used marine standards.
+[@bodc_p02] was translated into Dutch and French. The resulting terminology is
+published as an LDES feed at https://mtt.vliz.be/api/ldes/data/1/latest.ttl,
+demonstrating practical multilingual enrichment of widely used marine standards.
 
 ![Landing page and interface of the MTT platform (mtt.vliz.be), highlighting project features including standardization based on the NERC Vocabulary Server, interoperability via LDES, and international accessibility.](figure1.png)
 
@@ -70,9 +72,3 @@ The platform is already supporting VLIZ-led and international marine projects
 by reducing language barriers and improving cross-lingual data discovery and
 integration. Future developments will expand language coverage and further
 enhance integration with global marine data systems.
-
-# References {-}
-
-- Marine Term Translations GitHub repository: https://github.com/marine-term-translations/mtt-self-host-platform
-- MTT platform: https://mtt.vliz.be/
-- NERC Vocabulary Server (BODC P02 collection): https://vocab.seadatanet.org/v_bodc_vocab_v2/search.asp?lib=P02
