@@ -12,13 +12,6 @@ authors:
 addresses:
   - label: "VLIZ"
     institution: "VLIZ - Flanders Marine Institute, Ostend, Belgium"
-keywords:
-  - Linked Data
-  - Web Components
-  - RDF
-  - SHACL
-  - FAIR Signposting
-  - Semantic Web
 abstract: |
   **Background/Motivation.** The Semantic Web and Linked Data ecosystem has
   grown substantially, yet consuming RDF data in web browsers remains a
@@ -61,8 +54,7 @@ keywords:
   - SHACL
   - FAIR Signposting
   - Semantic Web
-  - Browser
-  - Declarative
+  - Browser-Native Rendering
 booktitle: "SEMANTiCS 2026 Research and Innovation Track"
 bibliography: references.bib
 ---
