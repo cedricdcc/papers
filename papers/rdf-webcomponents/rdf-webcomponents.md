@@ -21,40 +21,32 @@ addresses:
   - label: "A"
     institution: "VLIZ - Flanders Marine Institute, Ostend, Belgium"
 abstract: |
-  **Background/Motivation.** The Semantic Web and Linked Data ecosystem has
-  grown substantially, yet consuming RDF data in web browsers remains a
-  significant barrier for web developers. Existing tools are typically
-  server-dependent, tightly coupled to JavaScript frameworks, or require
-  substantial boilerplate programming, making Linked Data inaccessible to
-  the broader web development community.
+  **Background/Motivation.** The Semantic Web community has shipped an
+  impressive stack of standards, yet putting RDF into a browser view still feels
+  harder than it should. Many developers end up wiring servers, bundlers, and
+  framework code just to show a few triples, which keeps Linked Data out of the
+  everyday front-end toolbox.
 
-  **Objective.** This paper introduces RDF Web Components, a stack of four
-  composable, standards-based Web Components that form a declarative pipeline
-  for fetching, extracting, and rendering RDF Linked Data entirely in the
-  browser. Alongside it, we present wrx (Web Resource Extraction), a cascading
-  RDF discovery library that automatically locates the best available RDF
-  representation for any given URL.
+  **Objective.** We introduce RDF Web Components, a set of four composable Web
+  Components that form a declarative pipeline for fetching, extracting, and
+  rendering RDF directly in the browser. Alongside them sits wrx (Web Resource
+  Extraction), a cascading discovery library that takes the guesswork out of
+  finding the right RDF representation for a URL.
 
-  **Methods.** The pipeline comprises: (1) source-rdf for browser-native RDF
-  fetching with multiple strategies including file, SPARQL, and Concise Bounded
-  Description; (2) rdf-lens for SHACL-based structured data extraction;
-  (3) lens-display for Mustache/ES6 template rendering; and (4)
-  link-orchestration for automatic pipeline composition from declarative
-  link-scan rules. Components communicate via a typed DOM event bus and are
-  configured with inline RDF/Turtle vocabularies, making configuration itself
-  semantically described.
+  **Methods.** The pipeline pairs `source-rdf` (file, SPARQL, and Concise
+  Bounded Description fetching) with `rdf-lens` for SHACL-based extraction,
+  `lens-display` for template rendering, and `link-orchestration` for automatic
+  pipeline assembly driven by link-scan rules. Components talk over a typed DOM
+  event bus and take inline RDF/Turtle configuration, so the configuration itself
+  is semantically described.
 
-  **Results.** The system is deployed as a CDN-ready open-source bundle
-  requiring a single script tag for integration into any static HTML page.
-  Demonstrated use cases include rendering person cards from DBpedia, enriching
-  hyperlinks with Linked Data previews, and discovering RDF resources through
-  FAIR Signposting without prior knowledge of the publisher's RDF endpoint.
+  **Results.** A single script tag loads the CDN-ready bundle on a static HTML
+  page. We show person cards from DBpedia, hyperlink previews, and FAIR
+  Signposting-driven discovery without custom build steps or back-end code.
 
-  **Conclusion.** RDF Web Components and wrx substantially lower the barrier
-  to building Linked Data user interfaces, enabling web developers without
-  Semantic Web expertise to consume and display RDF data declaratively. The
-  components are framework-agnostic, require no back-end infrastructure, and
-  interoperate with existing Linked Data and FAIR data standards.
+  **Conclusion.** RDF Web Components and wrx aim to make Linked Data rendering
+  feel like ordinary front-end work: framework-agnostic, no servers required,
+  and aligned with existing Linked Data and FAIR standards.
 keywords:
   - Linked Data
   - Web Components
@@ -70,23 +62,18 @@ bibliography: references.bib
 # Introduction
 
 The Semantic Web vision, as articulated by Berners-Lee et al.&nbsp;[@bernerslee2001],
-envisions a web of machine-readable, interlinked data that can be automatically
-processed and combined. Over the past two decades, the Resource Description
-Framework (RDF)&nbsp;[@rdf11concepts], SPARQL&nbsp;[@sparql11], and associated
-standards have matured, and large Linked Data corpora such as Wikidata, DBpedia,
-and the Linked Open Data Cloud have become widely available. Despite this
-progress, the gap between *publishing* Linked Data and *consuming* it in web
-applications remains substantial.
+imagines a web of machine-readable, interlinked data. Two decades of work have
+delivered the core pieces — RDF&nbsp;[@rdf11concepts], SPARQL&nbsp;[@sparql11],
+and large corpora such as Wikidata and DBpedia — yet we still watch teams jump
+through hoops to show RDF in a browser. Publishing has become routine; everyday
+consumption has not.
 
-Web developers who wish to display RDF data in a web browser today face several
-practical obstacles. Existing Linked Data browsers, such as
-Pubby&nbsp;[@cyganiak2011pubby] or server-side Linked Data Viewer applications,
-require dedicated back-end infrastructure. JavaScript libraries such as
-Comunica&nbsp;[@taelman2018comunica] and LDflex&nbsp;[@verborgh2018ldflex]
-offer rich functionality but demand familiarity with RDF concepts and substantial
-JavaScript programming. None of these approaches allow a web developer to
-*declaratively* embed a Linked Data view in a static HTML page without a build
-step or framework dependency.
+When we ask front-end developers to include Linked Data, the same hurdles come
+up. Server-side viewers such as Pubby&nbsp;[@cyganiak2011pubby] need dedicated
+infrastructure. Libraries like Comunica&nbsp;[@taelman2018comunica] and
+LDflex&nbsp;[@verborgh2018ldflex] are powerful but assume both RDF fluency and a
+willingness to write plenty of JavaScript. None of this feels like dropping a
+small, declarative widget into an existing HTML page.
 
 Meanwhile, the Web Components standard&nbsp;[@webcomponents] has matured across
 all modern browsers, offering a native mechanism for creating reusable,
@@ -95,12 +82,11 @@ they function equally in React, Vue, Angular, or plain HTML, making them an
 ideal delivery mechanism for semantic web functionality that must reach the
 broadest possible developer audience.
 
-A second barrier is *discovery*: even when a developer knows that a URL is
-associated with RDF data, finding the correct RDF endpoint or file requires
-knowledge of content negotiation&nbsp;[@http11], FAIR
-Signposting&nbsp;[@vandesompel2022signposting], linkset resolution, and
-publisher-specific conventions. Automating this discovery step is a prerequisite
-for truly zero-configuration Linked Data browsing.
+A second barrier is *discovery*. Even when we know a URL is tied to RDF, the
+actual endpoint or file can be hidden behind content negotiation&nbsp;[@http11],
+FAIR Signposting&nbsp;[@vandesompel2022signposting], linkset resolution, or
+publisher-specific conventions. Automating that step is the only way to make
+Linked Data browsing feel zero-configuration.
 
 This paper presents two complementary open-source projects that together address
 these barriers:
