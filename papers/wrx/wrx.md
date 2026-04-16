@@ -21,27 +21,28 @@ addresses:
   - label: "A"
     institution: "Flanders Marine Institute (VLIZ), Ostend, Belgium"
 abstract: |
-  **Background/Motivation.** Linked Open Data (LOD) publishing has progressed,
-  but practical LOD consumption still breaks at discovery time: a human-facing
-  URL rarely tells automated clients where machine-actionable RDF actually lives
-  without prior publisher-specific knowledge.
+  **Background/Motivation.** Linked Open Data keeps growing, yet we still watch
+  clients stall at the first hop because a human-facing URL rarely reveals where
+  the RDF actually lives. Teams end up leaning on tribal knowledge about each
+  publisher instead of following clues that should already be present on the web.
 
-  **Objective.** This paper introduces wrx (Web Resource Extraction), a
-  TypeScript framework for explorability-driven RDF discovery that reduces this
-  LOD discovery gap by following standards-based web signposts.
+  **Objective.** We present wrx (Web Resource Extraction), a TypeScript
+  framework that tries to make discovery feel less like a scavenger hunt. It
+  leans on the signposts already defined by the web so automated agents can move
+  from a landing page to a machine-actionable description without bespoke rules.
 
-  **Methods.** wrx applies a cascading strategy across content negotiation,
-  FAIR Signposting, RFC 9264 linksets, embedded RDF scripts, RFC 9727
-  `/.well-known/api-catalog`, and DCAT/sitemap fallbacks, while recording a
-  trace with confidence scoring for every discovery step.
+  **Methods.** wrx walks a cascading path: content negotiation, FAIR
+  Signposting, RFC 9264 linksets, embedded RDF scripts, RFC 9727
+  `/.well-known/api-catalog`, and DCAT/sitemap fallbacks. Each step is scored
+  and captured in a trace so the journey can be inspected or reproduced.
 
-  **Results.** The framework resolves RDF representations from a single seed URI
-  across heterogeneous publisher infrastructures and provides reproducible
-  discovery traces that explain why a representation was selected.
+  **Results.** Starting from a single URI, the framework resolves RDF across
+  heterogeneous publisher setups and explains why a given representation was
+  chosen through the recorded trace.
 
-  **Conclusion.** wrx improves practical LOD interoperability by turning
-  discovery from ad hoc endpoint guessing into a transparent, protocol-defined,
-  machine-actionable process.
+  **Conclusion.** wrx turns discovery from ad hoc endpoint guessing into a
+  transparent, protocol-defined process that leaves readers and machines with a
+  clear narrative of how RDF was found.
 keywords:
   - RDF discovery
   - FAIR Signposting
@@ -55,31 +56,26 @@ bibliography: references.bib
 
 # Introduction: The Discovery Barrier
 
-The Semantic Web vision relies on interlinked, machine-readable data, yet web
-publishers and web developers still struggle to move from a human-facing URL to
-an actionable RDF representation. In practice, the location of RDF data is often
-encoded in project documentation or in non-standard conventions (for example, a
-publisher-specific /rdf endpoint). This makes discovery brittle: automated
-clients must already know how a site exposes RDF in order to retrieve it. The
-result is an ecosystem where data may exist, but remains inaccessible to machines
-without human guidance.
+The Semantic Web vision relies on interlinked, machine-readable data, yet we
+still spend far too much time coaxing RDF out of ordinary URLs. More often than
+not, the location of a machine-actionable description sits in project
+documentation, a wiki page, or behind a publisher-specific `/rdf` pattern that
+only insiders know about. Automation stalls as soon as that tribal knowledge is
+missing, leaving data technically published but effectively hidden from
+machines.
 
-Discovery is also fragmented across domains. Some publishers advertise metadata
-via HTTP `Link` headers, others require content negotiation, and still others
-publish catalogues in separate portals. These patterns are each standardised, but
-clients seldom combine them into a unified discovery pipeline. As a consequence,
-a digital assistant that can navigate a content negotiation endpoint may still
-miss a richer RDF description that is available via a linkset, an API catalogue, or
-a DCAT distribution. Bridging these signals into a single exploratory process is
-necessary for consistent automation.
+Discovery patterns are also scattered. One site uses HTTP `Link` headers,
+another expects content negotiation, and a third hides catalogue links inside a
+separate portal. Each technique is standardised, but clients rarely stitch them
+together. A bot that succeeds with content negotiation can still miss a richer
+description tucked away in a linkset or an API catalogue. Without a shared way
+to follow all of these signals, automation remains brittle.
 
-This paper argues for radical transparency: lowering the amount of information a
-client must know up front by embedding navigational signposts directly into the
-fabric of the web. We propose wrx as a tool to automate
-this process. Given a single URI, wrx discovers a graph of conceptual resources
-and their descriptions by traversing standardised relations and catalogue
-structures. The outcome is a reproducible, machine-actionable discovery trace
-that replaces guesswork with protocol-defined signals.
+We argue for making discovery boringly transparent: put the signposts on the
+wire so a client can follow them without special knowledge. wrx automates that
+idea. Given a single URI, it walks standard relations and catalogue structures
+to build a graph of resources and their descriptions, leaving behind a
+reproducible trace instead of a pile of guesswork.
 
 # Background and Specifications
 
