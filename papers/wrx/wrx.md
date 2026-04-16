@@ -400,7 +400,7 @@ include:
 - **Conversion module**: handles JSON-LD expansion and RDF serialization
   selection based on requested or detected media types.
 
-Implementation choices prioritize deterministic behaviour. For example, wrx
+Implementation choices prioritize deterministic behavior. For example, wrx
 avoids crawling arbitrary HTML links unless a defined relation is present. It
 also limits cross-domain traversal to avoid accidental drift into unrelated
 resources, unless the publisher explicitly provides cross-domain relations.
