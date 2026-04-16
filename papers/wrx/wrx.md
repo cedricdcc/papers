@@ -346,7 +346,6 @@ subsequent steps are used to enrich the discovery graph.
 
 ![Strategic overview of the wrx discovery framework and how cascading discovery modes relate to one another.](wrx_overview.drawio.svg)
 
-
 ## 4.3 Indirect, Direct, and Host Harvesting
 
 wrx groups discovery into three modes that correspond to increasing scope:
