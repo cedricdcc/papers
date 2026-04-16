@@ -5,12 +5,20 @@ runningauthor: "Decruw Cedric"
 authors:
   - fnms: "Decruw"
     snm: "Cedric"
-    label: "VLIZ"
+    label: "A"
     orcid: "0000-0001-6387-5988"
     corresponding: true
     note: "cedric.decruw@vliz.be"
+    - fnms: "Marc"
+    snm: "Portier"
+    label: "A"
+    orcid: "0000-0002-9648-6484"
+  - fnms: "Katrina"
+    snm: "Exter"
+    label: "A"
+    orcid: "0000-0002-5911-1536"
 addresses:
-  - label: "VLIZ"
+  - label: "A"
     institution: "VLIZ - Flanders Marine Institute, Ostend, Belgium"
 abstract: |
   **Background/Motivation.** The Semantic Web and Linked Data ecosystem has
