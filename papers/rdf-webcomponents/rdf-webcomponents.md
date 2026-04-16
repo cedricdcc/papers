@@ -9,7 +9,7 @@ authors:
     orcid: "0000-0001-6387-5988"
     corresponding: true
     note: "cedric.decruw@vliz.be"
-    - fnms: "Marc"
+  - fnms: "Marc"
     snm: "Portier"
     label: "A"
     orcid: "0000-0002-9648-6484"
