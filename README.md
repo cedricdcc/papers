@@ -71,7 +71,8 @@ bibliography: references.bib       # optional – relative to the paper director
 ## Building Locally
 
 You need **Pandoc** and a **LaTeX** distribution (e.g. TeX Live or MiKTeX)
-installed on your machine.
+installed on your machine. If your papers contain **SVG** figures, also install
+`rsvg-convert` (package `librsvg2-bin` on Debian/Ubuntu).
 
 ```bash
 # Build all papers as PDFs (output goes to build/)
