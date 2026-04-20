@@ -1,6 +1,6 @@
 <mxfile host="65bd71144e">
     <diagram id="HMYjBEKjOJQl_-9dkdrG" name="overview">
-        <mxGraphModel dx="965" dy="779" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+        <mxGraphModel dx="566" dy="365" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -56,7 +56,33 @@
         </mxGraphModel>
     </diagram>
     <diagram id="kBTWGtDfD82LT2OUaBgL" name="link-orchestration">
-        <mxGraphModel dx="965" dy="779" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+        <mxGraphModel dx="641" dy="413" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="RcqSIJRMTSFJq8kvkkTA-1" value="link-orchestration" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+                    <mxGeometry x="40" y="290" width="580" height="310" as="geometry"/>
+                </mxCell>
+                <mxCell id="z5cptV9LVKAsFlYGf0tX-1" value="Host HTML/DOM" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;curved&quot;:0,&quot;rounded&quot;:0};fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="RcqSIJRMTSFJq8kvkkTA-1">
+                    <mxGeometry x="30" y="10" width="100" height="300" as="geometry"/>
+                </mxCell>
+                <mxCell id="z5cptV9LVKAsFlYGf0tX-5" value="Dynamic pipeline" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;curved&quot;:0,&quot;rounded&quot;:0};fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="RcqSIJRMTSFJq8kvkkTA-1">
+                    <mxGeometry x="470" y="10" width="100" height="300" as="geometry"/>
+                </mxCell>
+                <mxCell id="z5cptV9LVKAsFlYGf0tX-4" value="Mutation observer" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;curved&quot;:0,&quot;rounded&quot;:0};fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="RcqSIJRMTSFJq8kvkkTA-1">
+                    <mxGeometry x="360" y="10" width="100" height="300" as="geometry"/>
+                </mxCell>
+                <mxCell id="z5cptV9LVKAsFlYGf0tX-3" value="Rule engine" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;curved&quot;:0,&quot;rounded&quot;:0};fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="RcqSIJRMTSFJq8kvkkTA-1">
+                    <mxGeometry x="250" y="10" width="100" height="300" as="geometry"/>
+                </mxCell>
+                <mxCell id="z5cptV9LVKAsFlYGf0tX-2" value="link-orchestration" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;curved&quot;:0,&quot;rounded&quot;:0};fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="RcqSIJRMTSFJq8kvkkTA-1">
+                    <mxGeometry x="140" y="10" width="100" height="300" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+    <diagram id="M1ZxirJiIJh02LA8HncY" name="source-rdf">
+        <mxGraphModel dx="481" dy="310" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
