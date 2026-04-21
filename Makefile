@@ -36,7 +36,7 @@ $(BUILD_DIR)/%.tex: $(PAPERS_DIR)/%.md $(TEMPLATE) $(IOS_CLS) $(VANCOUVER_BST) |
 	  --template=$(TEMPLATE) \
 	  --standalone \
 	  --citeproc \
-	  --from=markdown \
+	  --from=markdown+link_attributes \
 	  --to=latex \
 	  --resource-path=$(dir $<) \
 	  -o "$@"
@@ -49,7 +49,7 @@ $(BUILD_DIR)/%.pdf: $(PAPERS_DIR)/%.md $(TEMPLATE) $(IOS_CLS) $(VANCOUVER_BST) |
 	  --template=$(TEMPLATE) \
 	  --standalone \
 	  --citeproc \
-	  --from=markdown \
+	  --from=markdown+link_attributes \
 	  --pdf-engine=lualatex \
 	  --pdf-engine-opt=-output-directory=$(dir $@) \
 	  --resource-path=$(dir $<) \

@@ -174,7 +174,7 @@ MTT follows a modular web architecture composed of a browser-based client,
 server-side API, relational persistence, and standards-oriented publication
 endpoints.
 
-![High-level MTT platform overview, including editorial workflow, translation support, and semantic publication pathways.](mtt-infographic-vertical.png)
+![High-level MTT platform overview, including editorial workflow, translation support, and semantic publication pathways.](mtt-infographic-vertical.png){ height=95% }
 
 ## Frontend Layer
 
