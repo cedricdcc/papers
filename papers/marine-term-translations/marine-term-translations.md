@@ -56,7 +56,7 @@ Marine research infrastructures rely on controlled vocabularies to make datasets
 comparable across projects, countries, and disciplines. Networks such as
 EMODnet and SeaDataNet demonstrate how shared terminology underpins data
 exchange, catalog integration, and machine-assisted discovery across distributed
-providers [@emodnet; @seadatanet]. Yet, despite broad adoption of marine
+providers [@emodnet, @seadatanet]. Yet, despite broad adoption of marine
 vocabularies, practical multilingual maintenance remains difficult. Many
 terminology services are designed primarily for monolingual curation and only
 secondarily for translation workflows. As a result, organisations that wish to
@@ -427,7 +427,7 @@ author.
 # Ethical Considerations and Environmental Footprint
 
 **Ethical considerations.** MTT focuses on terminology curation and does not
-process personal sensitive marine observation subjects. Editorial identities are
+process personal data or sensitive marine observation subjects. Editorial identities are
 managed through ORCID-based authentication in line with contributor
 accountability practices [@orcid].
 
