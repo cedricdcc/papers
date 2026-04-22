@@ -420,9 +420,8 @@ integration.
 # Declaration on Generative AI
 
 This manuscript was prepared with support from generative AI tooling for
-language refinement and structural editing. The scientific claims, system
-description, and interpretation of results were defined and validated by the
-author.
+language refinement and structural editing. The system
+description was defined by the authors.
 
 # Ethical Considerations and Environmental Footprint
 

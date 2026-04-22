@@ -252,18 +252,19 @@ publisher to expose separate RDF endpoints.
 ## Additional Profile Registries and Community Standards
 
 Beyond IETF and W3C standards, domain communities maintain profile registries
-and catalogue conventions. Examples include OAI-PMH for scholarly metadata
-harvesting [@oaipmh], RO-Crate for research object packaging [@rocrate], Linked
+and catalogue conventions. Examples include RO-Crate for research object packaging [@rocrate], Linked
 Data Event Streams (LDES) for streaming updates [@ldes], and scientific data conventions such as ERDDAP
 [@erddap], OPeNDAP [@opendap], and CF Conventions [@cfconventions]. wrx treats
 these as profile families: if a linkset, API catalogue, or profile URI points to
 one of these registries, wrx can prioritise the corresponding metadata or
 endpoint because it aligns with established community semantics.
 
-For example, an OAI-PMH endpoint often exposes a standard `?verb=Identify`
-response that can be converted into RDF, while RO-Crate defines a canonical
-`ro-crate-metadata.json` entry that describes a research object. LDES resources
-describe streams that can be consumed incrementally. These profiles expand the reach of explorability into domains
+For example, RO-Crate defines a canonical `ro-crate-metadata.json` entry that
+describes a research object and its linked resources in a predictable,
+machine-actionable form. wrx can prioritise this entry when profile hints point
+to RO-Crate and then follow its linked entities to recover richer metadata
+context. LDES resources likewise describe streams that can be consumed
+incrementally. These profiles expand the reach of explorability into domains
 that already maintain discovery infrastructure, even if they are not explicitly
 RDF-first.
 
