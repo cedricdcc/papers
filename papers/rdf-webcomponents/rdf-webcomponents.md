@@ -619,10 +619,10 @@ and extending `wrx` with additional FAIR data discovery strategies.
 
 # Declaration on Generative AI
 
-[*To be completed by the authors in accordance with the SEMANTiCS 2026 LLM Policy
-prior to final submission. Authors must explicitly and visibly state any use of
-generative AI tools in the preparation of this manuscript and/or the research it
-describes.*]
+This manuscript was prepared with support from generative AI tooling for
+language refinement and structural editing. The scientific claims, system
+description, and interpretation of results were defined and validated by the
+author.
 
 # Ethical Considerations and Environmental Footprint
 
