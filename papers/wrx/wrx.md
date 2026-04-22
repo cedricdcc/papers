@@ -75,7 +75,10 @@ We argue for making discovery boringly transparent: put the signposts on the
 wire so a client can follow them without special knowledge. wrx automates that
 idea. Given a single URI, it walks standard relations and catalogue structures
 to build a graph of resources and their descriptions, leaving behind a
-reproducible trace instead of a pile of guesswork.
+reproducible trace instead of a pile of guesswork. We also expect this client
+framework to guide service developers in exposing the necessary discovery
+hooks. We also anticipate browser plugins or native browser features that can
+identify machine-actionable content and add user-facing affordances around it.
 
 # Background and Specifications
 
@@ -97,7 +100,7 @@ Link: <https://example.org/metadata.ttl>; rel="describedby"; type="text/turtle"
 ```
 
 wrx uses this model throughout its cascade: it interprets relations such as
-`describedby`, `alternate`, `type`, `profile`, and `linkset` as explicit
+`describedby`, `alternate`, `self`, `profile`, and `linkset` as explicit
 instructions for where to find metadata or alternative representations. RFC 8288
 also allows additional link parameters (for example, `type`, `hreflang`, and
 `title`) that help wrx validate candidate resources and choose among competing
@@ -138,7 +141,7 @@ applied through Link headers, HTML link tags, or the `profile` parameter on
 The Profile-URI registry (RFC 7284) standardises profile identifiers and
 provides discovery for well-known profiles [@rfc7284]. wrx uses profile URIs as
 first-class hints: if a link relation includes a profile that matches a known
-RDF vocabulary (eg, DCAT, RO-Crate, or OGC API), the corresponding
+RDF vocabulary (eg, RO-Crate), the corresponding
 representation is ranked higher because it offers more predictable semantics.
 Profiles are also used to align HTTP-level discovery with RDF-level profile
 bridging (such as `dct:conformsTo` in DCAT catalogues), allowing wrx to unify
@@ -162,20 +165,23 @@ representations or profile-specific descriptions. wrx uses linksets to locate
 RDF distributions, profiles, and alternative entry points without requiring
 publisher-specific URI templates.
 
-## RFC 5785 and RFC 9727: `.well-known` and API Catalogs
+## RFC 8615 and RFC 9727: `.well-known` and API Catalog Discovery
 
-RFC 5785 standardises the `/.well-known/` URI prefix as a location for
-site-wide metadata [@rfc5785]. API Catalogs (RFC 9727) build on this mechanism by
-defining `/.well-known/api-catalog` as a machine-readable description of API
-entry points [@rfc9727]. The API catalogue format is expressed as a linkset, which
-means a catalogue entry can describe both human and machine interfaces.
+The `/.well-known/` mechanism is standardised in RFC 8615 (which obsoletes
+RFC 5785) and provides a registered namespace for host-level discovery metadata
+[@rfc8615]. RFC 9727 defines `api-catalog` as both a Well-Known URI suffix and
+a link relation [@rfc9727]. Concretely, publishers expose an API catalog via
+`/.well-known/api-catalog`, while also being able to advertise the same catalog
+from other resources using `rel="api-catalog"`.
 
-wrx uses API catalogues as a host-level discovery strategy. If resource-level
-signals are absent, wrx probes for a host-level catalogue to locate API endpoints,
-schemas, or RDF profiles associated with a domain. Catalogue entries can link to
-OpenAPI, Hydra, or JSON Schema descriptions, and can also include `describedby`
-relations to RDF metadata. This makes API catalogues a bridge between traditional
-API documentation and Linked Data discovery.
+RFC 9727 requires the catalog to be available as a Linkset
+(`application/linkset+json`, with the RFC 9727 profile URI), and allows
+additional representations through content negotiation. wrx uses this in two
+complementary ways: (1) it follows `api-catalog` links when they are present at
+resource level, and (2) it probes `/.well-known/api-catalog` as a host-level
+fallback. The resulting catalog links can then lead to API endpoints,
+machine-readable API descriptions (for example OpenAPI), and related metadata,
+which wrx incorporates into the broader RDF discovery graph.
 
 ## FAIR Signposting
 
@@ -190,35 +196,42 @@ representations and select the most semantically rich payload.
 
 ## RFC 9309 and Sitemaps: Host-Level Harvesting
 
-The robots.txt protocol (RFC 9309) provides a standard location for crawler
-instructions and, crucially, can list sitemap files [@rfc9309]. Sitemaps are an
-industry-standard protocol for enumerating site content and associated metadata
-[@sitemaps]. wrx uses robots.txt and sitemaps as a fallback strategy to harvest
-possible dataset or catalogue pages when direct discovery fails. This mirrors how
-web crawlers bootstrap discovery at scale, but the focus here is on RDF and
-machine-actionable resources rather than page indexing.
+RFC 9309 defines how crawlers retrieve and interpret `/robots.txt`, including
+the rule language (`user-agent`, `allow`, `disallow`) and handling behavior for
+redirects, unavailability, and caching [@rfc9309]. It also permits additional
+records such as `Sitemap`, which lets a publisher advertise one or more sitemap
+locations without coupling them to a specific `user-agent` group. wrx uses this
+as a host-bootstrap mechanism: when direct resource-level signals are missing,
+it resolves `/robots.txt`, extracts advertised sitemaps, and expands the
+candidate URI set from there.
 
-Sitemaps also provide metadata such as `lastmod`, `changefreq`, and `priority`.
-While primarily intended for search engines, these properties can help wrx rank
-candidate resources when multiple catalogue pages exist. Sitemap indexes allow
-large catalogues to be segmented by topic or region, which is useful when mapping
-host-level resources to a specific URI.
+Sitemaps then provide structured URL inventories plus optional hints such as
+`lastmod`, `changefreq`, and `priority` [@sitemaps]. wrx treats these as
+ranking features rather than hard directives, and uses sitemap indexes to scale
+across large catalogues. Because the base sitemap schema does not carry profile
+semantics directly, wrx also relies on namespace extensions: in practice, the
+`xhtml:link` pattern (commonly used for alternate links) can be reused to carry
+relation and profile hints per URL entry, allowing profile semantics to travel
+with host-level discovery data.
 
 ## DCAT and Catalogue Bridging
 
 The Data Catalog Vocabulary (DCAT) is a W3C standard for describing datasets and
 distributions [@dcat]. It is often used to publish dataset metadata in RDF, and
 its `dct:conformsTo` predicate can link datasets to formal profiles. wrx
-leverages DCAT to bridge between catalogues and actual data distributions: if a
-catalogue entry describes a distribution with an RDF media type, wrx can resolve
-that distribution as the actionable representation for a given resource.
+uses DCAT as the semantic refinement stage *after* host-level harvesting via
+RFC 9309 and sitemaps. In other words, robots/sitemap discovery identifies
+candidate catalogue resources; DCAT then bridges those catalogue entries to
+concrete data distributions. If a discovered catalogue entry advertises a
+distribution with an RDF media type, wrx can resolve that distribution as the
+actionable representation for the target resource.
 
 DCAT provides explicit properties for `dcat:distribution`, `dcat:accessURL`, and
 `dcat:downloadURL`, which let wrx distinguish between an API endpoint and a
 static file distribution. Catalogues can also include `dcat:mediaType` or
 `dcat:format` declarations, which wrx uses to validate that a distribution is
-compatible with RDF. This makes DCAT a crucial bridge between catalogue-level
-metadata and resource-level access.
+compatible with RDF. This makes DCAT the connective layer between host-level
+URL discovery (robots/sitemaps) and resource-level machine-actionable access.
 
 ## JSON-LD Contexts
 
@@ -241,8 +254,7 @@ publisher to expose separate RDF endpoints.
 Beyond IETF and W3C standards, domain communities maintain profile registries
 and catalogue conventions. Examples include OAI-PMH for scholarly metadata
 harvesting [@oaipmh], RO-Crate for research object packaging [@rocrate], Linked
-Data Event Streams (LDES) for streaming updates [@ldes], OGC API standards for
-geospatial resources [@ogcapi], and scientific data conventions such as ERDDAP
+Data Event Streams (LDES) for streaming updates [@ldes], and scientific data conventions such as ERDDAP
 [@erddap], OPeNDAP [@opendap], and CF Conventions [@cfconventions]. wrx treats
 these as profile families: if a linkset, API catalogue, or profile URI points to
 one of these registries, wrx can prioritise the corresponding metadata or
@@ -251,9 +263,7 @@ endpoint because it aligns with established community semantics.
 For example, an OAI-PMH endpoint often exposes a standard `?verb=Identify`
 response that can be converted into RDF, while RO-Crate defines a canonical
 `ro-crate-metadata.json` entry that describes a research object. LDES resources
-describe streams that can be consumed incrementally, and OGC APIs frequently
-publish machine-readable OpenAPI descriptions alongside JSON or GeoJSON
-representations. These profiles expand the reach of explorability into domains
+describe streams that can be consumed incrementally. These profiles expand the reach of explorability into domains
 that already maintain discovery infrastructure, even if they are not explicitly
 RDF-first.
 
@@ -279,12 +289,13 @@ concept. By traversing links and catalogues, wrx constructs a graph that maps th
 manifestations and provides a reproducible trail of how each representation was
 found.
 
-Table&nbsp;1 summarises how core specifications contribute to the exploration
+Table&nbsp;1 summarises how core standards and mechanisms contribute to the exploration
 strategy.
 
-| Specification | Discovery role in wrx | Typical signal |
+| Standard / mechanism | Discovery role in wrx | Typical signal |
 | --- | --- | --- |
 | RFC 8288 | Base linking model for discovery | `Link` headers, HTML `<link>` tags |
+| HTML + JSON-LD embedding | In-document RDF extraction | `<script type="application/ld+json">` blocks |
 | RFC 6906 | Conceptual profile identification | `rel="profile"` |
 | RFC 9264 | External link collections | `rel="linkset"` + linkset document |
 | RFC 9727 | Host-level API discovery | `/.well-known/api-catalog` |
@@ -327,7 +338,7 @@ specific to most general:
    and capture negotiated representations. This leverages RFC 9110 semantics and
    RFC 2045 media types to detect RDF on the first request.
 2. **FAIR Signposting**: inspect HTTP `Link` headers for `describedby`, `type`,
-   `author`, and `license` relations to locate metadata objects.
+   `self`, and `linkset` relations to locate metadata objects.
 3. **HTML link parsing**: scan HTML for `rel="alternate"`, `rel="describedby"`,
    and `rel="linkset"` declarations that point to RDF or linkset documents.
 4. **Linkset resolution**: fetch and parse RFC 9264 linkset documents to find
@@ -339,7 +350,7 @@ specific to most general:
 6. **API catalogue discovery**: resolve `/.well-known/api-catalog` endpoints as
    described in RFC 9727 to enumerate API entry points and schemas.
 7. **Robots.txt + sitemap harvesting**: parse `robots.txt` (RFC 9309) and
-   sitemaps to discover catalogue pages or dataset distributions.
+   sitemaps to discover catalogue pages or dataset distributions and link semantic hints.
 8. **Catalogue bridging**: follow DCAT catalogues to locate RDF distributions and
    cross-reference `dct:conformsTo` profile assertions.
 
@@ -415,8 +426,6 @@ include:
   tags into a unified internal representation.
 - **Linkset parser**: reads RFC 9264 linkset documents in JSON or text format
   and extracts typed link relations.
-- **Profile matcher**: validates and ranks profile URIs against known registries
-  (RFC 7284, DCAT, RO-Crate, OGC, etc.).
 - **Conversion module**: handles JSON-LD expansion and RDF serialisation
   selection based on requested or detected media types.
 
@@ -427,19 +436,41 @@ resources, unless the publisher explicitly provides cross-domain relations.
 
 ## Data Model
 
-wrx represents discovery results as a compact graph: nodes are resources, and
-edges are typed link relations annotated with media type, profile, and
-confidence. This data model mirrors the Web Linking semantics while capturing
-additional metadata needed for ranking. The model is intentionally minimal to
-allow serialisation into JSON for use in logs or dashboards.
+wrx models discovery as three connected layers rather than a single flat graph.
+First, it keeps a **resource graph** in which nodes are conceptual resources
+and edges are typed relations (`describedby`, `alternate`, `profile`,
+`linkset`, `api-catalog`, etc.). Second, it keeps an **observation graph** that
+records where each relation was seen (HTTP `Link` header, HTML `<link>`,
+linkset record, sitemap entry, or embedded JSON-LD script), so relation claims
+are traceable to concrete web evidence. Third, it keeps a **process trace** with
+step mode (`indirect`, `direct`, `host`), source URI, dereference outcome,
+normalisation decisions, and conversion events.
 
-## Normalisation and Deduplication
+This structure follows the exploration model used in the design material:
+`indirect` mode prioritises link-based navigation (headers, embedded links,
+linksets, redirects), `direct` mode prioritises immediate representation
+retrieval (content negotiation, redirects, embedded RDF), and `host` mode
+bootstraps from `/robots.txt` to sitemaps and catalogues. Linksets and sitemap
+hints are converted into RDF statements and attached to the same graph with
+provenance-style annotations, so clients can query either the resulting
+resource relations or the evidence chain that produced them.
 
-Discovery sources often overlap. A single representation can be referenced via
-headers, HTML, and linksets. wrx normalises URLs, resolves relative references,
-merges duplicate links, and preserves the provenance of each signal. If two links
-point to the same resource but specify different media types, wrx retains both
-until validation resolves the preferred type.
+## Normalisation
+
+Discovery evidence often arrives in different URI forms across headers, embedded
+HTML links, linksets, sitemaps, and catalogues. wrx applies a normalisation
+step before graph insertion: it resolves relative references against their
+context URI, follows redirects to a stable absolute URI, and applies syntax
+normalisation while preserving semantics (including meaningful fragments).
+Source location, discovery mode, and retrieval metadata remain attached as
+provenance.
+
+Example: a page at `https://example.org/catalog/` exposes
+`<link rel="describedby" href="../meta/42.jsonld">`, while the server redirects
+that target to `https://data.example.org/meta/42`. wrx resolves the relative
+link against the page context, follows the redirect, and stores the normalised
+target as `https://data.example.org/meta/42` in the discovery graph, with trace
+metadata recording the original relative `href` and redirect chain.
 
 ## Extensibility
 
@@ -470,29 +501,15 @@ Representative use cases include:
 - **Cross-domain dataset federation:** by following DCAT catalogues and profile
   links, wrx can locate RDF distributions across multiple organisations without
   prior agreements on endpoint naming.
+- **Containerised standards-conformant LOD testbed:** a reproducible LOD server
+  can be hosted via Docker (https://github.com/vliz-be-opsci/lod_docker_webserver),
+  exposing resources that implement the paper's discovery standards (for
+  example Web Linking, linksets, profiles, API catalogues, and sitemap-based
+  host discovery). This provides a practical environment for wrx validation,
+  interoperability testing, and demonstration.
 
 Even when discovery fails, the trace reveals which signals were missing, which
 can inform publishers on how to improve explorability.
-
-## Qualitative Comparison
-
-Traditional discovery approaches often require manual configuration, such as
-hard-coded SPARQL endpoints or publisher-specific metadata APIs. wrx reduces this
-configuration burden by using standardised signals. In environments where
-publishers already implement FAIR Signposting or linksets, wrx achieves immediate
-success. In environments without such signals, the host-level strategies still
-provide a safety net through catalogues and sitemaps.
-
-## Example Scenarios
-
-- **Institutional repository:** A repository landing page links to a linkset that
-  enumerates metadata and file distributions. wrx resolves the linkset, selects
-  the RDF distribution, and returns a complete metadata record.
-- **Marine data portal:** The portal publishes a DCAT catalogue and OGC API
-  endpoints. wrx identifies the catalogue via `/.well-known/api-catalog`, then
-  follows `dct:conformsTo` to select the OGC profile and the RDF distribution.
-- **Legacy JSON API:** A JSON API adds a JSON-LD context file. wrx follows the
-  context link, converts JSON to RDF, and yields a semantically enriched graph.
 
 # Related Work and Positioning
 
@@ -510,28 +527,42 @@ host-level exploration.
 Explorability depends on publishers emitting meaningful links. wrx cannot conjure
 metadata that is absent, and it inherits the availability and correctness of
 remote resources. Adoption challenges include incomplete use of link relations,
-inconsistent media type declarations, and the lack of widely adopted profile
-registries for some domains. Another limitation is that RDF conversion from JSON
-or HTML relies on consistent contexts; without a valid JSON-LD context, wrx
-cannot unambiguously interpret semantics.
+inconsistent media type declarations, and uneven operational quality of
+discovery endpoints (stale linksets, incomplete API catalogues, or missing
+robots/sitemap maintenance). In practice, discovery failures are often not
+protocol failures but publication-governance failures: relations are present but
+underspecified, outdated, or disconnected from the actual resource lifecycle.
+
+Another structural limitation is the insufficient cross-domain adoption and
+curation of profile URI registries, despite the existence of registry
+mechanisms. This is a major issue for linking semantics on the web: without
+stable and discoverable profile identifiers, clients cannot
+reliably interpret what a declared `rel="profile"` actually means, compare
+equivalence across publishers, or rank competing representations with confidence.
+The result is semantic fragmentation, where links remain technically valid but
+operationally ambiguous.
+
+RDF conversion from JSON or HTML also relies on consistent context publication;
+for JSON-LD-derived interpretation paths, missing or invalid contexts prevent
+unambiguous semantic interpretation.
+Likewise, host-level harvesting can expose candidate resources but cannot by
+itself guarantee conceptual alignment unless profile declarations and catalogue
+metadata are maintained with the same rigor as the primary data endpoints.
 
 Nevertheless, the framework demonstrates that existing standards are sufficient
 for discovery when they are used consistently. wrx encourages small, incremental
 publisher changes (eg, adding a `Link` header or a `.well-known/api-catalog`)
-that immediately increase machine-accessible transparency. The trace model also
+that can improve machine-accessible transparency quickly. The trace model also
 provides actionable feedback to publishers by highlighting which signposts are
 missing or inconsistent.
 
 # Future Work
 
-Future work focuses on richer profile negotiation, pluggable ranking models, and
+Future work focuses on richer profile negotiation, and
 optional caching layers to reduce redundant exploration of large sites. Another
-priority is expanding support for community profile registries such as OGC and
-CF-conventions, allowing wrx to better serve domain-specific data ecosystems.
+priority is expanding support for community profile registries, allowing wrx to better serve domain-specific data ecosystems.
 The trace model could also be extended with provenance metadata so that discovery
-paths can be cited or audited in scholarly contexts. Additional work includes
-formalising a test corpus of explorability scenarios to benchmark discovery
-quality across domains.
+paths can be cited or audited in scholarly contexts.
 
 # Conclusion
 
@@ -546,9 +577,8 @@ closer to everyday automation.
 # Declaration on Generative AI
 
 This manuscript was prepared with support from generative AI tooling for
-language refinement and structural editing. The scientific claims, system
-description, and interpretation of results were defined and validated by the
-author.
+language refinement and structural editing. The system
+description was defined by the authors.
 
 # Ethical Considerations and Environmental Footprint
 
