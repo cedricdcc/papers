@@ -68,7 +68,7 @@ and large corpora such as Wikidata and DBpedia — yet we still watch teams jump
 through hoops to show RDF in a browser. Publishing has become routine; everyday
 consumption has not.
 
-When we ask front-end developers to include Linked Data, the same hurdles come
+When trying to implement Linked Data in the front-end, the same hurdles come
 up. Server-side viewers such as Pubby&nbsp;[@cyganiak2011pubby] need dedicated
 infrastructure. Libraries like Comunica&nbsp;[@taelman2018comunica] and
 LDflex&nbsp;[@verborgh2018ldflex] are powerful but assume both RDF fluency and a
@@ -136,7 +136,7 @@ DBpedia&nbsp;[@lehmann2015dbpedia] and Wikidata&nbsp;[@vrandevcic2014wikidata].
 
 FAIR Signposting&nbsp;[@vandesompel2022signposting] extends these principles by
 prescribing typed HTTP Link headers that allow automated agents to discover
-scholarly identity, authors, licence, and metadata of a resource, including
+scholarly identity and metadata of a resource, including
 pointers to RDF descriptions, without prior knowledge of the publisher's
 conventions.
 
