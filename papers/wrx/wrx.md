@@ -461,12 +461,16 @@ normalisation while preserving semantics (including meaningful fragments).
 Source location, discovery mode, and retrieval metadata remain attached as
 provenance.
 
-Example: a page at `https://example.org/catalog/` exposes
-`<link rel="describedby" href="../meta/42.jsonld">`, while the server redirects
-that target to `https://data.example.org/meta/42`. wrx resolves the relative
+Example: a page at `https://example.org/resource/42` exposes
+`<link rel="describedby" href="../meta/42">`, while the server redirects
+that target to `https://example.org/meta/42.jsonld`. wrx resolves the relative
 link against the page context, follows the redirect, and stores the normalised
-target as `https://data.example.org/meta/42` in the discovery graph, with trace
+target as `https://example.org/resource/42` in the discovery graph, with trace
 metadata recording the original relative `href` and redirect chain.
+
+This example plays out slightly different if any of the visited resources
+exposed a `<link rel="self" href="/id/42">`. In this case the normalised target
+will be `https://example.org/id/42`. 
 
 ## Extensibility
 
