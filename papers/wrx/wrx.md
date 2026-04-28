@@ -77,8 +77,9 @@ idea. Given a single URI, it walks standard relations and catalogue structures
 to build a graph of resources and their descriptions, leaving behind a
 reproducible trace instead of a pile of guesswork. We also expect this client
 framework to guide service developers in exposing the necessary discovery
-hooks. We also anticipate browser plugins or native browser features that can
-identify machine-actionable content and add user-facing affordances around it.
+hooks onto their published resources. Additionally this client availability can
+inspire browser plugins or native browser features into adding
+user-facing affordances onto discovered machine actionable content.
 
 # Background and Specifications
 
@@ -107,6 +108,10 @@ also allows additional link parameters (for example, `type`, `hreflang`, and
 links. The key strength of Web Linking is that it is content agnostic; a resource
 can advertise RDF, JSON, or human-oriented documentation using the same
 mechanism. This makes RFC 8288 the baseline protocol for uniform discovery.
+
+Exacly this technique has been introduced in the field of scholarly publications as
+FAIR Signposting, a pragmatic profile of Web Linking to expose metadata
+without requiring a dedicated API [@signposting].
 
 ## RFC 9110 and RFC 2045: HTTP Semantics and Media Types
 
@@ -140,9 +145,8 @@ applied through Link headers, HTML link tags, or the `profile` parameter on
 
 The Profile-URI registry (RFC 7284) standardises profile identifiers and
 provides discovery for well-known profiles [@rfc7284]. wrx uses profile URIs as
-first-class hints: if a link relation includes a profile that matches a known
-RDF vocabulary (eg, RO-Crate), the corresponding
-representation is ranked higher because it offers more predictable semantics.
+first-class hints: if a link relation includes a known profile (eg, RO-Crate), 
+the corresponding representation is ranked higher because it offers more predictable semantics.
 Profiles are also used to align HTTP-level discovery with RDF-level profile
 bridging (such as `dct:conformsTo` in DCAT catalogues), allowing wrx to unify
 conceptual semantics with actual representations.
@@ -167,8 +171,8 @@ publisher-specific URI templates.
 
 ## RFC 8615 and RFC 9727: `.well-known` and API Catalog Discovery
 
-The `/.well-known/` mechanism is standardised in RFC 8615 (which obsoletes
-RFC 5785) and provides a registered namespace for host-level discovery metadata
+The `/.well-known/` mechanism is standardised in RFC 8615
+and provides a registered namespace for host-level discovery metadata
 [@rfc8615]. RFC 9727 defines `api-catalog` as both a Well-Known URI suffix and
 a link relation [@rfc9727]. Concretely, publishers expose an API catalog via
 `/.well-known/api-catalog`, while also being able to advertise the same catalog
@@ -183,17 +187,6 @@ fallback. The resulting catalog links can then lead to API endpoints,
 machine-readable API descriptions (for example OpenAPI), and related metadata,
 which wrx incorporates into the broader RDF discovery graph.
 
-## FAIR Signposting
-
-FAIR Signposting defines a pragmatic profile of Web Linking to expose metadata
-without requiring a dedicated API [@signposting]. It recommends link relations
-such as `describedby`, `author`, `license`, and `cite-as` in HTTP headers to
-advertise metadata objects and persistent identifiers. wrx treats these
-relations as high-priority inputs because they express a direct path to
-authoritative descriptions, often in RDF or JSON-LD. Signposting also establishes
-conventions for identifying file format metadata, which wrx uses to normalise
-representations and select the most semantically rich payload.
-
 ## RFC 9309 and Sitemaps: Host-Level Harvesting
 
 RFC 9309 defines how crawlers retrieve and interpret `/robots.txt`, including
@@ -206,13 +199,15 @@ it resolves `/robots.txt`, extracts advertised sitemaps, and expands the
 candidate URI set from there.
 
 Sitemaps then provide structured URL inventories plus optional hints such as
-`lastmod`, `changefreq`, and `priority` [@sitemaps]. wrx treats these as
-ranking features rather than hard directives, and uses sitemap indexes to scale
-across large catalogues. Because the base sitemap schema does not carry profile
-semantics directly, wrx also relies on namespace extensions: in practice, the
-`xhtml:link` pattern (commonly used for alternate links) can be reused to carry
-relation and profile hints per URL entry, allowing profile semantics to travel
-with host-level discovery data.
+`lastmod`, `changefreq`, and `priority` [@sitemaps]. 
+However the base sitemap schema does not carry link nor profile semantics 
+directly. In practice these have been introduced through the `xhtml:link`
+pattern (commonly used for alternate links) and can be reused to carry
+relation, profile hints per URL entry. This allows wrx to explore these link and 
+profile semantics on a host-level. 
+
+This mechanism is used by wrx to recognise host-wide declared catalogues that in turn
+might contain additional semantics for the URI under exploration.
 
 ## DCAT and Catalogue Bridging
 
