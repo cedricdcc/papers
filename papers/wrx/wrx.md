@@ -355,7 +355,7 @@ to avoid false positives. The cascade is intentionally conservative: any step
 that yields an authoritative RDF representation can terminate the process, while
 subsequent steps are used to enrich the discovery graph.
 
-![Strategic overview of the wrx discovery framework and how cascading discovery modes relate to one another.](wrx_overview.drawio.svg)
+![Strategic overview of the wrx discovery framework and how cascading discovery modes relate to one another.](wrx_overview.png)
 
 ## Indirect, Direct, and Host Harvesting
 
