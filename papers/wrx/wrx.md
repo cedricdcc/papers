@@ -373,7 +373,7 @@ by configuring how far the cascade should proceed. For example, a UI that needs
 fast rendering might stop after indirect or direct harvesting, while a batch
 harvester can proceed into host-level discovery for maximum completeness.
 
-![Detailed strategy breakdown used by wrx to evaluate and combine discovery signals.](strategies.drawio.svg){ width=95% }
+![Detailed strategy breakdown used by wrx to evaluate and combine discovery signals.](strategies.drawio.svg)
 
 ## Scoring and Trace Model
 
