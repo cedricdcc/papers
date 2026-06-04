@@ -9,14 +9,6 @@ authors:
     orcid: "0000-0001-6387-5988"
     corresponding: true
     note: "cedric.decruw@vliz.be"
-  - fnms: "Marc"
-    snm: "Portier"
-    label: "A"
-    orcid: "0000-0002-9648-6484"
-  - fnms: "Katrina"
-    snm: "Exter"
-    label: "A"
-    orcid: "0000-0002-5911-1536"
 addresses:
   - label: "A"
     institution: "Flanders Marine Institute (VLIZ), Ostend, Belgium"
