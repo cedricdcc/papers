@@ -60,7 +60,7 @@
     <rect x="330" y="125" width="140" height="80" rx="10" fill="url(#pill-grad)"/>
     <rect x="330" y="125" width="140" height="80" rx="10" fill="none" stroke="#60a5fa" stroke-width="1.5"/>
     <text x="400" y="149.0" text-anchor="middle" class="map-text">Parse HTTP Link</text>
-<text x="400" y="162.0" text-anchor="middle" class="map-text">headers & rels</text>
+<text x="400" y="162.0" text-anchor="middle" class="map-text">headers &amp; rels</text>
 <text x="400" y="175.0" text-anchor="middle" class="map-text">Map to xhtml:link</text>
 <text x="400" y="188.0" text-anchor="middle" class="map-text">RDF blank nodes</text>
 
