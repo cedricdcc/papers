@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 300" width="100%" height="100%">
+  <defs>
+    <style>
+      
+    .title { font-family: 'Inter', system-ui, sans-serif; font-size: 15px; font-weight: 700; fill: #f8fafc; }
+    .label { font-family: 'Inter', system-ui, sans-serif; font-size: 11px; font-weight: 600; fill: #cbd5e1; }
+    .header-text { font-family: 'Inter', system-ui, sans-serif; font-size: 12px; font-weight: 700; fill: #ffffff; }
+    .code { font-family: 'Consolas', 'Fira Code', 'Courier New', monospace; font-size: 8.5px; fill: #cbd5e1; }
+    .code-rdf { font-family: 'Consolas', 'Fira Code', 'Courier New', monospace; font-size: 8.5px; fill: #34d399; }
+    .map-text { font-family: 'Inter', system-ui, sans-serif; font-size: 9.5px; font-weight: 600; fill: #ffffff; }
+    .shadow { filter: drop-shadow(0px 8px 12px rgba(0, 0, 0, 0.4)); }
+    
+    </style>
+    <linearGradient id="bg-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1e1b4b"/>
+    </linearGradient>
+    <linearGradient id="input-header" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#334155"/>
+    </linearGradient>
+    <linearGradient id="output-header" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#064e3b"/>
+      <stop offset="100%" stop-color="#0f766e"/>
+    </linearGradient>
+    <linearGradient id="pill-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4f46e5"/>
+      <stop offset="100%" stop-color="#3b82f6"/>
+    </linearGradient>
+    <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#cbd5e1"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="800" height="300" fill="url(#bg-grad)" rx="12"/>
+  
+  <!-- Outer border -->
+  <rect x="1" y="1" width="798" height="298" fill="none" stroke="#312e81" stroke-width="2" rx="11"/>
+
+  <!-- Title -->
+  <text x="400" y="35" text-anchor="middle" class="title">RSS XML to Data Catalog Inference (RSS_FEED)</text>
+
+  <!-- Input Card -->
+  <g class="shadow">
+    <rect x="40" y="65" width="280" height="200" rx="8" fill="#1e293b" opacity="0.6"/>
+    <rect x="40" y="65" width="280" height="200" rx="8" fill="none" stroke="#475569" stroke-width="1.5"/>
+    <path d="M 40 73 A 8 8 0 0 1 48 65 L 312 65 A 8 8 0 0 1 320 73 L 320 100 L 40 100 Z" fill="url(#input-header)"/>
+    <text x="55" y="87" class="header-text">Source Payload (RSS Feed XML)</text>
+    <text x="55" y="115" class="code">&lt;rss version=&quot;2.0&quot;&gt;</text>
+<text x="55" y="128" class="code">  &lt;channel&gt;</text>
+<text x="55" y="141" class="code">    &lt;title&gt;VLIZ Feed&lt;/title&gt;</text>
+<text x="55" y="154" class="code">    &lt;item&gt;</text>
+<text x="55" y="167" class="code">      &lt;title&gt;Dataset 1&lt;/title&gt;</text>
+<text x="55" y="180" class="code">      &lt;link&gt;/ds1&lt;/link&gt;</text>
+<text x="55" y="193" class="code">    &lt;/item&gt;</text>
+<text x="55" y="206" class="code">  &lt;/channel&gt;</text>
+<text x="55" y="219" class="code">&lt;/rss&gt;</text>
+
+  </g>
+
+  <!-- Connecting Arrows and Extraction Pill -->
+  <path d="M 320 165 L 330 165" fill="none" stroke="#cbd5e1" stroke-width="2"/>
+  
+  <g class="shadow">
+    <rect x="330" y="125" width="140" height="80" rx="10" fill="url(#pill-grad)"/>
+    <rect x="330" y="125" width="140" height="80" rx="10" fill="none" stroke="#60a5fa" stroke-width="1.5"/>
+    <text x="400" y="149.0" text-anchor="middle" class="map-text">Parse RSS XML structure</text>
+<text x="400" y="162.0" text-anchor="middle" class="map-text">Map channel to Catalog</text>
+<text x="400" y="175.0" text-anchor="middle" class="map-text">Map items to Datasets</text>
+<text x="400" y="188.0" text-anchor="middle" class="map-text">and parent relations</text>
+
+  </g>
+  
+  <path d="M 470 165 L 480 165" fill="none" stroke="#cbd5e1" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- Output Card -->
+  <g class="shadow">
+    <rect x="480" y="65" width="280" height="200" rx="8" fill="#022c22" opacity="0.6"/>
+    <rect x="480" y="65" width="280" height="200" rx="8" fill="none" stroke="#065f46" stroke-width="1.5"/>
+    <path d="M 480 73 A 8 8 0 0 1 488 65 L 752 65 A 8 8 0 0 1 760 73 L 760 100 L 480 100 Z" fill="url(#output-header)"/>
+    <text x="495" y="87" class="header-text">Inferred RDF Graph (Turtle)</text>
+    <text x="495" y="115" class="code-rdf">@prefix schema: &lt;https://schema.org/&gt; .</text>
+<text x="495" y="128" class="code-rdf"></text>
+<text x="495" y="141" class="code-rdf">&lt;feed.xml&gt; a schema:DataCatalog ;</text>
+<text x="495" y="154" class="code-rdf">  schema:name &quot;VLIZ Feed&quot; .</text>
+<text x="495" y="167" class="code-rdf"></text>
+<text x="495" y="180" class="code-rdf">&lt;dataset/1&gt; a schema:Dataset ;</text>
+<text x="495" y="193" class="code-rdf">  schema:name &quot;Dataset 1&quot; ;</text>
+<text x="495" y="206" class="code-rdf">  schema:isPartOf &lt;feed.xml&gt; .</text>
+
+  </g>
+</svg>
