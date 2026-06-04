@@ -31,8 +31,9 @@ def create_svg(title, input_type, input_lines, mapping_lines, output_lines):
     start_y = 165 - (n_lines - 1) * 6.5 + 3.5
     for idx, line in enumerate(mapping_lines):
         y_pos = start_y + idx * 13
-        mapping_list_str += f'<text x="400" y="{y_pos}" text-anchor="middle" class="map-text">{line}</text>\n'
-        
+        line_esc = line.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace('"', "&quot;")
+        mapping_list_str += f'<text x="400" y="{y_pos}" text-anchor="middle" class="map-text">{line_esc}</text>\n'
+
     svg_content = f"""<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {width} {height}" width="100%" height="100%">
   <defs>
     <style>

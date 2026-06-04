@@ -61,8 +61,8 @@
   <g class="shadow">
     <rect x="330" y="125" width="140" height="80" rx="10" fill="url(#pill-grad)"/>
     <rect x="330" y="125" width="140" height="80" rx="10" fill="none" stroke="#60a5fa" stroke-width="1.5"/>
-    <text x="400" y="149.0" text-anchor="middle" class="map-text">Extract HTML <a></text>
-<text x="400" y="162.0" text-anchor="middle" class="map-text">hyperlinks & anchor</text>
+    <text x="400" y="149.0" text-anchor="middle" class="map-text">Extract HTML &lt;a&gt;</text>
+<text x="400" y="162.0" text-anchor="middle" class="map-text">hyperlinks &amp; anchor</text>
 <text x="400" y="175.0" text-anchor="middle" class="map-text">Map to xhtml:link</text>
 <text x="400" y="188.0" text-anchor="middle" class="map-text">RDF blank nodes</text>
 
