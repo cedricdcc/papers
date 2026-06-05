@@ -307,70 +307,70 @@ Resource-level inferenced channels reside directly on the resource page but requ
 *   **LOD Discovery Role**: Falls back to traversing standard `<a>` anchors to construct the physical web-graph.
 *   **Inference Semantics**: Extracts `href` targets and models them using standard `xhtml:link` RDF blank nodes with `xhtml:anchor`, `xhtml:rel`, and `xhtml:href` properties.
 *   **Inference Figure**:
-    ![Inference process for HTML_LINKS: mapping HTML anchors to xhtml:link RDF blank nodes.](images/fig_html_links.svg){ width=95% }
+    ![Inference process for HTML_LINKS: mapping HTML anchors to xhtml:link RDF blank nodes.](images/fig_html_links.svg){ width=10cm height=3.75cm angle=90 }
 
 ### 14. RDFa Markup (`RDFA`)
 *   **Specification**: W3C RDFa Core 1.1 [@rdfa11].
 *   **LOD Discovery Role**: Integrates RDF statements into existing HTML tags using attributes like `about` and `property`.
 *   **Inference Semantics**: Traverses the DOM tree to extract namespaces, subjects, and objects.
 *   **Inference Figure**:
-    ![Inference process for RDFA: parsing nested DOM attributes into schema:Book properties.](images/fig_rdfa.svg){ width=95% }
+    ![Inference process for RDFA: parsing nested DOM attributes into schema:Book properties.](images/fig_rdfa.svg){ width=10cm height=3.75cm angle=90 }
 
 ### 15. Microdata Markup (`MICRODATA`)
 *   **Specification**: W3C HTML Microdata [@microdata].
 *   **LOD Discovery Role**: Defines structured data in HTML using attributes like `itemscope`, `itemtype`, and `itemprop`.
 *   **Inference Semantics**: Translates microdata items and property trees to RDF using schema.org mappings.
 *   **Inference Figure**:
-    ![Inference process for MICRODATA: mapping HTML scope attributes to schema:Book triples.](images/fig_microdata.svg){ width=95% }
+    ![Inference process for MICRODATA: mapping HTML scope attributes to schema:Book triples.](images/fig_microdata.svg){ width=10cm height=3.75cm angle=90 }
 
 ### 16. Open Graph Protocol (`OPEN_GRAPH`)
 *   **Specification**: Open Graph Protocol (ogp.me).
 *   **LOD Discovery Role**: Extracts social media metadata tags from `<head>` and maps them to schema.org triples.
 *   **Inference Semantics**: Maps properties (e.g., `og:title` to `schema:name`, `og:url` to `schema:url`).
 *   **Inference Figure**:
-    ![Inference process for OPEN_GRAPH: converting key-value og: properties to schema:Dataset attributes.](images/fig_open_graph.svg){ width=95% }
+    ![Inference process for OPEN_GRAPH: converting key-value og: properties to schema:Dataset attributes.](images/fig_open_graph.svg){ width=10cm height=3.75cm angle=90 }
 
 ### 17. Dublin Core Meta (`DUBLIN_CORE`)
 *   **Specification**: ISO 15836 (Dublin Core DCMI Terms).
 *   **LOD Discovery Role**: Standardizes metadata fields via head `<meta name="DC.x">` tags.
 *   **Inference Semantics**: Prefixes keys with the Dublin Core terms namespace to produce triples.
 *   **Inference Figure**:
-    ![Inference process for DUBLIN_CORE: extracting head meta tags into DCMI metadata terms.](images/fig_dublin_core.svg){ width=95% }
+    ![Inference process for DUBLIN_CORE: extracting head meta tags into DCMI metadata terms.](images/fig_dublin_core.svg){ width=10cm height=3.75cm angle=90 }
 
 ### 18. Canonical URLs (`CANONICAL`)
 *   **Specification**: RFC 6596 [@rfc6596].
 *   **LOD Discovery Role**: Identifies primary URI targets, preventing crawler loop duplication.
 *   **Inference Semantics**: Establishes identity link assertions with the canonical endpoint using the `xhtml:link` RDF structure.
 *   **Inference Figure**:
-    ![Inference process for CANONICAL: mapping HTML canonical links to xhtml:link RDF blank nodes.](images/fig_canonical.svg){ width=95% }
+    ![Inference process for CANONICAL: mapping HTML canonical links to xhtml:link RDF blank nodes.](images/fig_canonical.svg){ width=10cm height=3.75cm angle=90 }
 
 ### 19. HTTP Link Relations - Collection/Item (`HTTP_LINK_RELATIONS`)
 *   **Specification**: RFC 8288 [@rfc8288].
 *   **LOD Discovery Role**: Advertises structural parents or member items directly in HTTP response headers.
 *   **Inference Semantics**: Maps HTTP header IANA link relations (e.g., `rel="collection"`, `rel="up"`) to uniform `xhtml:link` blank node structures.
 *   **Inference Figure**:
-    ![Inference process for HTTP_LINK_RELATIONS: parsing header links into xhtml:link RDF blank nodes.](images/fig_http_link_relations.svg){ width=95% }
+    ![Inference process for HTTP_LINK_RELATIONS: parsing header links into xhtml:link RDF blank nodes.](images/fig_http_link_relations.svg){ width=10cm height=3.75cm angle=90 }
 
 ### 20. Pagination Links - Prev/Next (`PAGINATION`)
 *   **Specification**: HTML5 Standard Link Relations.
 *   **LOD Discovery Role**: Navigates linear dataset listings sequentially page-by-page.
 *   **Inference Semantics**: Extracts `rel="next"` and `rel="prev"` tags and maps them to sequence nodes using `xhtml:link` RDF blank nodes.
 *   **Inference Figure**:
-    ![Inference process for PAGINATION: mapping HTML navigation links to xhtml:link RDF blank nodes.](images/fig_pagination.svg){ width=95% }
+    ![Inference process for PAGINATION: mapping HTML navigation links to xhtml:link RDF blank nodes.](images/fig_pagination.svg){ width=10cm height=3.75cm angle=90 }
 
 ### 21. Bidirectional Graph Links (`REVERSE_LINKS`)
 *   **Specification**: Linked Data Principles [@linkeddata].
 *   **LOD Discovery Role**: Tracks and validates reciprocal backlinks to ensure graph connectivity.
 *   **Inference Semantics**: Checks for reciprocal backlink references and models the verified bidirectional links as `xhtml:link` triples.
 *   **Inference Figure**:
-    ![Inference process for REVERSE_LINKS: verifying reciprocal HTML links and mapping them to xhtml:link RDF blank nodes.](images/fig_reverse_links.svg){ width=95% }
+    ![Inference process for REVERSE_LINKS: verifying reciprocal HTML links and mapping them to xhtml:link RDF blank nodes.](images/fig_reverse_links.svg){ width=10cm height=3.75cm angle=90 }
 
 ### 22. Cyclic Loop Topologies (`CIRCULAR_GRAPHS`)
 *   **Specification**: Linked Data Principles [@linkeddata].
 *   **LOD Discovery Role**: Enables crawler cycle detection to prevent infinite parsing loops on circular paths.
 *   **Inference Semantics**: Tracks visited history to detect loop paths and represents graph cycles using standard `xhtml:link` blank nodes.
 *   **Inference Figure**:
-    ![Inference process for CIRCULAR_GRAPHS: analyzing visited history to map loop paths as xhtml:link RDF blank nodes.](images/fig_circular_graphs.svg){ width=95% }
+    ![Inference process for CIRCULAR_GRAPHS: analyzing visited history to map loop paths as xhtml:link RDF blank nodes.](images/fig_circular_graphs.svg){ width=10cm height=3.75cm angle=90 }
 
 ---
 
@@ -407,56 +407,56 @@ Domain-level inferenced channels are XML, JSON, or text documents hosted at doma
 *   **LOD Discovery Role**: Parses syndication files to discover newly added resources and update times.
 *   **Inference Semantics**: Mapped channel nodes to `schema:DataCatalog` and item links to `schema:Dataset`.
 *   **Inference Figure**:
-    ![Inference process for RSS_FEED: extracting XML feed elements into schema:DataCatalog and schema:Dataset.](images/fig_rss_feed.svg){ width=95% }
+    ![Inference process for RSS_FEED: extracting XML feed elements into schema:DataCatalog and schema:Dataset.](images/fig_rss_feed.svg){ width=10cm height=3.75cm angle=90 }
 
 ### 26. Atom Feed Listing (`ATOM_FEED`)
 *   **Specification**: RFC 4287.
 *   **LOD Discovery Role**: Harnesses structured syndication entries to bootstrap crawler queues.
 *   **Inference Semantics**: Maps Atom feed entry properties and link structures to catalog records.
 *   **Inference Figure**:
-    ![Inference process for ATOM_FEED: parsing Atom feed XML into schema.org catalog resources.](images/fig_atom_feed.svg){ width=95% }
+    ![Inference process for ATOM_FEED: parsing Atom feed XML into schema.org catalog resources.](images/fig_atom_feed.svg){ width=10cm height=3.75cm angle=90 }
 
 ### 27. XML Sitemap (`SITEMAP`)
 *   **Specification**: Sitemaps.org Protocol.
 *   **LOD Discovery Role**: Enumerates all indexable pages on the host for batch harvesting.
 *   **Inference Semantics**: Extracts `loc` and `lastmod` keys and generates `dcat:CatalogRecord` assertions.
 *   **Inference Figure**:
-    ![Inference process for SITEMAP: converting sitemap.xml entries to DCAT catalog records.](images/fig_sitemap.svg){ width=95% }
+    ![Inference process for SITEMAP: converting sitemap.xml entries to DCAT catalog records.](images/fig_sitemap.svg){ width=10cm height=3.75cm angle=90 }
 
 ### 28. Robots.txt References (`ROBOTS`)
 *   **Specification**: RFC 9309 [@rfc9309].
 *   **LOD Discovery Role**: Decodes the host policies to locate sitemap paths without deep page crawling.
 *   **Inference Semantics**: Scans line-by-line for `Sitemap:` directives and maps them to the host domain.
 *   **Inference Figure**:
-    ![Inference process for ROBOTS: parsing robots.txt lines to link the website schema to sitemaps.](images/fig_robots.svg){ width=95% }
+    ![Inference process for ROBOTS: parsing robots.txt lines to link the website schema to sitemaps.](images/fig_robots.svg){ width=10cm height=3.75cm angle=90 }
 
 ### 29. Web App Manifest (`MANIFEST`)
 *   **Specification**: W3C Web App Manifest.
 *   **LOD Discovery Role**: Parses manifest JSON files to extract host identity and app parameters.
 *   **Inference Semantics**: Translates properties to `schema:WebApplication` statements.
 *   **Inference Figure**:
-    ![Inference process for MANIFEST: translating application JSON manifest keys to schema:WebApplication.](images/fig_manifest.svg){ width=95% }
+    ![Inference process for MANIFEST: translating application JSON manifest keys to schema:WebApplication.](images/fig_manifest.svg){ width=10cm height=3.75cm angle=90 }
 
 ### 30. Well-Known API Catalogs (`WELL_KNOWN` - Inferenced)
 *   **Specification**: RFC 8615 & RFC 9727 [@rfc8615;@rfc9727].
 *   **LOD Discovery Role**: Bootstraps API directories from well-known JSON endpoints.
 *   **Inference Semantics**: Resolves keys (e.g., api catalogs) to `schema:WebAPI` and `schema:EntryPoint` nodes.
 *   **Inference Figure**:
-    ![Inference process for WELL_KNOWN: mapping custom well-known JSON config fields to schema:WebAPI.](images/fig_well_known.svg){ width=95% }
+    ![Inference process for WELL_KNOWN: mapping custom well-known JSON config fields to schema:WebAPI.](images/fig_well_known.svg){ width=10cm height=3.75cm angle=90 }
 
 ### 31. JSON API Catalog Discovery (`API_DISCOVERY`)
 *   **Specification**: W3C Data on the Web Best Practices.
 *   **LOD Discovery Role**: Scans API catalog pages to identify distributions and datasets.
 *   **Inference Semantics**: Extracts endpoints and maps service targets using DCAT classes.
 *   **Inference Figure**:
-    ![Inference process for API_DISCOVERY: mapping hypermedia JSON API fields to dcat:DataService.](images/fig_api_discovery.svg){ width=95% }
+    ![Inference process for API_DISCOVERY: mapping hypermedia JSON API fields to dcat:DataService.](images/fig_api_discovery.svg){ width=10cm height=3.75cm angle=90 }
 
 ### 32. Custom JSON Resource Map (`RESOURCE_MAP` - Inferenced)
 *   **Specification**: OAI Object Reuse and Exchange (OAI-ORE).
 *   **LOD Discovery Role**: Resolves conceptual resources to formats via host-wide JSON mappings.
 *   **Inference Semantics**: Converts JSON aggregates arrays into aggregation relationships in the OAI-ORE ontology.
 *   **Inference Figure**:
-    ![Inference process for RESOURCE_MAP: mapping aggregation JSON blocks to ore:ResourceMap and ore:Aggregation.](images/fig_resource_map.svg){ width=95% }
+    ![Inference process for RESOURCE_MAP: mapping aggregation JSON blocks to ore:ResourceMap and ore:Aggregation.](images/fig_resource_map.svg){ width=10cm height=3.75cm angle=90 }
 
 ---
 
