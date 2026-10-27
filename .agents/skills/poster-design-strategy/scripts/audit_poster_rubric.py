@@ -1,14 +1,18 @@
 #!/usr/bin/env python3
 """
 Mixed-Approach Rubric (MAR) & Empirical Compliance Auditor for Scientific Posters.
-Implements the Khadka & Peeters (2024) empirical criteria:
+Implements the Khadka & Peeters (2024) empirical criteria and the 70/30 Infographic Standard:
 - Wordiness minimization (beta = -0.37)
 - Contemporary layout format (beta = +0.28)
 - Logical visual sequencing (beta = +0.16)
 - Visual elements replacing text (beta = +0.15)
 - QR code integration (beta = +0.12)
 - Exclusion of submission abstract (beta = -0.10)
-- 4-Tier MAR Scoring: Organization, Poster Design & Visuals, Wordiness/Density
+- 4-Tier MAR Scoring across 4 Dimensions (16 points max):
+  1. Organization
+  2. Poster Design & Visuals
+  3. Wordiness / Text Density (250-400 words budget)
+  4. Visual-to-Text Spatial Ratio (70/30 Rule & Hero Infographic)
 """
 
 import sys
@@ -61,29 +65,37 @@ def audit_text_content(content: str, source_type: str = "tex"):
     has_limitation = bool(re.search(r'(limitation|caveat|constraint)', content, re.IGNORECASE))
     has_future = bool(re.search(r'(future direction|future work|outlook|next steps)', content, re.IGNORECASE))
 
-    # Count references
-    ref_matches = re.findall(r'(\[\d+\]|\\cite\{|\bReferences?\b)', content, re.IGNORECASE)
+    # Check for A0 Portrait Layout Indicators
+    has_portrait = bool(re.search(r'(portrait|orientation=portrait|paperwidth=84|paperheight=118)', content, re.IGNORECASE))
+    has_a0 = bool(re.search(r'(a0|a0paper|841mm|1189mm)', content, re.IGNORECASE))
+
+    # Check for Hero Infographic / Dominant Visual Assets
+    hero_infographic_match = re.search(r'(hero_infographic|infographic|schematic|architecture|overview_diagram|pipeline_overview)', content, re.IGNORECASE)
+    has_hero_infographic = bool(hero_infographic_match)
+
+    # Count graphic instances
+    graphic_count = len(re.findall(r'(\\includegraphics|\\begin\{tikzpicture\}|<p:pic>)', content, re.IGNORECASE))
 
     # ---------------------------------------------------------
     # 4-Tier MAR Rubric Scoring (1: Poor, 2: Sub-par, 3: Acceptable, 4: Exemplary)
     # ---------------------------------------------------------
     
-    # 1. Wordiness / Text Density Score
+    # 1. Wordiness / Text Density Score (Enforcing the 30% text budget)
     if word_count > 800:
         score_wordiness = 1
-        desc_wordiness = "Poor [1]: Heavy wall of text (>800 words), high risk of cognitive overload."
+        desc_wordiness = "Poor [1]: Severe wall of text (>800 words), high risk of cognitive overload."
     elif word_count > 600:
         score_wordiness = 2
-        desc_wordiness = "Sub-par [2]: Busy layout (600-800 words); reading takes excessive dwell time."
-    elif word_count > 450:
+        desc_wordiness = "Sub-par [2]: Busy layout (600-800 words); excessive dwell time violates 30% text budget."
+    elif word_count > 400:
         score_wordiness = 3
-        desc_wordiness = "Acceptable [3]: Moderate text density (450-600 words); manageable for standard review."
+        desc_wordiness = "Acceptable [3]: Moderate text density (400-600 words); manageable but encroaches slightly on visual area."
     elif word_count >= 200:
         score_wordiness = 4
-        desc_wordiness = "Exemplary [4]: Optimal illustrated abstract density (250-450 words); rapid visual parsing."
+        desc_wordiness = "Exemplary [4]: Optimal 30% text density budget (250-400 words); rapid visual parsing."
     else:
         score_wordiness = 3
-        desc_wordiness = "Acceptable [3]: Sparse text (<200 words); ensure key context is sufficiently explained."
+        desc_wordiness = "Acceptable [3]: Sparse text (<200 words); ensure scientific context is sufficiently grounded."
 
     # 2. Organization Score
     org_points = 0
@@ -133,15 +145,43 @@ def audit_text_content(content: str, source_type: str = "tex"):
         score_vis = 1
         desc_vis = "Poor [1]: Visually unengaging; lacks clear focal graphics."
 
-    total_mar = score_org + score_vis + score_wordiness
-    max_mar = 12
+    # 4. Visual-to-Text Spatial Ratio (70/30 Rule & Hero Infographic)
+    # 70% visual area requires: hero infographic/schematic, >= 2 visual assets, and word count <= 400
+    ratio_points = 0
+    if has_hero_infographic:
+        ratio_points += 1
+    if graphic_count >= 2:
+        ratio_points += 1
+    if word_count <= 450:
+        ratio_points += 1
+    if not has_tables and (has_diagram or graphic_count >= 3):
+        ratio_points += 1
+
+    if ratio_points == 4:
+        score_ratio = 4
+        desc_ratio = "Exemplary [4]: Strong 70/30 visual dominance. Prominent hero infographic, high visual coverage, concise text."
+    elif ratio_points == 3:
+        score_ratio = 3
+        desc_ratio = "Acceptable [3]: Good visual balance (~60/40); graphics prominent but could expand hero visual real estate."
+    elif ratio_points == 2:
+        score_ratio = 2
+        desc_ratio = "Sub-par [2]: Insufficient visual dominance (<50% visual area); text-heavy or lacks a unified hero infographic."
+    else:
+        score_ratio = 1
+        desc_ratio = "Poor [1]: Severe violation of 70/30 rule; wall-of-text layout lacking central visual infographic."
+
+    total_mar = score_org + score_vis + score_wordiness + score_ratio
+    max_mar = 16
     pct_mar = round((total_mar / max_mar) * 100, 1)
 
-    print("=" * 72)
-    print("  MIXED-APPROACH RUBRIC (MAR) & EMPIRICAL POSTER AUDIT")
+    print("=" * 76)
+    print("  MIXED-APPROACH RUBRIC (MAR) & EMPIRICAL POSTER AUDIT (70/30 EDITION)")
     print("  Reference: Khadka & Peeters (2024) | Inter-rater agreement kappa = 0.80")
-    print("=" * 72)
-    print(f"Estimated Word Count:   {word_count} words (Target: 250-450 words)")
+    print("=" * 76)
+    print(f"Target Geometry:        {'[OK] A0 Portrait (841 x 1189 mm)' if (has_portrait or has_a0) else '[i] Standard Portrait'}")
+    print(f"Estimated Word Count:   {word_count} words (Target: 250-400 words for 30% text budget)")
+    print(f"Graphic Assets Count:   {graphic_count} visual graphic elements detected")
+    print(f"Hero Infographic:       {'[OK] Present (' + hero_infographic_match.group(0) + ')' if has_hero_infographic else '[!] None detected (Add a central project infographic)'}")
     print(f"Abstract Excluded:      {'[OK] Yes' if not has_abstract else '[!] NO (Abstract wastes high-value real estate)'}")
     print(f"Research Question:      {'[OK] Detected' if has_rq else '[!] Missing explicit statement'}")
     print(f"Hypothesis/Prediction:  {'[OK] Detected' if has_hypothesis else '[!] Missing explicit statement'}")
@@ -150,26 +190,27 @@ def audit_text_content(content: str, source_type: str = "tex"):
     print(f"QR Code Integration:    {'[OK] Present (beta = +0.12)' if has_qr else '[!] Absent'}")
     print(f"Discussion Limitation:  {'[OK] Exactly 1 detected' if has_limitation else '[!] Missing explicit limitation'}")
     print(f"Future Direction:       {'[OK] Exactly 1 detected' if has_future else '[!] Missing actionable future direction'}")
-    print("-" * 72)
-    print("RUBRIC ASSESSMENT:")
-    print(f"1. Organization:             {desc_org}")
-    print(f"2. Poster Design & Visuals:  {desc_vis}")
-    print(f"3. Wordiness / Text Density: {desc_wordiness}")
-    print("-" * 72)
+    print("-" * 76)
+    print("RUBRIC ASSESSMENT (4 DIMENSIONS):")
+    print(f"1. Organization:                        {desc_org}")
+    print(f"2. Poster Design & Visuals:             {desc_vis}")
+    print(f"3. Wordiness / Text Density (30% cap):  {desc_wordiness}")
+    print(f"4. Visual-to-Text Ratio (70/30 Rule):   {desc_ratio}")
+    print("-" * 76)
     print(f"COMPOSITE MAR SCORE: {total_mar} / {max_mar} ({pct_mar}%)")
     
-    if total_mar >= 11:
+    if total_mar >= 14:
         print("OVERALL QUALITY: EXEMPLARY (Publication / Conference Award Tier)")
-    elif total_mar >= 9:
+    elif total_mar >= 11:
         print("OVERALL QUALITY: ACCEPTABLE (Ready for presentation with minor polish)")
     else:
         print("OVERALL QUALITY: NEEDS REVISION (High risk of attendee disengagement)")
-    print("=" * 72)
+    print("=" * 76)
 
     return total_mar
 
 def main():
-    parser = argparse.ArgumentParser(description="Audit scientific poster against the Khadka & Peeters MAR framework.")
+    parser = argparse.ArgumentParser(description="Audit scientific poster against the Khadka & Peeters MAR framework & 70/30 rule.")
     parser.add_argument("file", help="Path to poster file (.tex, .pptx, .md, .txt)")
     args = parser.parse_args()
 

@@ -248,12 +248,87 @@ In empirical testing (Khadka & Peeters, 2024), the MAR demonstrated an absolute 
           +-------------------------------------------+
 ```
 
-The matrix below establishes a 4-tier evaluation framework for objective visual quality assessment:
+The matrix below establishes a 4-tier evaluation framework across 4 core dimensions (16 points max) for objective visual quality assessment:
 
 | Visual Criteria | Poor [1] | Sub-par [2] | Acceptable [3] | Exemplary [4] |
 | :--- | :--- | :--- | :--- | :--- |
-| **Organization** | Layout is neither clean nor straightforward; reading flow is confusing and unstructured. | Layout organization leaves much to be desired; section progression is awkward. | Layout is generally organized; minor sequence improvements could be made. | Information is exceptionally clean, straightforward, and logically organized. |
-| **Poster Design & Visuals** | Visually unpleasant; lacks functional visual graphics or utilizes poorly formatted assets. | Design leaves much to be desired; visual figures add minimal communication value. | Graphics are functional; design layout is visual and pleasant overall. | Visuals are eye-catching, highly pleasant, and substantially aid scientific understanding. |
-| **Wordiness / Text Density** | Very busy and wordy; full of dense text blocks, vague prose, and narrative paragraphs. | Busy layout; dominated by text, making rapid reading and review difficult. | Not overly wordy; minor text excess present, but easily reviewed and understood. | Neither busy nor wordy; masterfully utilizes concise bullet points for rapid parsing. |
+| **Organization** | Layout is neither clean nor straightforward; reading flow is confusing; abstract included. | Organization leaves much to be desired; section progression awkward; missing explicit RQ/Hypothesis. | Generally organized IMRaD sequence; minor sequence improvements could be made. | Information is exceptionally clean, straightforward, and logically organized. Clear visual hierarchy. |
+| **Poster Design & Visuals** | Visually unpleasant; lacks functional visual graphics; raw data tables clutter results. | Design leaves much to be desired; visual figures add minimal communication value. | Graphics are functional; design layout is visual and pleasant overall. | Visuals are eye-catching, highly pleasant, and substantially aid scientific understanding; QR offloads details. |
+| **Wordiness / Text Density** | $>800$ words; full of dense text blocks, vague prose, and narrative paragraphs. | $600\text{--}800$ words; busy layout dominated by text, making rapid reading difficult. | $400\text{--}600$ words; manageable but encroaches slightly on visual area. | **$250\text{--}400$ words**; masterfully utilizes concise bullet points for rapid parsing (30% text cap). |
+| **Visual Ratio (70/30 Rule)** | Severe violation; wall of text; no hero graphic or visual focal anchor. | $<50\%$ visual area; text heavy; lacks a unified hero infographic. | $\sim 60\%$ visual balance; multiple graphics present but could expand hero real estate. | **$\ge 70\%$ visual dominance**; prominent hero infographic; clean focal figures; generous whitespace. |
 
-Adhering to these visual ergonomics, structural layout standards, and oral presentation guidelines elevates scientific research posters into clear, engaging, and high-impact visual communication tools.
+**Scoring Interpretation**:
+- **14–16 points**: Exemplary (Publication / Conference Award Tier)
+- **11–13 points**: Acceptable (Ready for presentation with minor polish)
+- **$<11$ points**: Needs Revision (High risk of attendee disengagement)
+
+---
+
+## 6. Audience Profiling & Adaptive Narrative Calibration
+
+A successful conference poster dynamically tailors its visual abstraction and linguistic density to its primary audience:
+
+### 6.1 Audience Archetypes
+1. **Domain Specialists**:
+   - *Cognitive Expectation*: Methodological rigor, statistical precision, and explicit mechanistic pathways.
+   - *Design Calibration*: Scientific jargon permitted; axis ranges and error distributions must be explicit; methodology diagrams can feature detailed instrumentation or mathematical pipelines.
+2. **Interdisciplinary Researchers**:
+   - *Cognitive Expectation*: Clear conceptual models, intuitive analogies, and broad significance across disciplines.
+   - *Design Calibration*: Jargon translated or visually contextualized; acronyms defined; mechanisms presented via high-level conceptual flowcharts rather than biochemical/computational minutiae.
+3. **Stakeholders, Policy Makers & General Public**:
+   - *Cognitive Expectation*: Bottom-line actionable takeaways, societal/environmental relevance, and clear economic/practical implications.
+   - *Design Calibration*: Headline-driven results; prominent visual hero infographics; minimal statistical notation; primary focus on outcomes and future outlook.
+
+---
+
+## 7. The 70/30 Infographic Standard & A0 Portrait Viewing Ergonomics
+
+The academic poster canvas is physically constrained and viewed under dynamic hall conditions.
+
+### 7.1 The 70/30 Real Estate Budget
+Under empirical analysis, visual-first posters consistently outperform text-heavy boards:
+- **70% Visual Storytelling**: Divided between the central Hero Infographic ($40\text{--}50\%$), secondary focal figures ($20\text{--}30\%$), and intentional white/negative space ($50\text{--}60\%$ within graphic frames).
+- **30% Concise Text**: Strictly capped at **250 to 400 words total across all sections**. Every word must serve as a semantic anchor for conversational expansion.
+
+### 7.2 A0 Portrait Ergonomic Cones ($841 \times 1189\,\text{mm}$)
+A0 Portrait is the international standard for academic conference display boards. Its physical verticality dictates strict visual zoning:
+
+```
+[ A0 PORTRAIT CANVAS: 841 mm WIDE x 1189 mm HIGH ]
++-------------------------------------------------------------+ ~200 cm from floor
+| [ TITLE BANNER & AUTHOR AFFILIATIONS ] (5-10% of height)    | (Visible over crowds)
++-------------------------------------------------------------+
+|                                                             |
+|   PRIMARY VISUAL BAND / EYE-LEVEL FOCAL ZONE                | ~140 - 175 cm
+|   • Central Hero Infographic / Project Visual Narrative     | (Natural standing
+|   • Key Empirical Data Figures & Headline Findings          |  eye line)
+|                                                             |
++-------------------------------------------------------------+
+|                                                             |
+|   SECONDARY SUPPORTING BAND                                 | ~100 - 140 cm
+|   • Methods Workflow & Experimental Variables (n)           | (Comfortable forward
+|   • Discussion Mechanism & Takeaway Points                  |  reading range)
+|                                                             |
++-------------------------------------------------------------+
+| [ PERIPHERAL BAND: References, Disclosures, QR Code ]       | <100 cm (Ground proximity;
++-------------------------------------------------------------+  requires bending down)
+```
+
+**Ergonomic Rules**:
+1. Never place critical findings, primary charts, or key takeaways below $100\,\text{cm}$ from the floor.
+2. The Hero Infographic must reside within the $140\text{--}175\,\text{cm}$ eye-level focal zone.
+
+---
+
+## 8. AI-Assisted Infographic Creation & Human-in-the-Loop Refinement
+
+When primary visual schematics do not exist, authors leverage **Nano Banana 2** (via `scientific-schematics`) to synthesize publication-grade hero visuals.
+
+### 8.1 The Interactive Refinement Loop
+1. **ASCII Wireframing First**: Propose 2 tailored A0 Portrait ASCII layouts with 70/30 spatial allocations. Author selects and approves the visual slot.
+2. **Prompt Assembly**: Parameterize the prompt using domain style presets (e.g., VLIZ Marine Sea-teal `#91C8CD`, Okabe-Ito Biomed, or Modern Tech Cyan/Indigo).
+3. **Execution & Critique**: Generate initial candidate; present to author for critique on scientific accuracy, visual balance, and brand styling.
+4. **Iterative Convergence**: Refine prompt parameters until the author confirms complete visual alignment before compiling into LaTeX or PPTX.
+
+Adhering to these visual ergonomics, structural layout standards, 70/30 infographic real estate budgets, and oral presentation guidelines elevates scientific research posters into clear, engaging, and award-winning visual communication tools.
+

@@ -5,188 +5,299 @@ description: Visual layout, strategic content distillation, template selection, 
 
 # Poster Design Strategy & Best Practice Skill
 
-This skill guides researchers through the end-to-end design, distillation, structural layout selection, and oral delivery of scientific conference posters. It implements the empirical findings of **Khadka & Peeters (2024)** and enforces the **"Illustrated Abstract"** paradigm to maximize conference engagement while eliminating cognitive overload.
+This skill guides researchers through end-to-end strategy, precision distillation, human-in-the-loop (HITL) layout selection, AI-powered infographic generation via Nano Banana 2, and oral presentation delivery for scientific conference posters.
+
+It operationalizes the empirical findings of **Khadka & Peeters (2024)**, enforces the **70/30 Infographic Rule** (70% visual storytelling vs. 30% concise text), and targets standard **A0 Portrait ($841 \times 1189\,\text{mm}$)** orientation to maximize engagement while eliminating cognitive overload.
 
 ---
 
 ## Workflow Overview
 
-When invoked (or when pair programming with an author to build or refine a poster), execute the following **5-Phase Workflow**:
+When designing, restructuring, or pair programming with an author to build a poster, execute this **6-Phase Workflow**:
 
 ```
-[ Phase 1: Format & Template Discovery ]
-  - Two-step prompt: Format (LaTeX vs. PPTX) -> Template (VLIZ, tikzposter, baposter, beamerposter)
-                    │
-                    ▼
+[ Phase 1: Strategic Discovery: Audience, Venue & Asset Intake ]
+  - 4-Pillar Intake: Audience Archetype -> Engagement Goal -> Physical A0 Constraints -> Asset Inventory
+                                │
+                                ▼
 [ Phase 2: Paper Intake & Precision Distillation ]
-  - Hybrid intake: Auto-distill manuscript (papers/*.md) or conduct structured questionnaire
-  - Enforce Section 4 architecture: 2-4 context bullets, explicit RQ & Hypothesis, diagrammed methods,
-    1-3 result figures without raw tables, 1 limitation, 1 future direction, QR code
-                    │
-                    ▼
-[ Phase 3: Visual Layout Paradigm Selection ]
-  - Data-driven recommendation based on visual assets:
-    * Single dominant map/finding -> Large Central Box or Hybrid Central Highlight
-    * Multi-figure empirical data  -> Traditional 3-Column
-    * High-impact keynote finding -> Morrison Billboard or Persky Single-Message
-                    │
-                    ▼
-[ Phase 4: Generation Coordination ]
-  - Generate poster source using repository templates and sister skills (latex-posters, pptx-posters)
-                    │
-                    ▼
-[ Phase 5: MAR Rubric Quality Audit & 10-Minute Oral Coach ]
-  - Audit against the 4-tier Mixed-Approach Rubric (Cohen's kappa = 0.80)
-  - Generate a synchronized 10-minute oral presentation cue sheet (10-minute hard cap)
+  - Enforce the 30% Text Budget: Strictly 250–400 words total across the board
+  - Enforce Section Architecture: 2–4 context bullets, explicit RQ & Hypothesis,
+    visual methods, focal results (zero raw tables), 1 limitation, 1 future direction, QR code
+                                │
+                                ▼
+[ Phase 3: 70/30 Infographic Architecture & Visual Planning ]
+  - Visual narrative decomposition: Translate the core research argument into a dominant visual representation
+  - Style & theme selection (VLIZ Marine Institute #91C8CD, Ecology, Biomed, Tech)
+                                │
+                                ▼
+[ Phase 4: Human-in-the-Loop (HITL) Layout & Infographic Creation ]
+  - Step 4A: Present 2 tailored A0 Portrait ASCII wireframes with explicit 70/30 spatial allocations
+  - Step 4B: Author selects or adjusts block positions before any code generation
+  - Step 4C: Interactive Nano Banana Infographic Creator Loop (iterative visual refinement until approved)
+                                │
+                                ▼
+[ Phase 5: Template & Generation Coordination ]
+  - Render in LaTeX (tikzposter, baposter, beamerposter) or PPTX targeting A0 Portrait
+  - Enforce typographic hierarchy (dual-font rule) and color accessibility
+                                │
+                                ▼
+[ Phase 6: MAR 70/30 Quality Audit & 10-Minute Oral Coach ]
+  - Audit against the 4-tier, 4-dimension Mixed-Approach Rubric (16 points max)
+  - Generate a synchronized 10-minute oral presentation cue sheet
 ```
 
 ---
 
-## Phase 1: Format & Template Discovery
+## Phase 1: Strategic Discovery: Audience, Venue & Asset Intake
 
-Begin by asking the author the two-step selection question:
+Before proposing layouts or writing code, interview the author across the **4 Discovery Pillars**:
 
-1. **Target Output Format**:
-   - **LaTeX (`tikzposter`, `baposter`, `beamerposter`)**: For vector precision, mathematical formulas, and Git-tracked workflows.
-   - **PowerPoint (`.pptx`)**: For interactive manual editing, collaborator drag-and-drop, and standard conference templates.
-2. **Template Selection**:
-   - **VLIZ Institutional (`vliz_tikzposter.tex` / `vliz_poster_template.pptx`)**: Flanders Marine Institute corporate theme featuring the exact sea-teal (`#91C8CD`) banner, vector wave logo, and left-aligned title/author block.
-   - **Modern `tikzposter` (`templates/posters/tikzposter.tex`)**: Flexible themes (`Rays`, `Wave`, `Board`, `Default`) with customizable card blocks.
-   - **Classical `baposter` (`templates/posters/baposter.tex`)**: High-density multi-column layout with explicit coordinate anchoring.
-   - **`beamerposter` (`templates/posters/beamerposter.tex`)**: Slide-style modular blocks.
+1. **Audience Archetype**:
+   - **Domain Specialists**: High-density scientific terminology allowed; emphasize novel methodology, nuanced statistical distributions, and fine-grained mechanisms.
+   - **Interdisciplinary Researchers**: Avoid niche jargon; clearly define acronyms; emphasize broad cross-disciplinary implications and conceptual frameworks.
+   - **Stakeholders / Policy / Industry / Public**: Focus on practical utility, macro-level impact, economic/environmental consequences, and bold visual takeaways.
+
+2. **Engagement Goal**:
+   - **Conference Award / Competition**: High-polish visual execution, full adherence to empirical rubric, seamless oral pitch.
+   - **Academic Networking / Early Feedback**: Prominent research question, explicit limitation, designated "Feedback Wanted" discussion prompts.
+   - **Dissemination of Published Paper**: Central hero infographic summarizing paper conclusions, scannable QR code directly to DOI/pre-print.
+
+3. **Physical Venue Constraints**:
+   - **Standard Canvas**: Fixed default is **A0 Portrait ($841 \times 1189\,\text{mm}$ / $33.1 \times 46.8\,\text{in}$)**.
+   - **Viewing Geometry**: Eye-level focal band is 130–170 cm from the floor. Hero graphics and key findings must occupy this central band; secondary references and acknowledgments remain at the lower perimeter.
+
+4. **Asset & Brand Inventory**:
+   - **Available Visuals**: Existing vector plots, raw photos, GIS maps, or need for generative schematic synthesis.
+   - **Institutional Branding**: Color schemes (e.g., Flanders Marine Institute VLIZ Sea-teal `#91C8CD`, university colors), logos, and grant acknowledgment badges.
+   - **Digital Destinations**: Companion URLs for QR codes (GitHub repository, interactive dataset, pre-print PDF).
 
 ---
 
 ## Phase 2: Paper Intake & Precision Distillation
 
-Apply the **10-10 Rule**: Attendees scan from 10 feet for 10 seconds. The target word count for the entire board is **250 to 450 words** (never exceeding 600 words).
+Apply the **10-10 Rule**: Attendees scan from 10 feet for 10 seconds. The target word count for the entire board is strictly **250 to 400 words** (never exceeding 500 words) to protect the 70/30 visual balance.
 
-### Hybrid Ingestion
-- **If a manuscript exists** (e.g., in `papers/*.md` or provided PDF): Parse the text, automatically draft the required sections according to the rules below, and present the distilled draft to the author for validation.
-- **If starting from scratch**: Interview the author step-by-step to isolate the 6 core components below.
+### Hybrid Intake
+- **If a manuscript exists** (`papers/*.md` or provided PDF): Auto-extract and distill the 6 mandatory sections according to the rules below, presenting the distilled draft to the author for approval.
+- **If starting from scratch**: Conduct a focused interview to populate each block.
 
-### The Section Architecture Rules (Mandatory)
+### Mandatory Section Architecture Rules
 
 1. **Title Block**:
-   - Informative, descriptive title highlighting primary variables or core discovery.
+   - Informative, descriptive headline highlighting primary discovery or key variables.
    - Full author names, institutional affiliations, and corresponding email.
 2. **Background & Context (Condensed Introduction)**:
-   - **Strictly 2 to 4 concise bullet points** with key literature citations.
+   - **Strictly 2 to 4 concise bullet points** citing seminal literature.
    - What is known $\rightarrow$ The specific scientific gap.
    - **Explicit Statement of Research Question (RQ)**.
    - **Explicit Statement of Hypothesis or Prediction**.
-   - **PROHIBITION**: Never paste a submission abstract ($\beta = -0.10$ negative impression driver).
+   - **PROHIBITION**: Never paste an abstract text block ($\beta = -0.10$ negative impression driver).
 3. **Methods Overview**:
-   - Present study organism/system, experimental approach, independent/dependent variables, and sample size ($n$).
-   - **Best Practice**: Replace narrative prose with a visual experimental setup diagram or flowchart ($\beta = +0.15$).
+   - State study system, experimental approach, independent/dependent variables, sample size ($n$).
+   - **Visual Anchor**: Anchored by a visual experimental setup diagram or flowchart ($\beta = +0.15$).
 4. **Results Visualization (The Focal Point)**:
-   - **1 to 3 high-value figures** showcasing major trends and statistical differences.
-   - A concise, standalone descriptive caption below every figure.
-   - Brief bullet points highlighting statistical findings ($p$-values, effect sizes).
+   - **1 to 3 high-value figures** showcasing primary data trends.
+   - Brief standalone descriptive caption below every figure.
+   - Bullet points highlighting statistical findings ($p$-values, effect sizes).
    - **PROHIBITIONS**: Zero raw data tables; zero narrative literature interpretation.
 5. **Discussion & Mechanisms**:
    - Clear statement: Was the hypothesis supported or refuted?
-   - Explanatory chemical, physical, or biological mechanism.
+   - Explanatory mechanism (chemical, physical, biological, or computational).
    - Broad domain-level implications.
    - **Exactly ONE major study limitation**.
    - **Exactly ONE actionable future direction** directly addressing that limitation.
 6. **Supplemental & Digital Integration**:
    - **2 to 5 key references** cited in-text.
    - Mandatory AI / super-intelligence tool disclosures.
-   - **Scannable QR code** ($\beta = +0.12$) linking to the full paper, supplementary dataset, or video.
+   - **Scannable QR code** ($\beta = +0.12$) linking to the full paper, dataset, or video.
 
 ---
 
-## Phase 3: Visual Layout Paradigm Determination
+## Phase 3: 70/30 Infographic Architecture & Visual Planning
 
-Evaluate the author's visual assets and narrative type against the **6 Structural Layout Paradigms**:
+Under the **70/30 Rule**, 70% of the poster's physical surface area is dedicated to visual storytelling, while 30% is allocated to concise descriptive text.
 
-```
-1. Traditional Multi-Column       2. Large Central Box              3. Hybrid Central Highlight
-+-------------------------------+  +-------------------------------+  +-------------------------------+
-| [ Title Block & Authors ]     |  | [ Title Block & Authors ]     |  | [ Title Block & Authors ]     |
-+-------+-------+-------+-------+  +-------+---------------+-------+  +-------------------------------+
-| Col 1 | Col 2 | Col 3 | Col 4 |  | Col 1 | PRIMARY DATA | Col 3 |  | [ FULL-WIDTH HERO CALLOUT &   |
-| Intro | Meth. | Res.  | Disc. |  | Intro | & FIGURES     | Disc. |  |   KEY TAKEAWAY / MAP SECTION ] |
-| (IMRaD flow, 2-4 columns)     |  | Meth. | (Focal Box)   | Concl.|  +-------+-------+---------------+
-| Familiar, but text risk       |  |       |               | QR    |  | Col 1 | Col 2 | Col 3 (Grids) |
-+-------+-------+-------+-------+  +-------+---------------+-------+  +-------+-------+---------------+
+### Visual Narrative Decomposition
+Help the author deconstruct their study into three visual layers:
+1. **The Hero Infographic**: A dominant, high-impact visual representation of the project (e.g. system architecture, experimental workflow, spatial transect, or biological pathway) occupying 40–50% of the total board area.
+2. **Supporting Empirical Figures**: 1–2 focused data plots, maps, or charts occupying 20–30% of the board area.
+3. **Generous Whitespace**: 40–50% negative space inside and around the visual graphics to ensure comfortable visual parsing from 3–10 feet.
 
-4. Morrison's "Better Poster"      5. Persky's Single-Message        6. Portrait Row Arrangement
-+-------+---------------+-------+  +-------------------------------+  +-------------------------------+
-| Col 1 |               | QR    |  | [ Title Block & Authors ]     |  | [ Title Block & Authors ]     |
-| Intro | MASSIVE CORE  | Code  |  +-------------------------------+  +-------------------------------+
-| Meth. | TAKEAWAY      | &     |  | [ SINGLE CORE TAKEAWAY PANEL] |  | Row 1: Context & Hypotheses   |
-|       | HEADLINE      | Mini  |  +-------------------------------+  +-------------------------------+
-|       |               | Res.  |  | Visual Data   | Visual Data   |  | Row 2: Methods Diagram        |
-|       |               |       |  | Panel A       | Panel B       |  +-------------------------------+
-+-------+---------------+-------+  +-------------------------------+  | Row 3: Results & Discussion   |
-```
-
-### Selection Guide
-- **Use Large Central Box or Hybrid Central Highlight**: When the study is anchored by an expansive bathymetric map, spatial GIS distribution, or single primary mechanism diagram.
-- **Use Traditional 3-Column**: When presenting 2–3 distinct empirical experimental figures that follow a sequential narrative.
-- **Use Morrison's Billboard Style**: For fast-paced conference halls where the goal is rapid headline dissemination from 10 feet away.
-- **Use Persky's Single-Message**: For focused single-finding papers where auxiliary text must be strictly curtailed.
-- **Avoid Shape-Based / Complex Circles**: Poor spatial packing efficiency for rectangular scientific charts.
+### Selecting Domain Style Presets
+Consult [templates/infographic_prompt_templates.md](templates/infographic_prompt_templates.md) to select a curated theme:
+- **VLIZ Marine Institute**: Sea-teal (`#91C8CD`), Deep Ocean Navy (`#002B49`), clean marine vector accents.
+- **Ecology & Environment**: Forest green (`#2D5A27`), Earth ochre (`#C29B38`), River teal (`#2B7A78`).
+- **Biomedical & Genomics**: Okabe-Ito colorblind-accessible palette (`#2A4D69`, `#D55E00`, `#56B4E9`).
+- **Modern Tech / AI / Systems**: Electric Indigo (`#4361EE`), Tech Cyan (`#4CC9F0`), Slate Grey (`#334155`).
 
 ---
 
-## Phase 4: Generation Coordination
+## Phase 4: Human-in-the-Loop (HITL) Layout & Infographic Creation
 
-Once content is distilled and the layout paradigm is chosen:
-1. Populate the selected template in `posters/<poster-name>/poster.tex` or generate via `create_vliz_poster.py`.
-2. Ensure strict typographic hierarchy:
-   - **Dual-font rule**: Distinct bold header font paired with clean, readable body font.
-   - **Font sizes**: Titles $\ge 50\,\text{pt}$, Headings $\ge 32\,\text{pt}$, Body text $\ge 22\,\text{pt}$ (readable from 3–6 feet).
-   - **Color accessibility**: Dark text on light neutral background; zero red-green pairings.
-3. Compile using repository automation:
+### Step 4A: Present 2 Tailored A0 Portrait ASCII Wireframes
+Always present **two tailored ASCII options** explicitly annotated with 70/30 spatial allocations:
+
+#### Option 1: Top Hero Banner + Dual-Column Flow (70% Visual / 30% Text)
+```
++-------------------------------------------------------------+
+| [ TITLE BLOCK: Project Title, Authors, VLIZ / Affiliations ]|
++-------------------------------------------------------------+
+|                                                             |
+|   =======================================================   |
+|   |         CENTRAL HERO INFOGRAPHIC / PIPELINE         |   |
+|   |             (~45% TOTAL POSTER AREA)                |   |
+|   |   High-impact visual representation generated via   |   |
+|   |     Nano Banana 2 in A0 Portrait aspect ratio       |   |
+|   =======================================================   |
+|                                                             |
++------------------------------+------------------------------+
+| [ CONTEXT & HYPOTHESIS: 15% ]| [ RESULTS VISUAL: 25% AREA ] |
+| • 2-3 Context Bullets        | +--------------------------+ |
+| • Explicit Research Question | | Empirical Data Plot /    | |
+| • Explicit Hypothesis        | | Map Visual               | |
+|                              | +--------------------------+ |
+| [ METHODS SUMMARY: 10% AREA ]| • Statistical Key Findings   |
+| • System, Variables, n       | • p-values & Effect Sizes    |
+| • Setup Micro-Diagram        +------------------------------+
++------------------------------+ [ DISCUSSION & TAKEAWAY: 5% ]|
+| [ REFERENCES & DISCLOSURES ] | • Hypothesis Supported?      |
+| • 2-3 Citations              | • 1 Limitation & 1 Outlook   |
+| • AI Disclosure              | [ QR CODE ]                  |
++------------------------------+------------------------------+
+  Spatial Budget: ~70% Visual Assets & Negative Space | ~30% Text
+```
+
+#### Option 2: Central Hero Box + Flanking Context (70% Visual / 30% Text)
+```
++-------------------------------------------------------------+
+| [ TITLE BLOCK: Project Title, Authors, VLIZ / Affiliations ]|
++------------------------------+------------------------------+
+| [ CONTEXT & HYPOTHESIS: 15% ]| [ RESULTS HIGHLIGHT: 20% ]   |
+| • 2-3 Literature Bullets     | +--------------------------+ |
+| • Research Question (RQ)     | | Key Finding Chart        | |
+| • Explicit Prediction        | +--------------------------+ |
+| • Study Variables & n        | • Effect size & trend summary|
++------------------------------+------------------------------+
+|                                                             |
+|   =======================================================   |
+|   |          DOMINANT PROJECT HERO INFOGRAPHIC          |   |
+|   |               (~50% TOTAL CANVAS AREA)              |   |
+|   |      Comprehensive visual representation of the     |   |
+|   |     entire mechanism, dataset, or spatial model     |   |
+|   =======================================================   |
+|                                                             |
++------------------------------+------------------------------+
+| [ METHODS & MECHANISMS: 10% ]| [ DISCUSSION & FUTURE: 5% ]  |
+| • Experimental Workflow      | • Primary Mechanism Summary  |
+| • Specimen / Model Specs     | • 1 Constraint | 1 Next Step |
+| • Key Reference Citations    | • [ QR CODE TO DATA / PAPER ]|
++------------------------------+------------------------------+
+  Spatial Budget: ~70% Visual Assets & Negative Space | ~30% Text
+```
+
+### Step 4B: Author Approval & Layout Adjustment
+Prompt the author:
+> *"Here are two tailored 70/30 layout architectures for your A0 portrait poster. Which option best fits your narrative flow, or would you like to adjust the block arrangement before we generate the infographic and code?"*
+
+### Step 4C: Interactive Nano Banana Infographic Creator Loop
+Once the layout is approved, launch the iterative visual creator loop using [templates/infographic_prompt_templates.md](templates/infographic_prompt_templates.md):
+
+1. **Assemble Master Prompt**:
+   - Incorporate the approved layout zone geometry (`16:9` wide banner, `1:1` square, or `3:4` vertical).
+   - Apply the selected domain theme preset (e.g. VLIZ Marine `#91C8CD`).
+   - Enforce negative constraints (zero prose, no figure numbers, 50% white space).
+2. **Execute Generation**:
+   ```bash
+   python .agents/skills/scientific-schematics/scripts/generate_schematic.py \
+     "<assembled_prompt>" \
+     -o posters/<poster-name>/figures/hero_infographic.png \
+     --doc-type poster \
+     --iterations 2
+   ```
+3. **Interactive HITL Feedback Step**:
+   - Present the generated image path and visual summary to the author.
+   - Ask for direct critique:
+     - *"Does this visual representation accurately reflect your project?"*
+     - *"Are the theme colors and element weights balanced?"*
+   - Iteratively refine prompt and regenerate until the author confirms they are completely satisfied with the result.
+
+---
+
+## Phase 5: Template & Generation Coordination
+
+Once the infographic is approved and the layout locked in:
+
+1. **Select & Configure Template**:
+   - **LaTeX (`tikzposter`, `baposter`, `beamerposter`)**: For vector precision and publication typography. Set document options to `a0paper, portrait`.
+   - **PowerPoint (`.pptx`)**: Set slide dimensions strictly to $84.1\,\text{cm} \times 118.9\,\text{cm}$ (A0 Portrait).
+2. **Enforce Strict Typographic Hierarchy**:
+   - **Dual-Font Rule**: Bold sans-serif header font paired with clean body font.
+   - **Font Sizes (A0 scale)**:
+     - Poster Title: $\ge 50\,\text{pt}$ (readable from 15 feet).
+     - Section Headings: $\ge 32\,\text{pt}$ (readable from 8–10 feet).
+     - Body Text: $\ge 22\,\text{pt}$ (readable from 3–6 feet).
+     - Infographic Labels: $\ge 80\,\text{pt}$ (readable from 3–6 feet).
+     - Infographic Key Metrics: $\ge 120\,\text{pt}$.
+3. **Color Accessibility & Contrast**:
+   - Dark text on light background; zero red-green pairings.
+4. **Compile & Build**:
    ```bash
    make posters
    ```
 
 ---
 
-## Phase 5: MAR Quality Audit & 10-Minute Oral Presentation Coach
+## Phase 6: MAR 70/30 Quality Audit & 10-Minute Oral Coach
 
-### Automated Mixed-Approach Rubric (MAR) Audit
-Run the automated MAR assessment script:
+### Automated 4-Dimension MAR Quality Audit
+Run the automated compliance script:
 ```bash
 python .agents/skills/poster-design-strategy/scripts/audit_poster_rubric.py posters/<poster-name>/poster.tex
 ```
 
-The script evaluates the poster across the 3 core criteria (Cohen's kappa $\kappa = 0.80$):
+The script audits the poster against the **4-Tier Mixed-Approach Rubric (16 points max)**:
 
-| Visual Criteria | Poor [1] | Sub-par [2] | Acceptable [3] | Exemplary [4] |
+| Rubric Dimension | Poor [1] | Sub-par [2] | Acceptable [3] | Exemplary [4] |
 | :--- | :--- | :--- | :--- | :--- |
-| **Organization** | Confusing, unstructured flow; abstract included. | Awkward section progression; missing RQ/Hypothesis. | Generally organized IMRaD sequence. | Exceptionally clean, logical visual hierarchy. |
-| **Poster Design & Visuals** | Visually unpleasant; lacks diagrams; raw tables present. | Weak visuals; raw data tables clutter results. | Functional graphics; pleasant layout. | High figure-to-text ratio; visual diagrams replace prose; QR offloads details. |
-| **Wordiness / Text Density** | $>800$ words (severe cognitive overload). | $600–800$ words (excessive dwell time). | $450–600$ words (acceptable). | $250–450$ words (optimal illustrated abstract). |
+| **1. Organization** | Unstructured flow; abstract included. | Awkward progression; missing RQ/Hypothesis. | Generally organized IMRaD sequence. | Exceptionally clean visual hierarchy; explicit RQ/Hypothesis; no abstract. |
+| **2. Poster Design & Visuals** | Visually unengaging; raw tables present. | Weak visuals; raw data tables clutter results. | Functional graphics; pleasant layout. | High figure-to-text ratio; visual schemas replace prose; QR offloads details. |
+| **3. Wordiness / Text Density** | $>800$ words (severe overload). | $600\text{--}800$ words (excessive dwell time). | $400\text{--}600$ words (manageable). | **$250\text{--}400$ words** (optimal 30% text budget). |
+| **4. Visual Ratio (70/30 Rule)** | Severe violation; wall of text; no hero graphic. | $<50\%$ visual area; text heavy; lacks hero visual. | $\sim 60\%$ visual balance; multiple graphics present. | **$\ge 70\%$ visual dominance**; prominent hero infographic; clean focal figures. |
+
+**Scoring Tiers**:
+- **14–16 pts**: Exemplary (Publication / Conference Award Tier)
+- **11–13 pts**: Acceptable (Ready for presentation with minor polish)
+- **$<11$ pts**: Needs Revision (High risk of attendee disengagement)
+
+---
 
 ### The 10-Minute Oral Presentation Coach
-Conference poster sessions enforce a **hard 10-minute cap**. Session moderators strictly stop presentations at 10 minutes. Provide the author with the following synchronized speech plan:
+
+Conference poster sessions enforce a **hard 10-minute cap**. Provide the presenter with this synchronized cue sheet:
 
 ```
 TOTAL PRESENTATION TIME: 10 MINUTES (HARD CAP)
 ├── 1. Background & Research Question : 1 to 2 Minutes
 │   └── Point to context bullets; state the scientific gap; articulate RQ & Prediction.
-├── 2. Methods Overview               : 2 Minutes
-│   └── Direct audience to the setup diagram; summarize variables & sample size (n).
-├── 3. Results & Figure Walkthrough   : 4 to 5 Minutes
-│   └── The core presentation; walk through Figures 1-3 sequentially; highlight p-values.
+├── 2. Hero Infographic & Methods     : 2 to 3 Minutes
+│   └── Direct attendee to the central hero visual; walk through the core system/pipeline.
+├── 3. Results Walkthrough            : 3 to 4 Minutes
+│   └── Highlight primary empirical charts; point to effect sizes and p-values.
 └── 4. Discussion & Limitations       : 1 to 2 Minutes
-    └── State if hypothesis was supported; explain biological/physical mechanism;
-        disclose exactly 1 limitation; propose exactly 1 future direction; invite questions.
+│   └── State hypothesis verdict; explain mechanism; disclose exactly 1 limitation;
+│       propose exactly 1 future direction; invite attendee questions.
 ```
 
-#### Board Interaction & Engagement Mechanics (The Heather Winslow Method)
-- Never read bullets verbatim; treat bullet points as anchors while expanding conversationally.
-- Physically interact with the board by pointing directly to chart axes, data trends, and setup diagrams as they are spoken.
-- Connect specific micro-datasets to overarching, field-level domain questions (as demonstrated by AGU OSPA awardee Heather Winslow) to maintain multi-hour audience engagement.
+#### Board Interaction Mechanics (The Heather Winslow Method)
+- Never read bullet points verbatim; use them as visual anchors while speaking conversationally.
+- Point directly to infographic components, data curves, and axis labels as they are introduced.
+- Connect specific empirical findings to overarching domain questions to sustain multi-hour audience engagement.
 
 ---
 
-## References
+## References & Companion Guides
 
-For full empirical regression models, standardized $\beta$ coefficients, and research literature details, consult:
-- [.agents/skills/poster-design-strategy/references/best_practice_guide.md](file:///c:/Users/cedricd/Documents/Github/papers/.agents/skills/poster-design-strategy/references/best_practice_guide.md)
+- Detailed prompt recipes & style presets: [templates/infographic_prompt_templates.md](file:///c:/Users/cedricd/Documents/Github/papers/.agents/skills/poster-design-strategy/templates/infographic_prompt_templates.md)
+- Empirical regression models & cognitive standards: [references/best_practice_guide.md](file:///c:/Users/cedricd/Documents/Github/papers/.agents/skills/poster-design-strategy/references/best_practice_guide.md)
+- Automated audit script: [scripts/audit_poster_rubric.py](file:///c:/Users/cedricd/Documents/Github/papers/.agents/skills/poster-design-strategy/scripts/audit_poster_rubric.py)
