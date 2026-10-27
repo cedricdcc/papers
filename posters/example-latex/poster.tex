@@ -1,0 +1,135 @@
+\documentclass[
+  25pt,                      % Font scaling
+  a0paper,                   % Paper size
+  portrait,                  % Orientation
+  margin=10mm,               % Outer margins
+  innermargin=15mm,          % Space inside blocks
+  blockverticalspace=15mm,   % Space between blocks
+  colspace=15mm,             % Space between columns
+  subcolspace=8mm            % Space between subcolumns
+]{tikzposter}
+
+\usepackage{graphicx}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{qrcode}
+\usepackage{hyperref}
+\usetikzlibrary{positioning}
+
+% Theme and Color Style
+\usetheme{Rays}
+\usecolorstyle{Denmark}
+
+\title{Autonomous Agentic Deep Research and Verifiable Scientific Synthesis}
+\author{Alex R. Mercer\textsuperscript{1}, Elena Rostova\textsuperscript{2}, David Chen\textsuperscript{1}}
+\institute{\textsuperscript{1}Department of Computer Science, University of Technology \quad \textsuperscript{2}Institute for Advanced Discovery}
+
+\begin{document}
+
+\maketitle
+
+\begin{columns}
+  % Column 1: Background & Problem
+  \column{0.333}
+  
+  \block{1. Introduction}{
+    Scientific research workflows are undergoing a fundamental transformation with the rise of agentic AI systems capable of autonomous exploration.
+    
+    \vspace{0.4cm}
+    \textbf{Core Scientific Challenges:}
+    \begin{itemize}
+      \item \textbf{Citation Verifiability:} Eliminating synthetic or hallucinated bibliographic records.
+      \item \textbf{Deterministic Compilation:} Ensuring strict visual layout and zero shape collision.
+      \item \textbf{Physical Readability:} Maintaining minimum 24pt fonts for 6-foot conference visibility.
+    \end{itemize}
+  }
+  
+  \block{2. Research Objectives}{
+    \begin{enumerate}
+      \item Establish real-time literature retrieval against verified academic endpoints.
+      \item Enforce hard design gates: $\le 800$ words, $\ge 50\%$ whitespace, and bounded reading order.
+      \item Support dual compilation: LaTeX (\textit{tikzposter}) and editable PowerPoint (\textit{.pptx}).
+    \end{enumerate}
+  }
+
+  % Column 2: Methods & Architecture
+  \column{0.334}
+  
+  \block{3. System Architecture}{
+    Our architecture couples asynchronous retrieval with deterministic layout compilers:
+    
+    \vspace{0.4cm}
+    \begin{center}
+      \begin{tikzpicture}[scale=0.9, every node/.style={transform shape}]
+        \node[draw=colorOne, fill=colorOne!10, rounded corners, inner sep=12pt, text width=12cm, align=center] (retrieval) {\textbf{1. Research-Lookup Engine}\\Academic DOI \& Metadata Verification};
+        \node[draw=colorOne, fill=colorOne!20, rounded corners, inner sep=12pt, text width=12cm, align=center, below=1cm of retrieval] (compiler) {\textbf{2. Layout \& Schema Compiler}\\Multi-Column LaTeX / PPTX Synthesis};
+        \node[draw=colorOne, fill=colorOne!30, rounded corners, inner sep=12pt, text width=12cm, align=center, below=1cm of compiler] (qc) {\textbf{3. Quality Control Auditor}\\Overlap Detection \& $\ge 300$ DPI Check};
+        
+        \draw[->, very thick, colorOne] (retrieval) -- (compiler);
+        \draw[->, very thick, colorOne] (compiler) -- (qc);
+      \end{tikzpicture}
+    \end{center}
+  }
+  
+  \block{4. Verification Gates}{
+    \textbf{Quality Control Parameters:}
+    \begin{itemize}
+      \item \textbf{Whitespace Ratio:} $\ge 50\%$ reserved for effortless visual parsing.
+      \item \textbf{Typographic Scale:} Main title 72pt+, section titles 36pt+, body 24pt+.
+      \item \textbf{Effective DPI:} $\text{DPI} = \frac{\text{Pixels}}{\text{Placed Inches}} \ge 150-300$.
+    \end{itemize}
+  }
+
+  % Column 3: Results & Conclusions
+  \column{0.333}
+  
+  \block{5. Results \& Benchmarks}{
+    Evaluated across 150 conference poster builds:
+    
+    \vspace{0.3cm}
+    \begin{center}
+    \begin{tabular}{lrr}
+      \toprule
+      \textbf{Metric} & \textbf{Baseline} & \textbf{Our System} \\
+      \midrule
+      Verified Citations & 74.2\% & \textbf{99.8\%} \\
+      Layout Collisions & 14.3\% & \textbf{0.0\%} \\
+      Reviewer Readability & 78.5\% & \textbf{98.4\%} \\
+      Build Turnaround & 45 min & \textbf{4.2 min} \\
+      \bottomrule
+    \end{tabular}
+    \end{center}
+  }
+  
+  \block{6. Conclusions}{
+    \begin{itemize}
+      \item Bounded schemas eliminate layout overflow and missing font dependencies.
+      \item Real-time academic lookup establishes an authoritative citation baseline.
+    \end{itemize}
+  }
+  
+  \block{Scan for Code \& Data}{
+    \begin{center}
+      \qrcode[height=4cm]{https://github.com/cedricdcc/papers}\\
+      \vspace{0.3cm}
+      \small \texttt{github.com/cedricdcc/papers}
+    \end{center}
+  }
+  
+\end{columns}
+
+\block{}{
+  \footnotesize
+  \begin{minipage}{0.75\textwidth}
+    \textbf{References:} [1] Mercer et al. (2025). \textit{Agentic Writing Pipelines}. J. AI Res. \quad [2] Chen \& Rostova (2024). \textit{Verifiable Synthesis}. NeurIPS.\\
+    \textbf{Funding:} Supported by Open Grant \#8841-B. \textbf{Contact:} contact@example.org
+  \end{minipage}%
+  \hfill
+  \begin{minipage}{0.22\textwidth}
+    \raggedleft
+    Conference 2026\\
+    Poster \#42
+  \end{minipage}
+}
+
+\end{document}

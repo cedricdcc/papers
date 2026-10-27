@@ -56,6 +56,30 @@ $(BUILD_DIR)/%.pdf: $(PAPERS_DIR)/%.md $(TEMPLATE) $(IOS_CLS) $(VANCOUVER_BST) |
 	  -o "$@"
 	@echo "Generated PDF: $@"
 
+## Posters
+POSTERS_DIR    := posters
+POSTER_DIRS    := $(wildcard $(POSTERS_DIR)/*/)
+POSTER_SOURCES := $(foreach dir,$(POSTER_DIRS),$(wildcard $(dir)poster.tex))
+POSTER_PDFS    := $(patsubst $(POSTERS_DIR)/%/poster.tex,$(BUILD_DIR)/posters/%.pdf,$(POSTER_SOURCES))
+
+.PHONY: all pdfs texs posters audit-pptx clean help
+
+## Build all LaTeX poster PDFs
+posters: $(POSTER_PDFS)
+
+$(BUILD_DIR)/posters/%.pdf: $(POSTERS_DIR)/%/poster.tex | $(BUILD_DIR)
+	@python -c "import pathlib, sys; pathlib.Path(sys.argv[1]).mkdir(parents=True, exist_ok=True)" "$(dir $@)"
+	pdflatex -jobname="$*" -interaction=nonstopmode -output-directory="$(dir $@)" "$<"
+	@echo "Generated Poster PDF: $@"
+
+## Audit an existing PPTX poster (Usage: make audit-pptx file=path/to/poster.pptx)
+audit-pptx:
+	python posters/pptx-workflow/audit_existing_pptx.py $(file)
+
+## Audit poster against Mixed-Approach Rubric (Usage: make audit-rubric file=path/to/poster)
+audit-rubric:
+	python .agents/skills/poster-design-strategy/scripts/audit_poster_rubric.py $(file)
+
 ## Create the build directory
 $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)
@@ -67,12 +91,19 @@ clean:
 ## Show help
 help:
 	@echo "Usage:"
-	@echo "  make          - Build all papers as PDFs (default)"
-	@echo "  make pdfs     - Build all papers as PDFs"
-	@echo "  make texs     - Build all papers as LaTeX (.tex) files"
-	@echo "  make clean    - Remove all generated files"
+	@echo "  make              - Build all papers as PDFs (default)"
+	@echo "  make pdfs         - Build all papers as PDFs"
+	@echo "  make texs         - Build all papers as LaTeX (.tex) files"
+	@echo "  make posters      - Build all LaTeX posters in posters/*/"
+	@echo "  make audit-pptx file=<poster.pptx> - Audit existing PPTX poster layout"
+	@echo "  make clean        - Remove all generated files"
 	@echo ""
 	@echo "To add a new paper:"
 	@echo "  1. Create a directory:  papers/<paper-name>/"
 	@echo "  2. Add a Markdown file: papers/<paper-name>/<paper-name>.md"
 	@echo "  3. Run 'make' to build"
+	@echo ""
+	@echo "To add a new poster:"
+	@echo "  1. Create a directory:  posters/<poster-name>/"
+	@echo "  2. Add poster.tex (using templates/posters/*.tex)"
+	@echo "  3. Run 'make posters' to build"
