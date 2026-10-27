@@ -1,10 +1,11 @@
 % ==============================================================================
 % VLIZ Scientific Research Poster - Marine Term Translations (MTT)
 % ==============================================================================
-% Prepared for IMDIS 2026 Conference
+% Prepared for Scientific Audience: Term Translators & Ontology Stewards
 % Template: VLIZ Institutional tikzposter (Sea-Teal Banner #91C8CD, Wave Logo)
-% Layout Paradigm: Hybrid Central Highlight (Hero Architecture & 3-Column Evidence)
-% Empirical Design: Khadka & Peeters (2024) MAR Exemplary Tier (250-450 words)
+% Layout Paradigm: Top Hero Architecture & 3-Column Dual-Persona Evidence
+% Empirical Design: Khadka & Peeters (2024) MAR Exemplary Tier (250-400 words)
+% Visual Enhancements: Aligned Bottom Baselines & Tight Infographic Framing
 % ==============================================================================
 
 \documentclass[
@@ -13,7 +14,7 @@
   portrait,
   margin=0mm,
   innermargin=15mm,
-  blockverticalspace=10mm,
+  blockverticalspace=8mm,
   colspace=10mm,
   subcolspace=8mm
 ]{tikzposter}
@@ -25,6 +26,7 @@
 \usepackage{hyperref}
 \usepackage{tikz}
 \usetikzlibrary{positioning,calc,arrows.meta}
+\usepackage{tcolorbox}
 
 % ------------------------------------------------------------------------------
 % VLIZ Institutional Color Palette
@@ -65,7 +67,7 @@
   titlewidthscale=1.0, bodywidthscale=1.0,
   titleoffsetx=0pt, titleoffsety=0pt, bodyoffsetx=0pt, bodyoffsety=0pt,
   bodyverticalshift=0pt, roundedcorners=14, linewidth=2pt,
-  titleinnersep=6mm, bodyinnersep=8mm
+  titleinnersep=4mm, bodyinnersep=6mm
 }{
   \draw[color=vlizBorder, fill=blockbodybgcolor, rounded corners=14, line width=2pt]
     (blockbody.south west) rectangle (blocktitle.north east);
@@ -87,7 +89,7 @@
 
 % Vector VLIZ Logo
 \node[anchor=west, inner sep=0pt] at ({-0.5\paperwidth + 0.088\paperwidth}, {0.5\paperheight - 0.0575\paperheight}) {
-  \includegraphics[height=0.065\paperheight]{vliz_logo.pdf}
+  \includegraphics[height=0.065\paperheight]{vliz_logo.png}
 };
 
 % Sharp Native Vector Typography for URL
@@ -99,16 +101,16 @@
 % 2. TITLE & AUTHORS SECTION (Left-Aligned Institutional Branding)
 % ==============================================================================
 \node[anchor=north west, text width=0.84\paperwidth, align=flush left, inner sep=0pt]
-  at ({-0.5\paperwidth + 0.088\paperwidth}, {0.5\paperheight - 0.130\paperheight}) {
-  % Subtitle / Venue
-  {\color{vlizTeal}\bfseries\LARGE MULTILINGUAL MARINE TERMINOLOGY INTEROPERABILITY \quad $\vert$ \quad IMDIS 2026 \par}
-  \vspace{0.35cm}
+  at ({-0.5\paperwidth + 0.088\paperwidth}, {0.5\paperheight - 0.128\paperheight}) {
+  % Subtitle / Venue & Audience Callout
+  {\color{vlizTeal}\bfseries\LARGE MULTILINGUAL MARINE VOCABULARIES \quad $\vert$ \quad mtt.vliz.be \quad $\vert$ \quad FOR TRANSLATORS \& ONTOLOGY STEWARDS \par}
+  \vspace{0.3cm}
   % Main Title
-  {\color{vlizNavy}\bfseries\fontsize{48pt}{56pt}\selectfont Marine Term Translations (MTT): A Self-Hosted Platform for Multilingual Marine Terminology Interoperability \par}
-  \vspace{0.45cm}
+  {\color{vlizNavy}\bfseries\fontsize{44pt}{52pt}\selectfont Marine Term Translations (MTT): Continuous LDES Ingestion, Collaborative Multilingual Curation, and Downstream Vocabulary Widgets \par}
+  \vspace{0.35cm}
   % Author
   {\color{vlizCharcoal}\bfseries\LARGE Cedric Decruw \par}
-  \vspace{0.25cm}
+  \vspace{0.2cm}
   % Affiliations & Contact
   {\color{vlizSlateMuted}\large Flanders Marine Institute (VLIZ), InnovOcean Campus, 8400 Oostende, Belgium \quad $\vert$ \quad cedric.decruw@vliz.be \quad $\vert$ \quad ORCID: 0000-0001-6387-5988 \par}
 };
@@ -117,132 +119,169 @@
 % Set starting vertical position for tikzposter blocks
 % ==============================================================================
 \makeatletter
-\setlength{\TP@blocktop}{0.5\textheight - 250mm}
+\setlength{\TP@blocktop}{0.5\textheight - 275mm}
 \makeatother
 
 % ==============================================================================
-% 3. HYBRID CENTRAL HIGHLIGHT (Hero Takeaway & Architecture Infographic)
+% 3. HERO INFOGRAPHIC BANNER: TIGHT CONTINUOUS LDES LIFECYCLE
 % ==============================================================================
 \block{}{
-  \begin{minipage}{0.52\linewidth}
-    {\color{vlizNavy}\bfseries\huge Central Highlight \& Platform Architecture \par}
-    \vspace{0.35cm}
-    \large
-    \begin{itemize}\setlength{\itemsep}{10pt}
-      \item \textbf{Data Sovereignty:} Self-hosted open-source stack (React, Node.js, PostgreSQL) eliminates vendor lock-in for marine institutes.
-      \item \textbf{Decoupled Identity:} Persistent concept URIs remain immutable while multilingual labels (Dutch, French) evolve independently without URI churn.
-      \item \textbf{Continuous Sync via LDES:} Streams incremental updates via Linked Data Event Streams (LDES), eliminating periodic full harvests.
-    \end{itemize}
-  \end{minipage}%
-  \hfill
-  \begin{minipage}{0.45\linewidth}
-    \centering
-    \includegraphics[width=\linewidth]{mtt-infographic.png}\\
-    \vspace{0.2cm}
-    {\color{vlizSlateMuted}\small \textbf{Figure 1:} MTT platform overview: editorial curation, translation validation, and LDES semantic event broadcasting.}
-  \end{minipage}
+  \centering
+  \vspace{-0.2cm}
+  {\color{vlizNavy}\bfseries\huge Central Architecture: Continuous LDES Ingestion, MTT Curation \& vocab.vliz.be Widgets \par}
+  \vspace{0.1cm}
+  \includegraphics[width=0.99\linewidth]{mtt-ldes-continuous-pipeline.png}\\[-0.05cm]
+  {\color{vlizSlateMuted}\large \textbf{Figure 1:} Continuous semantic pipeline: Upstream LDES ingestion $\rightarrow$ \texttt{mtt.vliz.be} translation workbench (AI suggestions + ORCID peer gate) $\rightarrow$ Outgoing LDES publication $\rightarrow$ Live reuse in \texttt{vocab.vliz.be} widgets.}
+  \vspace{-0.1cm}
 }
 
 % ==============================================================================
-% 4. SUPPORTING 3-COLUMN EVIDENCE GRID (IMRaD Sequence)
+% 4. SUPPORTING 3-COLUMN EVIDENCE GRID (Audience-Targeted Pillars)
 % ==============================================================================
 \begin{columns}
-  % ---- Column 1: Context & Core Questions ----
+  % ---- Column 1: For Ontology Stewards & Ingestion ----
   \column{0.333}
   
-  \block{1. Introduction \& Problem Statement}{
+  \block{1. For Ontology Stewards: Ingestion \& Sync}{
     \textbf{Operational Context:}
-    \begin{itemize}\setlength{\itemsep}{4pt}
-      \item Marine networks (EMODnet, SeaDataNet) require controlled vocabularies (e.g. BODC P02), yet non-English coverage remains fragmented.
-      \item Spreadsheets impede cross-border discovery and FAIR reuse.
+    \begin{itemize}\setlength{\itemsep}{2pt}
+      \item Marine registries (e.g. BODC P02, SeaDataNet) publish authoritative terms in English.
+      \item Static snapshot downloads cause sync latency, manual drift, and URI churn.
     \end{itemize}
     
-    \vspace{0.25cm}
+    \vspace{0.15cm}
     \textbf{Research Question (RQ):}
-    \begin{itemize}\setlength{\itemsep}{3pt}
-      \item \textit{How can marine institutes independently manage multilingual vocabularies while ensuring machine-actionable FAIR interoperability?}
+    \begin{itemize}\setlength{\itemsep}{2pt}
+      \item \textit{How to ingest ontologies and enrich them multilingually while preserving concept identities?}
     \end{itemize}
     
-    \vspace{0.25cm}
+    \vspace{0.15cm}
     \textbf{Hypothesis \& Prediction:}
-    \begin{itemize}\setlength{\itemsep}{3pt}
-      \item \textit{Decoupled concept modeling combined with push-based LDES event streams lowers synchronization latency without sacrificing curation quality.}
+    \begin{itemize}\setlength{\itemsep}{2pt}
+      \item \textit{Streaming LDES ingestion with decoupled concept modeling eliminates sync lag without URI churn.}
     \end{itemize}
-  }
-  
-  \block{2. FAIR Architectural Pillars}{
-    \begin{itemize}\setlength{\itemsep}{4pt}
-      \item \textbf{Findable:} Persistent URIs with multilingual SKOS labels.
-      \item \textbf{Accessible:} Dual exports in open formats (CSV, JSON-LD, RDF).
-      \item \textbf{Interoperable:} LDES event feeds enable live machine sync.
-      \item \textbf{Reusable:} ORCID-anchored contributor provenance.
-    \end{itemize}
+    
+    \vspace{0.2cm}
+    \textbf{Platform Value for Stewards:}
+    \vspace{0.12cm}
+
+    \begin{tcolorbox}[colback=vlizLightTeal,colframe=vlizBanner,arc=4mm,boxrule=1.5pt,left=5mm,right=5mm,top=3mm,bottom=3mm]
+      {\color{vlizNavy}\bfseries Continuous LDES Ingestion}\\[2pt]
+      {\small Ingests upstream LDES event feeds, tracking term updates incrementally without bulk downloads.}
+    \end{tcolorbox}
+    \vspace{0.12cm}
+    \begin{tcolorbox}[colback=vlizLightTeal,colframe=vlizBanner,arc=4mm,boxrule=1.5pt,left=5mm,right=5mm,top=3mm,bottom=3mm]
+      {\color{vlizNavy}\bfseries Zero Concept URI Churn}\\[2pt]
+      {\small Persistent concept URIs remain immutable as multilingual labels evolve, ensuring stable references.}
+    \end{tcolorbox}
+    \vspace{0.12cm}
+    \begin{tcolorbox}[colback=vlizLightTeal,colframe=vlizBanner,arc=4mm,boxrule=1.5pt,left=5mm,right=5mm,top=3mm,bottom=3mm]
+      {\color{vlizNavy}\bfseries Institutional Data Sovereignty}\\[2pt]
+      {\small 100\% self-hostable open stack (React, Node.js, PostgreSQL) deployable on local infrastructure.}
+    \end{tcolorbox}
+    \vspace{0.12cm}
+    \begin{tcolorbox}[colback=vlizHeroBg,colframe=vlizBorder,arc=4mm,boxrule=1.5pt,left=5mm,right=5mm,top=3mm,bottom=3mm]
+      {\color{vlizNavy}\bfseries Standards-Based Interoperability}\\[2pt]
+      {\small Dual export pathways: CSV, SKOS, JSON-LD, and continuous Linked Data Event Streams.}
+    \end{tcolorbox}
   }
 
-  % ---- Column 2: Methods & Pipeline ----
+  % ---- Column 2: For Term Translators & Curation ----
   \column{0.334}
   
-  \block{3. Methodology \& Technical Stack}{
-    \begin{itemize}\setlength{\itemsep}{4pt}
-      \item \textbf{Frontend UI (React):} Side-by-side comparison and review gates.
-      \item \textbf{API Services (Node.js):} Enforces consistency constraints.
-      \item \textbf{Persistence (PostgreSQL):} Isolates URIs from labels.
-      \item \textbf{Identity:} ORCID OAuth2 login ensuring contributor provenance.
+  \block{2. For Translators: Curation \& Credit}{
+    \textbf{The Translation Bottleneck:}
+    \begin{itemize}\setlength{\itemsep}{2pt}
+      \item Domain experts are deterred by complex semantic tools (Prot\'eg\'e, raw RDF) and unstructured spreadsheets.
+      \item Linguistic translations often go uncredited in academic pipelines.
     \end{itemize}
-  }
-  
-  \block{4. Curatorial Workflow Pipeline}{
-    \begin{center}
-      \begin{tikzpicture}[scale=0.82, every node/.style={transform shape}]
-        \node[draw=vlizNavy, fill=vlizLightTeal, rounded corners=8, line width=1.5pt, inner sep=5pt, text width=6.8cm, align=center] (s1) {
-          \textbf{1. Vocabulary Ingestion}\\BODC P02 Registry (SKOS / CSV)
-        };
-        \node[draw=vlizTeal, fill=white, rounded corners=8, line width=1.5pt, inner sep=5pt, text width=6.8cm, align=center, below=0.35cm of s1] (s2) {
-          \textbf{2. AI-Assisted Proposal}\\Batch candidate suggestions generated
-        };
-        \node[draw=vlizNavy, fill=vlizLightTeal, rounded corners=8, line width=1.5pt, inner sep=5pt, text width=6.8cm, align=center, below=0.35cm of s2] (s3) {
-          \textbf{3. ORCID Expert Validation}\\Human-in-the-loop review \& approval
-        };
-        \node[draw=vlizTeal, fill=white, rounded corners=8, line width=1.5pt, inner sep=5pt, text width=6.8cm, align=center, below=0.35cm of s3] (s4) {
-          \textbf{4. Continuous Dissemination}\\SKOS / JSON-LD \& Live LDES Feed
-        };
-        \draw[->, -{Latex[length=3mm]}, very thick, vlizNavy] (s1) -- (s2);
-        \draw[->, -{Latex[length=3mm]}, very thick, vlizNavy] (s2) -- (s3);
-        \draw[->, -{Latex[length=3mm]}, very thick, vlizNavy] (s3) -- (s4);
-      \end{tikzpicture}
-    \end{center}
-    \vspace{0.15cm}
-    \small \textit{Human gate: Machine translations remain proposals until expert approval.}
+    
+    \vspace{0.18cm}
+    \textbf{The mtt.vliz.be Workbench:}
+    \vspace{0.12cm}
+
+    \begin{tcolorbox}[colback=vlizHeroBg,colframe=vlizBorder,arc=4mm,boxrule=1.5pt,left=5mm,right=5mm,top=3.0mm,bottom=3.0mm]
+      {\color{vlizNavy}\bfseries 1. Side-by-Side Comparison UI}\\[2pt]
+      {\small Distraction-free browser interface comparing source terms directly with translations.}
+    \end{tcolorbox}
+    \vspace{0.12cm}
+    \begin{tcolorbox}[colback=vlizHeroBg,colframe=vlizBorder,arc=4mm,boxrule=1.5pt,left=5mm,right=5mm,top=3.0mm,bottom=3.0mm]
+      {\color{vlizNavy}\bfseries 2. AI-Assisted Candidate Drafting}\\[2pt]
+      {\small Contextual suggestions accelerate initial drafting velocity by $2\times$ across batches.}
+    \end{tcolorbox}
+    \vspace{0.12cm}
+    \begin{tcolorbox}[colback=vlizHeroBg,colframe=vlizBorder,arc=4mm,boxrule=1.5pt,left=5mm,right=5mm,top=3.0mm,bottom=3.0mm]
+      {\color{vlizNavy}\bfseries 3. Human-in-the-Loop Review Gate}\\[2pt]
+      {\small Machine suggestions remain provisional until validated by domain specialists.}
+    \end{tcolorbox}
+    \vspace{0.12cm}
+    \begin{tcolorbox}[colback=vlizHeroBg,colframe=vlizBorder,arc=4mm,boxrule=1.5pt,left=5mm,right=5mm,top=3.0mm,bottom=3.0mm]
+      {\color{vlizNavy}\bfseries 4. Citable ORCID Attribution}\\[2pt]
+      {\small Every approved label is bound to ORCID, guaranteeing citable academic credit.}
+    \end{tcolorbox}
+
+    \vspace{0.18cm}
+    \textbf{Governance:} Role-aware permissions and complete version audit logs.
+
+    \vspace{0.12cm}
+    \begin{tcolorbox}[colback=vlizLightTeal,colframe=vlizTeal,arc=4mm,boxrule=1.5pt,left=5mm,right=5mm,top=3.0mm,bottom=3.0mm]
+      {\color{vlizNavy}\bfseries Community Participation \& Impact}\\[2pt]
+      {\small \textbf{Translators}: Review and curate terminology in your native language.\\
+      \textbf{Stewards}: Register ontologies for automated continuous ingestion.}
+    \end{tcolorbox}
+    \vspace*{1.8mm}
   }
 
-  % ---- Column 3: Results & Synthesis ----
+  % ---- Column 3: Downstream Impact & vocab.vliz.be Widgets ----
   \column{0.333}
   
-  \block{5. Results: BODC P02 Beta Evaluation}{
-    \begin{itemize}\setlength{\itemsep}{4pt}
-      \item \textbf{25\% of BODC P02 Translated:} Enriched parameter discovery concepts into French and Dutch during live beta.
-      \item \textbf{Continuous LDES Stream:} Changes published as versioned RDF event feeds without monolithic snapshot downloads.
-      \item \textbf{Zero Concept URI Churn:} Persistent URIs remained stable across translation updates.
-      \item \textbf{2$\times$ Curation Speed:} AI suggestions halved drafting time under strict human moderation.
-    \end{itemize}
-  }
-  
-  \block{6. Discussion, Limitations \& Future Work}{
-    \textbf{Hypothesis Outcome:} Supported --- federated tooling bridges local curation and international infrastructure.
-    
-    \vspace{0.25cm}
-    \textbf{Study Limitation:} Translation throughput remains bound by domain-expert review bandwidth.
-    
-    \vspace{0.25cm}
-    \textbf{Actionable Future Direction:} Integrate automated confidence scoring to triage high-priority review queues.
-  }
+  \block{3. Outgoing LDES \& vocab.vliz.be Widgets}{
+    \textbf{Downstream Delivery Pipeline:}
+    \vspace{0.12cm}
 
-  \block{Platform \& Repository Access}{
-    \begin{center}
-      \qrcode[height=3.8cm]{https://github.com/cedricdcc/marine-term-translations}\\
-      \vspace{0.2cm}
-      {\small \texttt{github.com/cedricdcc/marine-term-translations}}
-    \end{center}
+    \begin{tcolorbox}[colback=vlizLightTeal,colframe=vlizBanner,arc=4mm,boxrule=1.5pt,left=5mm,right=5mm,top=2.8mm,bottom=2.8mm]
+      {\color{vlizNavy}\bfseries Outgoing LDES Stream Broadcast}\\[2pt]
+      {\small Approved translations emitted as immutable RDF event feeds, eliminating bulk snapshot downloads.}
+    \end{tcolorbox}
+    \vspace{0.12cm}
+    \begin{tcolorbox}[colback=vlizLightTeal,colframe=vlizBanner,arc=4mm,boxrule=1.5pt,left=5mm,right=5mm,top=2.8mm,bottom=2.8mm]
+      {\color{vlizNavy}\bfseries vocab.vliz.be Widgets Endgoal}\\[2pt]
+      {\small Curated terms power drop-in autocomplete and search widgets across marine portals.}
+    \end{tcolorbox}
+
+    \vspace{0.15cm}
+    \textbf{Empirical Results (BODC P02 Beta):}
+    \vspace{0.12cm}
+
+    % Stat Metric Callout Badges
+    \noindent
+    \begin{minipage}{0.48\linewidth}
+      \begin{tcolorbox}[colback=vlizLightTeal,colframe=vlizNavy,arc=4mm,boxrule=2pt,halign=center,top=3mm,bottom=3mm]
+        {\color{vlizNavy}\bfseries\fontsize{32pt}{36pt}\selectfont 25\%}\\[2pt]
+        {\small P02 Translated}
+      \end{tcolorbox}
+    \end{minipage}\hfill
+    \begin{minipage}{0.48\linewidth}
+      \begin{tcolorbox}[colback=vlizHeroBg,colframe=vlizTeal,arc=4mm,boxrule=2pt,halign=center,top=3mm,bottom=3mm]
+        {\color{vlizTeal}\bfseries\fontsize{32pt}{36pt}\selectfont 2$\times$}\\[2pt]
+        {\small Drafting Speed}
+      \end{tcolorbox}
+    \end{minipage}
+
+    \vspace{0.15cm}
+    \begin{itemize}\setlength{\itemsep}{2pt}
+      \item \textbf{Supported Hypothesis:} Zero URI churn; continuous sync proven.
+      \item \textbf{1 Study Limitation:} Throughput bounded by reviewer bandwidth.
+      \item \textbf{Actionable Future Direction:} Deploy automated confidence triage.
+    \end{itemize}
+
+    \vspace{0.12cm}
+    \begin{tcolorbox}[colback=vlizLightTeal,colframe=vlizNavy,arc=4mm,boxrule=1.5pt,halign=center,top=2.5mm,bottom=2.5mm]
+      {\color{vlizNavy}\bfseries Test the Live Platform \& Widgets}\\[3pt]
+      \qrcode[height=4.3cm]{https://mtt.vliz.be/}\\[3pt]
+      {\small \textbf{mtt.vliz.be}}
+    \end{tcolorbox}
+    \vspace*{0.18cm}
   }
 \end{columns}
 
@@ -251,15 +290,15 @@
 % ==============================================================================
 \block{}{
   \footnotesize
-  \begin{minipage}{0.72\linewidth}
+  \begin{minipage}{0.74\linewidth}
     \textbf{References:} [1] Wilkinson et al. (2016). Sci. Data. \quad [2] BODC (2024). NERC P02. \quad [3] Van de Vyvere et al. (2022). LDES.\\
-    \textbf{Declaration on Generative AI:} Assisted with language polish and structural synthesis; system design and evaluation by the author.
+    \textbf{AI Disclosure:} Assisted with language polish and schematic layout; system design and evaluation by the author.
   \end{minipage}%
   \hfill
-  \begin{minipage}{0.26\linewidth}
+  \begin{minipage}{0.24\linewidth}
     \raggedleft
-    \textbf{IMDIS 2026 Conference}\\
-    Flanders Marine Institute (VLIZ), Belgium
+    \textbf{Flanders Marine Institute (VLIZ)}\\
+    \texttt{mtt.vliz.be} \quad $\vert$ \quad \texttt{vocab.vliz.be}
   \end{minipage}
 }
 

@@ -200,51 +200,50 @@ Always present **two tailored ASCII options** explicitly annotated with 70/30 sp
 Prompt the author:
 > *"Here are two tailored 70/30 layout architectures for your A0 portrait poster. Which option best fits your narrative flow, or would you like to adjust the block arrangement before we generate the infographic and code?"*
 
-### Step 4C: Interactive Nano Banana Infographic Creator Loop
+### Step 4C: Interactive Infographic Creator & Multi-Modal Self-Critique Loop
 Once the layout is approved, launch the iterative visual creator loop using [templates/infographic_prompt_templates.md](templates/infographic_prompt_templates.md):
 
-1. **Assemble Master Prompt**:
-   - Incorporate the approved layout zone geometry (`16:9` wide banner, `1:1` square, or `3:4` vertical).
-   - Apply the selected domain theme preset (e.g. VLIZ Marine `#91C8CD`).
-   - Enforce negative constraints (zero prose, no figure numbers, 50% white space).
+1. **Assemble Master Prompt (Eliminating Text Hallucinations)**:
+   - Target zone geometry (`16:9` wide banner, `1:1` square, or `3:4` vertical).
+   - Apply domain theme preset (e.g. VLIZ Marine Sea-teal `#91C8CD`, Deep Navy `#002B49`).
+   - Strict negative constraint: Zero AI prose, no figure numbers, maximum 10 single-word structural labels total. Detailed explanations are delegated strictly to LaTeX markup.
 2. **Execute Generation**:
-   ```bash
-   python .agents/skills/scientific-schematics/scripts/generate_schematic.py \
-     "<assembled_prompt>" \
-     -o posters/<poster-name>/figures/hero_infographic.png \
-     --doc-type poster \
-     --iterations 2
-   ```
-3. **Interactive HITL Feedback Step**:
-   - Present the generated image path and visual summary to the author.
-   - Ask for direct critique:
+   Generate publication-grade visual asset using Nano Banana 2 / `generate_image`.
+3. **Multi-Modal AI Self-Critique**:
+   Before presenting to the author, inspect the image to verify:
+   - Ample whitespace ($50\text{--}60\%$ negative space).
+   - Clear left-to-right or top-to-bottom directional conduit.
+   - Absence of distorted synthetic pseudo-fonts or unwanted palette legends.
+4. **Interactive HITL Feedback Step (Mandatory Modal Gate)**:
+   - Present the image preview to the author using an interactive modal (`ask_question`).
+   - Prompt the author for direct feedback:
      - *"Does this visual representation accurately reflect your project?"*
-     - *"Are the theme colors and element weights balanced?"*
-   - Iteratively refine prompt and regenerate until the author confirms they are completely satisfied with the result.
+     - *"Are the theme colors, containers, and element weights balanced?"*
+   - **Iterative Refinement Rule**: If the author comments or requests adjustments, regenerate the infographic and present again. Only advance to the next step once the author explicitly approves the visual asset.
 
 ---
 
-## Phase 5: Template & Generation Coordination
+## Phase 5: Template Generation & Automated PDF Visual Inspection
 
-Once the infographic is approved and the layout locked in:
+### Step 5A: Code Generation & Typographic Setup
+1. **Render Template**:
+   - In LaTeX (`tikzposter`, `baposter`) or PPTX targeting A0 Portrait ($841 \times 1189\,\text{mm}$).
+2. **Typographic Hierarchy & Bullet Upgrades**:
+   - Replace plain bullet point lists with **Hybrid Visual Blocks**:
+     - Key metrics and statistics transformed into bold metric callout badges (e.g. `25% Translated`, `2× Curation Speed`).
+     - Procedural and feature lists formatted into soft-colored rounded mini-cards with bold titles rather than monotonous dot bullets.
 
-1. **Select & Configure Template**:
-   - **LaTeX (`tikzposter`, `baposter`, `beamerposter`)**: For vector precision and publication typography. Set document options to `a0paper, portrait`.
-   - **PowerPoint (`.pptx`)**: Set slide dimensions strictly to $84.1\,\text{cm} \times 118.9\,\text{cm}$ (A0 Portrait).
-2. **Enforce Strict Typographic Hierarchy**:
-   - **Dual-Font Rule**: Bold sans-serif header font paired with clean body font.
-   - **Font Sizes (A0 scale)**:
-     - Poster Title: $\ge 50\,\text{pt}$ (readable from 15 feet).
-     - Section Headings: $\ge 32\,\text{pt}$ (readable from 8–10 feet).
-     - Body Text: $\ge 22\,\text{pt}$ (readable from 3–6 feet).
-     - Infographic Labels: $\ge 80\,\text{pt}$ (readable from 3–6 feet).
-     - Infographic Key Metrics: $\ge 120\,\text{pt}$.
-3. **Color Accessibility & Contrast**:
-   - Dark text on light background; zero red-green pairings.
-4. **Compile & Build**:
-   ```bash
-   make posters
-   ```
+### Step 5B: Automated PDF Visual Inspection & 4-Point Visual QA
+After compiling `poster.pdf`, inspect the rendered visual page:
+1. **Bottom Baseline Alignment**: Verify that all columns terminate at the exact same horizontal baseline. No column should leave an empty bottom void.
+2. **Dead Whitespace Minimization**: Eliminate dead vertical gaps between the title block, hero infographic, columns, and footer.
+3. **Bullet Point Transformation Check**: Ensure no walls of plain dot-bullet items remain unstyled.
+4. **Collision & Clipping Verification**: Verify clear separation between title text, block headers, and QR codes.
+
+### Step 5C: Human Check-in Before Layout Changes (Mandatory HITL Gate)
+When visual defects or alignment improvements are detected during the PDF inspection:
+- **Ping the Author First**: Present a concise summary of the proposed visual modifications via an interactive modal (`ask_question`).
+- **Proceed Upon Approval**: Apply the code edits and recompile only after the author confirms the proposed adjustments.
 
 ---
 

@@ -56,6 +56,8 @@ $(BUILD_DIR)/%.pdf: $(PAPERS_DIR)/%.md $(TEMPLATE) $(IOS_CLS) $(VANCOUVER_BST) |
 	  -o "$@"
 	@echo "Generated PDF: $@"
 
+PYTHON         ?= $(shell which python3 2>/dev/null || which python 2>/dev/null || echo python)
+
 ## Posters
 POSTERS_DIR    := posters
 POSTER_DIRS    := $(wildcard $(POSTERS_DIR)/*/)
@@ -68,17 +70,17 @@ POSTER_PDFS    := $(patsubst $(POSTERS_DIR)/%/poster.tex,$(BUILD_DIR)/posters/%.
 posters: $(POSTER_PDFS)
 
 $(BUILD_DIR)/posters/%.pdf: $(POSTERS_DIR)/%/poster.tex | $(BUILD_DIR)
-	@python -c "import pathlib, sys; pathlib.Path(sys.argv[1]).mkdir(parents=True, exist_ok=True)" "$(dir $@)"
+	@mkdir -p "$(dir $@)"
 	pdflatex -jobname="$*" -interaction=nonstopmode -output-directory="$(dir $@)" "$<"
 	@echo "Generated Poster PDF: $@"
 
 ## Audit an existing PPTX poster (Usage: make audit-pptx file=path/to/poster.pptx)
 audit-pptx:
-	python posters/pptx-workflow/audit_existing_pptx.py $(file)
+	$(PYTHON) posters/pptx-workflow/audit_existing_pptx.py $(file)
 
 ## Audit poster against Mixed-Approach Rubric (Usage: make audit-rubric file=path/to/poster)
 audit-rubric:
-	python .agents/skills/poster-design-strategy/scripts/audit_poster_rubric.py $(file)
+	$(PYTHON) .agents/skills/poster-design-strategy/scripts/audit_poster_rubric.py $(file)
 
 ## Create the build directory
 $(BUILD_DIR):
