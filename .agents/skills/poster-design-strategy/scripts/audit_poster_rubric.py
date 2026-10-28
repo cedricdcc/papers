@@ -1,13 +1,15 @@
 #!/usr/bin/env python3
 """
-Mixed-Approach Rubric (MAR) & Empirical Compliance Auditor for Scientific Posters.
-Implements the Khadka & Peeters (2024) empirical criteria and the 70/30 Infographic Standard:
+Mixed-Approach Rubric (MAR), Provenance & Empirical Compliance Auditor for Scientific Posters.
+Implements the Khadka & Peeters (2024) empirical criteria, the 70/30 Infographic Standard,
+and provenance.md verification:
 - Wordiness minimization (beta = -0.37)
 - Contemporary layout format (beta = +0.28)
 - Logical visual sequencing (beta = +0.16)
 - Visual elements replacing text (beta = +0.15)
 - QR code integration (beta = +0.12)
 - Exclusion of submission abstract (beta = -0.10)
+- Provenance verification (posters/<name>/provenance.md: audience, authors, conference, logo space, extra_logos, inputs)
 - 4-Tier MAR Scoring across 4 Dimensions (16 points max):
   1. Organization
   2. Poster Design & Visuals
@@ -19,6 +21,8 @@ import sys
 import re
 import argparse
 from pathlib import Path
+from typing import Dict, Any, Optional
+
 
 def clean_tex(text: str) -> str:
     # Remove comments
@@ -31,18 +35,78 @@ def clean_tex(text: str) -> str:
         clean = clean.split("\\end{document}", 1)[0]
     # Remove tikzpicture environments which contain coordinates and path commands
     clean = re.sub(r'\\begin\{tikzpicture\}[\s\S]*?\\end\{tikzpicture\}', ' ', clean)
+    # Remove environment options like \begin{tcolorbox}[...]
+    clean = re.sub(r'\\begin\{[^}]+\}(\[[^\]]*\])?', ' ', clean)
+    clean = re.sub(r'\\end\{[^}]+\}', ' ', clean)
     # Remove common command macros and brackets
     clean = re.sub(r'\\[a-zA-Z]+(\[[^\]]*\])?', ' ', clean)
     clean = re.sub(r'\[[^\]]*\]', ' ', clean)
     clean = re.sub(r'[{}]', ' ', clean)
     # Remove dimension units and coordinates
     clean = re.sub(r'\b\d+(\.\d+)?(cm|mm|pt|in|ex|em)?\b', ' ', clean)
-    clean = re.sub(r'[()=\-+;*$<>]', ' ', clean)
+    clean = re.sub(r'[()=\-+;*$<>|•→]', ' ', clean)
     return clean
 
-def audit_text_content(content: str, source_type: str = "tex"):
-    visible_text = clean_tex(content) if source_type == "tex" else content
-    words = visible_text.split()
+
+def audit_provenance_file(poster_path: Path) -> Dict[str, Any]:
+    prov_path = poster_path.parent / "provenance.md"
+    result: Dict[str, Any] = {
+        "exists": prov_path.exists(),
+        "path": str(prov_path),
+        "has_frontmatter": False,
+        "required_sections_present": [],
+        "missing_sections": [],
+        "unresolved_tokens": 0,
+        "reserve_conf_logo": None,
+        "extra_logos_count": 0,
+        "deliverable_formats": [],
+    }
+    if not prov_path.exists():
+        return result
+
+    raw = prov_path.read_text(encoding="utf-8", errors="ignore")
+    result["unresolved_tokens"] = len(re.findall(r'REPLACE_ME_[A-Z0-9_]+', raw))
+
+    fm_match = re.match(r'^---\s*\n([\s\S]*?)\n---', raw)
+    if fm_match:
+        result["has_frontmatter"] = True
+        fm_text = fm_match.group(1)
+        required_keys = ["deliverables", "audience", "authors", "conference", "branding", "inputs"]
+        for key in required_keys:
+            if re.search(rf'^{key}\s*:', fm_text, re.MULTILINE):
+                result["required_sections_present"].append(key)
+            else:
+                result["missing_sections"].append(key)
+
+        conf_logo_match = re.search(r'reserve_default_conference_logo_space\s*:\s*(true|false)', fm_text, re.IGNORECASE)
+        if conf_logo_match:
+            result["reserve_conf_logo"] = conf_logo_match.group(1).lower() == "true"
+
+        for fmt in ("latex", "pptx"):
+            if re.search(rf'-\s*["\']?{fmt}["\']?', fm_text, re.IGNORECASE):
+                result["deliverable_formats"].append(fmt)
+
+        # Count extra_logos items if listed under extra_logos:
+        extra_block = re.search(r'extra_logos\s*:\s*\n((?:\s+-\s+.*\n?)*)', fm_text)
+        if extra_block and extra_block.group(1).strip():
+            result["extra_logos_count"] = len(re.findall(r'^\s*-\s+name\s*:', extra_block.group(1), re.MULTILINE))
+
+    return result
+
+
+def audit_text_content(
+    content: str,
+    source_type: str = "tex",
+    visible_override: Optional[str] = None,
+    provenance_info: Optional[Dict[str, Any]] = None,
+):
+    if visible_override is not None:
+        visible_text = visible_override
+    else:
+        visible_text = clean_tex(content) if source_type == "tex" else content
+
+    # Filter out standalone punctuation/bullet tokens for accurate word count
+    words = [w for w in visible_text.split() if re.search(r'[A-Za-z0-9]', w)]
     word_count = len(words)
 
     # Check for abstract
@@ -53,7 +117,7 @@ def audit_text_content(content: str, source_type: str = "tex"):
     has_hypothesis = bool(re.search(r'(hypothesis|prediction|hypothesize)', content, re.IGNORECASE))
 
     # Check for Methods diagram
-    has_diagram = bool(re.search(r'(tikzpicture|flowchart|pipeline|diagram|\.png|\.pdf|\.svg)', content, re.IGNORECASE))
+    has_diagram = bool(re.search(r'(tikzpicture|flowchart|pipeline|diagram|\.png|\.pdf|\.svg|<p:pic>)', content, re.IGNORECASE))
 
     # Check for Results tables (prohibited)
     has_tables = bool(re.search(r'(\\begin\{table\}|\\begin\{tabular\}|<a:tbl>)', content, re.IGNORECASE))
@@ -105,7 +169,7 @@ def audit_text_content(content: str, source_type: str = "tex"):
         org_points += 1
     if has_limitation and has_future:
         org_points += 1
-    if bool(re.search(r'(introduction|background|methods|results|discussion|conclusion)', content, re.IGNORECASE)):
+    if bool(re.search(r'(introduction|background|context|methods|results|discussion|conclusion|pipeline)', content, re.IGNORECASE)):
         org_points += 1
 
     if org_points == 4:
@@ -129,7 +193,7 @@ def audit_text_content(content: str, source_type: str = "tex"):
         vis_points += 1
     if not has_tables:
         vis_points += 1  # No raw data tables cluttering results
-    if bool(re.search(r'(\\includegraphics|image|figure|chart|map)', content, re.IGNORECASE)):
+    if bool(re.search(r'(\\includegraphics|<p:pic>|image|figure|chart|map)', content, re.IGNORECASE)):
         vis_points += 1
 
     if vis_points == 4:
@@ -146,7 +210,7 @@ def audit_text_content(content: str, source_type: str = "tex"):
         desc_vis = "Poor [1]: Visually unengaging; lacks clear focal graphics."
 
     # 4. Visual-to-Text Spatial Ratio (70/30 Rule & Hero Infographic)
-    # 70% visual area requires: hero infographic/schematic, >= 2 visual assets, and word count <= 400
+    # 70% visual area requires: hero infographic/schematic, >= 2 visual assets, and word count <= 450
     ratio_points = 0
     if has_hero_infographic:
         ratio_points += 1
@@ -178,7 +242,7 @@ def audit_text_content(content: str, source_type: str = "tex"):
     print("  MIXED-APPROACH RUBRIC (MAR) & EMPIRICAL POSTER AUDIT (70/30 EDITION)")
     print("  Reference: Khadka & Peeters (2024) | Inter-rater agreement kappa = 0.80")
     print("=" * 76)
-    print(f"Target Geometry:        {'[OK] A0 Portrait (841 x 1189 mm)' if (has_portrait or has_a0) else '[i] Standard Portrait'}")
+    print(f"Target Geometry:        {'[OK] A0 Portrait (841 x 1189 mm)' if (has_portrait and has_a0) else '[i] Standard Portrait'}")
     print(f"Estimated Word Count:   {word_count} words (Target: 250-400 words for 30% text budget)")
     print(f"Graphic Assets Count:   {graphic_count} visual graphic elements detected")
     print(f"Hero Infographic:       {'[OK] Present (' + hero_infographic_match.group(0) + ')' if has_hero_infographic else '[!] None detected (Add a central project infographic)'}")
@@ -190,6 +254,29 @@ def audit_text_content(content: str, source_type: str = "tex"):
     print(f"QR Code Integration:    {'[OK] Present (beta = +0.12)' if has_qr else '[!] Absent'}")
     print(f"Discussion Limitation:  {'[OK] Exactly 1 detected' if has_limitation else '[!] Missing explicit limitation'}")
     print(f"Future Direction:       {'[OK] Exactly 1 detected' if has_future else '[!] Missing actionable future direction'}")
+
+    if provenance_info is not None:
+        print("-" * 76)
+        print("PROVENANCE & REQUIREMENTS CHECK (provenance.md):")
+        if provenance_info["exists"]:
+            missing = provenance_info["missing_sections"]
+            unresolved = provenance_info["unresolved_tokens"]
+            status_ok = provenance_info["has_frontmatter"] and not missing and unresolved == 0
+            status_tag = "[OK] Verified" if status_ok else "[!] Incomplete"
+            print(f"  * Provenance File:    {status_tag} ({provenance_info['path']})")
+            if provenance_info["deliverable_formats"]:
+                print(f"  * Formats Declared:   {', '.join(provenance_info['deliverable_formats'])}")
+            if provenance_info["reserve_conf_logo"] is not None:
+                print(f"  * Conf. Logo Space:   {'Reserved' if provenance_info['reserve_conf_logo'] else 'Not reserved / Custom'}")
+            print(f"  * Extra Logos Listed: {provenance_info['extra_logos_count']}")
+            if missing:
+                print(f"  * Missing YAML Keys:  {', '.join(missing)}")
+            if unresolved > 0:
+                print(f"  * Unresolved Tokens:  {unresolved} REPLACE_ME_* token(s) remaining")
+        else:
+            print(f"  * Provenance File:    [i] Not found at {provenance_info['path']}")
+            print("    (Tip: Initialize provenance.md from templates/provenance_template.md during Phase 1 intake)")
+
     print("-" * 76)
     print("RUBRIC ASSESSMENT (4 DIMENSIONS):")
     print(f"1. Organization:                        {desc_org}")
@@ -209,8 +296,9 @@ def audit_text_content(content: str, source_type: str = "tex"):
 
     return total_mar
 
+
 def main():
-    parser = argparse.ArgumentParser(description="Audit scientific poster against the Khadka & Peeters MAR framework & 70/30 rule.")
+    parser = argparse.ArgumentParser(description="Audit scientific poster against the Khadka & Peeters MAR framework, 70/30 rule, and provenance.md.")
     parser.add_argument("file", help="Path to poster file (.tex, .pptx, .md, .txt)")
     args = parser.parse_args()
 
@@ -219,26 +307,50 @@ def main():
         print(f"Error: File not found: {file_path}", file=sys.stderr)
         sys.exit(1)
 
+    provenance_info = audit_provenance_file(file_path)
+
     content = ""
+    visible_override = None
     if file_path.suffix.lower() == ".pptx":
         try:
             from pptx import Presentation
+            from pptx.enum.shapes import MSO_SHAPE_TYPE
             prs = Presentation(str(file_path))
             text_runs = []
+            structural_tags = []
+            w_in = prs.slide_width.inches
+            h_in = prs.slide_height.inches
+            if h_in > w_in:
+                structural_tags.append("orientation=portrait")
+            if abs(w_in - 33.11) < 0.5 and abs(h_in - 46.81) < 0.5:
+                structural_tags.append("a0paper 841mm 1189mm")
+
             for slide in prs.slides:
                 for shape in slide.shapes:
+                    if shape.shape_type == MSO_SHAPE_TYPE.PICTURE:
+                        structural_tags.append("<p:pic>")
+                    elif shape.shape_type == MSO_SHAPE_TYPE.TABLE:
+                        structural_tags.append("<a:tbl>")
                     if shape.has_text_frame:
                         for p in shape.text_frame.paragraphs:
-                            for r in p.runs:
-                                text_runs.append(r.text)
-            content = " ".join(text_runs)
+                            p_txt = "".join(r.text for r in p.runs) if p.runs else p.text
+                            if p_txt.strip():
+                                text_runs.append(p_txt)
+            visible_override = " ".join(text_runs)
+            content = visible_override + " " + " ".join(structural_tags)
         except Exception as e:
             print(f"Error reading PPTX: {e}", file=sys.stderr)
             sys.exit(1)
     else:
         content = file_path.read_text(encoding="utf-8", errors="ignore")
 
-    audit_text_content(content, source_type=file_path.suffix.lstrip("."))
+    audit_text_content(
+        content,
+        source_type=file_path.suffix.lstrip("."),
+        visible_override=visible_override,
+        provenance_info=provenance_info,
+    )
+
 
 if __name__ == "__main__":
     main()
