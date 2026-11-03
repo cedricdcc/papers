@@ -19,7 +19,6 @@ papers/
 └── .github/workflows/
     └── build-and-publish.yml # CI: build PDFs → deploy to GitHub Pages
 ```
-
 ---
 
 ## Writing a New Paper
