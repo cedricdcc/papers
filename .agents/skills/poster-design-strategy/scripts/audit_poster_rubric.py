@@ -35,6 +35,10 @@ def clean_tex(text: str) -> str:
         clean = clean.split("\\end{document}", 1)[0]
     # Remove tikzpicture environments which contain coordinates and path commands
     clean = re.sub(r'\\begin\{tikzpicture\}[\s\S]*?\\end\{tikzpicture\}', ' ', clean)
+    # Remove macro options and arguments that define colors, fonts, or graphics
+    clean = re.sub(r'\\(definecolor|color|colorlet|usecolorstyle|usetheme|fontsize|selectfont)\{[^}]*\}', ' ', clean)
+    clean = re.sub(r'\\includegraphics(\[[^\]]*\])?\{[^}]*\}', ' ', clean)
+    clean = re.sub(r'\b(at|rectangle|node|anchor|inner|sep|width|height|scale)\b', ' ', clean)
     # Remove environment options like \begin{tcolorbox}[...]
     clean = re.sub(r'\\begin\{[^}]+\}(\[[^\]]*\])?', ' ', clean)
     clean = re.sub(r'\\end\{[^}]+\}', ' ', clean)
@@ -129,6 +133,41 @@ def audit_text_content(
     has_limitation = bool(re.search(r'(limitation|caveat|constraint)', content, re.IGNORECASE))
     has_future = bool(re.search(r'(future direction|future work|outlook|next steps)', content, re.IGNORECASE))
 
+    # Check for Inverted Chronological Flow (e.g. Discussion appearing before Methods / Infographic / Results)
+    disc_pos = re.search(r'(discussion|limitation|future direction|outlook)', content, re.IGNORECASE)
+    meth_pos = re.search(r'(methods|pillars|methodology|pipeline)', content, re.IGNORECASE)
+    hero_pos = re.search(r'(hero_infographic|infographic|schematic)', content, re.IGNORECASE)
+    has_inverted_flow = False
+    if disc_pos and (meth_pos or hero_pos):
+        earliest_body = min([p.start() for p in [meth_pos, hero_pos] if p is not None])
+        if disc_pos.start() < earliest_body:
+            has_inverted_flow = True
+
+    # Check for Subjective / Humorous Metric Badges (e.g. "Max Boredom", "0 Bottlenecks")
+    subjective_metrics = re.findall(r'\b(boredom|max\s+boredom|maximum\s+boredom|0\s+bottlenecks?|zero\s+bottlenecks?|100%\s+fun|100%\s+happiness)\b', content, re.IGNORECASE)
+    has_subjective_metrics = len(subjective_metrics) > 0
+
+    # Check for Redundant Section Sub-Headers
+    has_redundant_subheaders = bool(re.search(r'\\textbf\{\s*\d+\.\s+[^}]+\}\s*\\\\\s*\\textit\{', content) or
+                                   re.search(r'\\textbf\{\s*\d+\.\s+[^}]+\}[\s\S]{1,60}\\textit\{The\s+', content))
+
+    # Check for Plain Bullet Walls (itemize with bare text items not in sub-cards)
+    has_plain_bullets = bool(re.search(r'\\begin\{itemize\}[\s\S]*?\\item\s+[^\\{\[]+[\s\S]*?\\end\{itemize\}', content) and not re.search(r'\\begin\{itemize\}[\s\S]*?\\begin\{tcolorbox\}', content))
+
+    # Check for Duplicate Raw URLs in body text
+    url_matches = re.findall(r'(https?://[^\s{}]+|open-sc[a-z]*\.vliz\.be)', content, re.IGNORECASE)
+    url_counts: Dict[str, int] = {}
+    for u in url_matches:
+        norm_u = u.rstrip("/,.;)").lower()
+        url_counts[norm_u] = url_counts.get(norm_u, 0) + 1
+    duplicate_urls = [u for u, count in url_counts.items() if count > 1]
+    has_duplicate_urls = len(duplicate_urls) > 0
+
+    # Check for Long Captions (> 15 words)
+    caption_match = re.search(r'\\caption\{([^}]+)\}', content, re.IGNORECASE)
+    caption_word_count = len(caption_match.group(1).split()) if caption_match else 0
+    has_overlong_caption = caption_word_count > 15
+
     # Check for A0 Portrait Layout Indicators
     has_portrait = bool(re.search(r'(portrait|orientation=portrait|paperwidth=84|paperheight=118)', content, re.IGNORECASE))
     has_a0 = bool(re.search(r'(a0|a0paper|841mm|1189mm)', content, re.IGNORECASE))
@@ -171,16 +210,18 @@ def audit_text_content(
         org_points += 1
     if bool(re.search(r'(introduction|background|context|methods|results|discussion|conclusion|pipeline)', content, re.IGNORECASE)):
         org_points += 1
+    if has_inverted_flow:
+        org_points = max(1, org_points - 1)  # Penalize inverted chronological flow
 
-    if org_points == 4:
+    if org_points == 4 and not has_inverted_flow:
         score_org = 4
-        desc_org = "Exemplary [4]: Exceptionally clean, straightforward, and logically organized IMRaD sequence."
-    elif org_points == 3:
+        desc_org = "Exemplary [4]: Exceptionally clean, chronological IMRaD sequence (Problem -> Methods -> Results -> Discussion)."
+    elif org_points >= 3:
         score_org = 3
         desc_org = "Acceptable [3]: Generally organized; minor sequencing or section refinement could be made."
-    elif org_points == 2:
+    elif org_points == 2 or has_inverted_flow:
         score_org = 2
-        desc_org = "Sub-par [2]: Organization leaves room for improvement; key narrative links missing."
+        desc_org = "Sub-par [2]: Inverted flow or missing narrative links (e.g. Discussion/Future placed before Methods/Hero)."
     else:
         score_org = 1
         desc_org = "Poor [1]: Unstructured narrative flow; hard for viewers to navigate."
@@ -195,16 +236,20 @@ def audit_text_content(
         vis_points += 1  # No raw data tables cluttering results
     if bool(re.search(r'(\\includegraphics|<p:pic>|image|figure|chart|map)', content, re.IGNORECASE)):
         vis_points += 1
+    if has_subjective_metrics:
+        vis_points = max(1, vis_points - 1)  # Penalize humorous/subjective metrics
+    if has_plain_bullets:
+        vis_points = max(1, vis_points - 1)  # Penalize unstyled bullet walls
 
-    if vis_points == 4:
+    if vis_points >= 4 and not has_subjective_metrics and not has_plain_bullets:
         score_vis = 4
-        desc_vis = "Exemplary [4]: High figure-to-text ratio, visual schemas aid comprehension, QR offloads details."
-    elif vis_points == 3:
+        desc_vis = "Exemplary [4]: High figure-to-text ratio, styled mini-cards, verifiable empirical metrics, QR offloads details."
+    elif vis_points >= 3:
         score_vis = 3
-        desc_vis = "Acceptable [3]: Graphics are functional and pleasant overall."
-    elif vis_points == 2:
+        desc_vis = "Acceptable [3]: Graphics are functional and pleasant overall; polish mini-card styling or metrics."
+    elif vis_points == 2 or has_subjective_metrics or has_plain_bullets:
         score_vis = 2
-        desc_vis = "Sub-par [2]: Design lacks functional visual diagrams or contains raw tables."
+        desc_vis = "Sub-par [2]: Design contains unstyled bullet walls, subjective metrics, or lacks functional schemas."
     else:
         score_vis = 1
         desc_vis = "Poor [1]: Visually unengaging; lacks clear focal graphics."
@@ -254,6 +299,13 @@ def audit_text_content(
     print(f"QR Code Integration:    {'[OK] Present (beta = +0.12)' if has_qr else '[!] Absent'}")
     print(f"Discussion Limitation:  {'[OK] Exactly 1 detected' if has_limitation else '[!] Missing explicit limitation'}")
     print(f"Future Direction:       {'[OK] Exactly 1 detected' if has_future else '[!] Missing actionable future direction'}")
+    print(f"Chronological Flow:     {'[!] Inverted reading flow (Discussion before Methods/Hero)' if has_inverted_flow else '[OK] Natural progression (Problem -> Solution -> Outcome)'}")
+    print(f"Styled Mini-Cards:      {'[!] Plain bullet wall detected (Convert to styled mini-cards)' if has_plain_bullets else '[OK] Styled cards / visual blocks'}")
+    print(f"Redundant Sub-headers:  {'[!] Detected redundant subtitles under numbered headers' if has_redundant_subheaders else '[OK] None detected'}")
+    print(f"Empirical Metrics:      {'[!] Subjective / humorous metric badges detected (' + ', '.join(subjective_metrics) + ')' if has_subjective_metrics else '[OK] Verifiable empirical quantities'}")
+    print(f"URL Redundancy:         {'[!] Duplicate raw URLs detected (' + ', '.join(duplicate_urls) + ')' if has_duplicate_urls else '[OK] Authoritative destination consolidated'}")
+    if caption_match:
+        print(f"Figure Caption Length:  {'[!] Overlong (' + str(caption_word_count) + ' words > 15 words limit)' if has_overlong_caption else '[OK] Concise (' + str(caption_word_count) + ' words)'}")
 
     if provenance_info is not None:
         print("-" * 76)
@@ -329,6 +381,10 @@ def main():
                 for shape in slide.shapes:
                     if shape.shape_type == MSO_SHAPE_TYPE.PICTURE:
                         structural_tags.append("<p:pic>")
+                        if "qr" in shape.name.lower():
+                            structural_tags.append("qr_code")
+                        if "hero" in shape.name.lower() or "infographic" in shape.name.lower():
+                            structural_tags.append("hero_infographic")
                     elif shape.shape_type == MSO_SHAPE_TYPE.TABLE:
                         structural_tags.append("<a:tbl>")
                     if shape.has_text_frame:

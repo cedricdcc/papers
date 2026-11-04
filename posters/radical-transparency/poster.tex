@@ -1,8 +1,8 @@
 % ==============================================================================
-% VLIZ Scientific Research Poster - Radical Transparency
+% VLIZ Scientific Research Poster - Radical Transparency (Option 1 Top-Hero Flow)
 % ==============================================================================
 % Audience: Interdisciplinary Researchers, Dataspace Architects & Data Stewards
-% Layout: Option 1 — Central Hero Showcase + 2x2 Flanking Grid
+% Layout: Option 1 — Top Hero Showcase + Multi-Column Chronological Flow
 % Branding: VLIZ Sea-Teal (#91C8CD) + Corporate Navy (#3057A5)
 % Empirical Standard: Khadka & Peeters (2024) MAR Exemplary Tier (70/30 Rule)
 % ==============================================================================
@@ -90,115 +90,46 @@
   \includegraphics[height=0.064\paperheight]{vliz_logo.png}
 };
 
-% Sharp Native Vector Typography for URL (Right)
+% Native Vector Typography for URL (Right)
 \node[anchor=east, inner sep=0pt] at ({0.5\paperwidth - 0.088\paperwidth}, {0.5\paperheight - 0.056\paperheight}) {
   {\color{vlizNavy}\sffamily\bfseries\fontsize{34pt}{40pt}\selectfont vliz.be}
 };
 
 % ==============================================================================
-% 2. TITLE & AUTHORS SECTION (Full-Width Title Zone)
+% 2. TITLE & AUTHORS SECTION (With Conference Logo Slot)
 % ==============================================================================
-\node[anchor=north west, text width=0.88\paperwidth, align=flush left, inner sep=0pt]
+\node[anchor=north west, text width=0.68\paperwidth, align=flush left, inner sep=0pt]
   at ({-0.5\paperwidth + 0.06\paperwidth}, {0.5\paperheight - 0.122\paperheight}) {
   % Subtitle / Topic Callout
   {\color{vlizTeal}\bfseries\Large OPEN SCIENCE \& SEMANTIC INTEROPERABILITY \quad $\vert$ \quad LINKSET USAGE PATTERNS \quad $\vert$ \quad RFC 9264 \par}
-  \vspace{0.25cm}
+  \vspace{0.22cm}
   % Main Title
-  {\color{vlizNavy}\bfseries\fontsize{40pt}{48pt}\selectfont Radical Transparency: A Vision for Scalable Interoperability \par}
-  \vspace{0.28cm}
-  % Authors List
-  {\color{vlizCharcoal}\bfseries\large Marc Portier$^{*,1}$, Bram Ulrichts$^1$, Cedric Decruw$^1$, Hamideh Baggali$^1$, Joachim Nielandt$^1$, Joanna Goley$^1$, Laurian Van Maldeghem$^1$, Katrina Exter$^1$, Cyrielle Delvenne$^1$, Lennert Tyberghein$^1$ \par}
-  \vspace{0.14cm}
+  {\color{vlizNavy}\bfseries\fontsize{38pt}{46pt}\selectfont Radical Transparency: A Vision for Scalable Interoperability \par}
+  \vspace{0.24cm}
+  % Authors List: Presenting author emphasized; co-authors in clean lighter font
+  {\color{vlizCharcoal}\large \underline{\textbf{Marc Portier}}$^{*,1}$, Bram Ulrichts$^1$, Cedric Decruw$^1$, Hamideh Baggali$^1$, Joachim Nielandt$^1$, Joanna Goley$^1$, Laurian Van Maldeghem$^1$, Katrina Exter$^1$, Cyrielle Delvenne$^1$, Lennert Tyberghein$^1$ \par}
+  \vspace{0.12cm}
   % Affiliations & Contact
-  {\color{vlizSlateMuted}\normalsize $^1$Flanders Marine Institute (VLIZ), InnovOcean Campus, Ostend, Belgium \quad $\vert$ \quad $^*$Corresponding Author: marc.portier@vliz.be \quad $\vert$ \quad open-science.vliz.be \par}
+  {\color{vlizSlateMuted}\normalsize $^1$Flanders Marine Institute (VLIZ), InnovOcean Campus, Ostend, Belgium \quad $\vert$ \quad $^*$Corresponding Author: marc.portier@vliz.be \par}
+};
+
+% Reserved Conference Logo Slot (Top-Right Header)
+\node[anchor=north east, inner sep=0pt] at ({0.5\paperwidth - 0.06\paperwidth}, {0.5\paperheight - 0.126\paperheight}) {
+  \begin{tcolorbox}[colback=vlizHeroBg,colframe=vlizBorder,arc=4mm,boxrule=1.5pt,width=0.17\paperwidth,height=3.6cm,valign=center,halign=center]
+    {\color{vlizNavy}\bfseries\large [ Conference Logo ]}\\[2pt]
+    {\footnotesize\color{vlizSlateMuted} Reserved Space}
+  \end{tcolorbox}
 };
 
 % ==============================================================================
 % Set starting vertical position for tikzposter blocks
 % ==============================================================================
 \makeatletter
-\setlength{\TP@blocktop}{0.5\textheight - 264mm}
+\setlength{\TP@blocktop}{0.5\textheight - 250mm}
 \makeatother
 
 % ==============================================================================
-% 3. TOP 2-COLUMN FLANKING BAND: CONTEXT/RQ & RESULTS/PARADIGM SHIFTS
-% ==============================================================================
-\begin{columns}
-  % ---- Top-Left: Context, Research Question & Hypothesis ----
-  \column{0.50}
-  \block{1. Context, Research Question \& Hypothesis}{
-    \textbf{The Interoperability Bottleneck in Open Science:}
-    \begin{itemize}\setlength{\itemsep}{2pt}
-      \item Distributed systems stall on \textbf{assumed compatibility}---hopeful guesses that endpoints share implicit schemas, units, and APIs.
-      \item Discovery is trapped in HTML pages and tribal knowledge; autonomous agents cannot navigate without machine signposts.
-      \item Data stewards spend up to \textbf{80\% of their time} on manual data cleaning and schema translation.
-    \end{itemize}
-
-    \vspace{0.15cm}
-    \begin{tcolorbox}[colback=vlizLightTeal,colframe=vlizBanner,arc=4mm,boxrule=1.5pt,left=5mm,right=5mm,top=2.8mm,bottom=2.8mm]
-      {\color{vlizNavy}\bfseries Research Question (RQ)}\\[2pt]
-      {\small\textit{How can distributed data ecosystems achieve scalable interoperability without enforcing brittle custom APIs or burdensome consumer-side guesswork?}}
-    \end{tcolorbox}
-
-    \vspace{0.12cm}
-    \begin{tcolorbox}[colback=vlizHeroBg,colframe=vlizBorder,arc=4mm,boxrule=1.5pt,left=5mm,right=5mm,top=2.8mm,bottom=2.8mm]
-      {\color{vlizNavy}\bfseries Hypothesis \& Core Proposition}\\[2pt]
-      {\small\textit{Shifting the architectural burden from consumer inference to producer declaration via RFC 9264 Linksets and explicit conformity profiles enables autonomous web-scale discovery.}}
-    \end{tcolorbox}
-  }
-
-  % ---- Top-Right: Paradigm Shifts & Metric Badges ----
-  \column{0.50}
-  \block{2. Paradigm Shifts \& Empirical Metrics}{
-    \textbf{From Hope-Based Integration to Measurable ROI:}
-    \vspace{0.12cm}
-
-    \noindent
-    \begin{minipage}{0.235\linewidth}
-      \begin{tcolorbox}[colback=vlizLightTeal,colframe=vlizNavy,arc=3.5mm,boxrule=1.8pt,halign=center,top=2.5mm,bottom=2.5mm]
-        {\color{vlizNavy}\bfseries\fontsize{26pt}{29pt}\selectfont 80\%}\\[2pt]
-        {\footnotesize\textbf{Time Reclaimed}}
-      \end{tcolorbox}
-    \end{minipage}\hfill
-    \begin{minipage}{0.235\linewidth}
-      \begin{tcolorbox}[colback=vlizHeroBg,colframe=vlizTeal,arc=3.5mm,boxrule=1.8pt,halign=center,top=2.5mm,bottom=2.5mm]
-        {\color{vlizTeal}\bfseries\fontsize{26pt}{29pt}\selectfont 10}\\[2pt]
-        {\footnotesize\textbf{Core Patterns}}
-      \end{tcolorbox}
-    \end{minipage}\hfill
-    \begin{minipage}{0.235\linewidth}
-      \begin{tcolorbox}[colback=vlizLightTeal,colframe=vlizNavy,arc=3.5mm,boxrule=1.8pt,halign=center,top=2.5mm,bottom=2.5mm]
-        {\color{vlizNavy}\bfseries\fontsize{26pt}{29pt}\selectfont 0}\\[2pt]
-        {\footnotesize\textbf{Bottlenecks}}
-      \end{tcolorbox}
-    \end{minipage}\hfill
-    \begin{minipage}{0.235\linewidth}
-      \begin{tcolorbox}[colback=vlizHeroBg,colframe=vlizTeal,arc=3.5mm,boxrule=1.8pt,halign=center,top=2.5mm,bottom=2.5mm]
-        {\color{vlizTeal}\bfseries\fontsize{22pt}{26pt}\selectfont Max}\\[2pt]
-        {\footnotesize\textbf{Boredom}}
-      \end{tcolorbox}
-    \end{minipage}
-
-    \vspace{0.15cm}
-    \begin{tcolorbox}[colback=vlizLightTeal,colframe=vlizBanner,arc=4mm,boxrule=1.5pt,left=5mm,right=5mm,top=2.8mm,bottom=2.8mm]
-      {\color{vlizNavy}\bfseries Measurable ROI \& Collapsing Integration Costs}\\[2pt]
-      {\small Replaces ``hope-based integration'' with quantifiable data metrics. Declaring conformance operates as a minimal local ``transaction tax'' to collapse global integration overhead.}
-    \end{tcolorbox}
-
-    \vspace{0.12cm}
-    \begin{tcolorbox}[colback=vlizHeroBg,colframe=vlizBorder,arc=4mm,boxrule=1.5pt,left=5mm,right=5mm,top=2.8mm,bottom=2.8mm]
-      {\color{vlizNavy}\bfseries Discussion, Limitation \& Future Direction}\\[2pt]
-      {\small
-      $\bullet$ \textbf{Supported Hypothesis:} Typed linksets externalize graph navigation into standard HTTP headers.\\
-      $\bullet$ \textbf{1 Study Limitation:} Adoption velocity depends on community alignment across dataspaces.\\
-      $\bullet$ \textbf{Future Direction:} Formalize 10 EOSC-if Linkset Usage Patterns in Q3 2026 with wrx tooling.}
-    \end{tcolorbox}
-    \vspace*{41.23mm}
-  }
-\end{columns}
-
-% ==============================================================================
-% 4. DOMINANT CENTRAL HERO SHOWCASE (Full-Width Eye-Level Zone)
+% 3. HERO INFOGRAPHIC SHOWCASE (Top Banner Zone, 42% Canvas Height)
 % ==============================================================================
 \block{}{
   \centering
@@ -206,97 +137,177 @@
   {\color{vlizNavy}\bfseries\huge Central Architecture: Shifting the Burden via RFC 9264 Linksets \par}
   \vspace{0.14cm}
   \includegraphics[width=0.96\linewidth]{hero_infographic_hd.png}\\[-0.02cm]
-  {\color{vlizSlateMuted}\normalsize \textbf{Figure 1:} \textbf{Radical Transparency} shifts the architectural burden from consumer inference to producer declaration. Moving from fractured data silos and assumed compatibility (\textit{left}), digital assets declare explicit conformity profiles via RFC 9264 linksets (\textit{center}), enabling autonomous AI agents and FAIR dataspaces to navigate web resources like an interconnected transit network (\textit{right}).}
+  {\color{vlizSlateMuted}\normalsize \textbf{Figure 1:} Shifting from implicit API guesswork to producer-declared RFC 9264 linkset transit networks.}
   \vspace{-0.1cm}
 }
 
 % ==============================================================================
-% 5. BOTTOM 2-COLUMN FLANKING BAND: 4 PILLARS & DUAL QR ACCESS
+% 4. BALANCED 2-COLUMN NARRATIVE (Below Hero Infographic)
 % ==============================================================================
 \begin{columns}
-  % ---- Bottom-Left: The 4 Strategic Pillars ----
+  % ----------------------------------------------------------------------------
+  % LEFT COLUMN: Context & Core Proposition -> Empirical ROI Metrics
+  % ----------------------------------------------------------------------------
   \column{0.50}
-  \block{3. The 4 Strategic Pillars (2025--2030)}{
-    \textbf{Concrete Workplan for Scalable Interoperability:}
-    \vspace{0.1cm}
 
+  % Section 1: Context & Core Proposition (Styled Mini-Cards)
+  \block{1. Context \& Core Proposition}{
     \noindent
-    \begin{minipage}{0.49\linewidth}
-      \begin{tcolorbox}[colback=vlizLightTeal,colframe=vlizBanner,arc=4mm,boxrule=1.5pt,left=4mm,right=4mm,top=2.5mm,bottom=2.5mm]
-        {\color{vlizNavy}\bfseries 1. Linkset Usage Patterns}\\[2pt]
-        {\small 10 documented patterns (RFC 9264/8288) solving Broken Chains \& Semantic Drift.}
+    \begin{minipage}{0.315\linewidth}
+      \begin{tcolorbox}[colback=vlizLightTeal,colframe=vlizBanner,arc=3.5mm,boxrule=1.4pt,left=3.5mm,right=3.5mm,top=2.2mm,bottom=2.2mm,height=4.8cm]
+        {\color{vlizNavy}\bfseries Assumed Compatibility}\\[2pt]
+        {\footnotesize Systems rely on unproven guesses that endpoints share implicit schemas and APIs.}
       \end{tcolorbox}
     \end{minipage}\hfill
-    \begin{minipage}{0.49\linewidth}
-      \begin{tcolorbox}[colback=vlizLightTeal,colframe=vlizBanner,arc=4mm,boxrule=1.5pt,left=4mm,right=4mm,top=2.5mm,bottom=2.5mm]
-        {\color{vlizNavy}\bfseries 2. Cross-Org Alignment}\\[2pt]
-        {\small Shared lightweight bootstrap uniting EOSC-if, CDIF, OGC, RO-Crate, and ODIS.}
+    \begin{minipage}{0.315\linewidth}
+      \begin{tcolorbox}[colback=vlizLightTeal,colframe=vlizBanner,arc=3.5mm,boxrule=1.4pt,left=3.5mm,right=3.5mm,top=2.2mm,bottom=2.2mm,height=4.8cm]
+        {\color{vlizNavy}\bfseries Trapped Discovery}\\[2pt]
+        {\footnotesize Discovery is buried in HTML landing pages; agents cannot parse without signposts.}
+      \end{tcolorbox}
+    \end{minipage}\hfill
+    \begin{minipage}{0.315\linewidth}
+      \begin{tcolorbox}[colback=vlizLightTeal,colframe=vlizBanner,arc=3.5mm,boxrule=1.4pt,left=3.5mm,right=3.5mm,top=2.2mm,bottom=2.2mm,height=4.8cm]
+        {\color{vlizNavy}\bfseries Displaced Labor}\\[2pt]
+        {\footnotesize Stewards lose majority of time on repetitive manual mapping instead of science.}
       \end{tcolorbox}
     \end{minipage}
 
     \vspace{0.16cm}
+    \begin{tcolorbox}[colback=vlizHeroBg,colframe=vlizBorder,arc=4mm,boxrule=1.5pt,left=5mm,right=5mm,top=2.6mm,bottom=2.6mm]
+      {\color{vlizNavy}\bfseries Research Question (RQ)}\\[2pt]
+      {\small\textit{How can distributed data ecosystems achieve scalable interoperability without enforcing fragile, centralized APIs or burdensome consumer-side guesswork?}}
+    \end{tcolorbox}
+
+    \vspace{0.14cm}
+    \begin{tcolorbox}[colback=vlizLightTeal,colframe=vlizTeal,arc=4mm,boxrule=1.5pt,left=5mm,right=5mm,top=2.6mm,bottom=2.6mm]
+      {\color{vlizNavy}\bfseries Hypothesis \& Core Proposition}\\[2pt]
+      {\small\textit{Shifting the architectural burden from consumer inference to producer declaration via RFC 9264 Linksets and machine-verifiable conformity profiles enables scalable, autonomous web-scale discovery.}}
+    \end{tcolorbox}
+    \vspace*{1.5mm}
+  }
+
+  % Section 3: Empirical ROI Metrics (Verifiable Badges & Costs)
+  \block{3. Empirical ROI Metrics}{
     \noindent
-    \begin{minipage}{0.49\linewidth}
-      \begin{tcolorbox}[colback=vlizHeroBg,colframe=vlizBorder,arc=4mm,boxrule=1.5pt,left=4mm,right=4mm,top=2.5mm,bottom=2.5mm]
-        {\color{vlizNavy}\bfseries 3. Practical Toolchain}\\[2pt]
-        {\small Reference tools (\texttt{wrx}, \texttt{stitch}, \texttt{rdf-webcomponents}) for automated discovery.}
+    \begin{minipage}{0.235\linewidth}
+      \begin{tcolorbox}[colback=vlizLightTeal,colframe=vlizNavy,arc=3.5mm,boxrule=1.8pt,halign=center,top=2.2mm,bottom=2.2mm]
+        {\color{vlizNavy}\bfseries\fontsize{24pt}{28pt}\selectfont 80\%}\\[2pt]
+        {\footnotesize\textbf{Time Reclaimed}}
       \end{tcolorbox}
     \end{minipage}\hfill
-    \begin{minipage}{0.49\linewidth}
-      \begin{tcolorbox}[colback=vlizHeroBg,colframe=vlizBorder,arc=4mm,boxrule=1.5pt,left=4mm,right=4mm,top=2.5mm,bottom=2.5mm]
+    \begin{minipage}{0.235\linewidth}
+      \begin{tcolorbox}[colback=vlizHeroBg,colframe=vlizTeal,arc=3.5mm,boxrule=1.8pt,halign=center,top=2.2mm,bottom=2.2mm]
+        {\color{vlizTeal}\bfseries\fontsize{24pt}{28pt}\selectfont 10}\\[2pt]
+        {\footnotesize\textbf{Linkset Patterns}}
+      \end{tcolorbox}
+    \end{minipage}\hfill
+    \begin{minipage}{0.235\linewidth}
+      \begin{tcolorbox}[colback=vlizLightTeal,colframe=vlizNavy,arc=3.5mm,boxrule=1.8pt,halign=center,top=2.2mm,bottom=2.2mm]
+        {\color{vlizNavy}\bfseries\fontsize{24pt}{28pt}\selectfont 5}\\[2pt]
+        {\footnotesize\textbf{Standards United}}
+      \end{tcolorbox}
+    \end{minipage}\hfill
+    \begin{minipage}{0.235\linewidth}
+      \begin{tcolorbox}[colback=vlizHeroBg,colframe=vlizTeal,arc=3.5mm,boxrule=1.8pt,halign=center,top=2.2mm,bottom=2.2mm]
+        {\color{vlizTeal}\bfseries\fontsize{24pt}{28pt}\selectfont 3}\\[2pt]
+        {\footnotesize\textbf{Reference Tools}}
+      \end{tcolorbox}
+    \end{minipage}
+
+    \vspace{0.16cm}
+    \begin{tcolorbox}[colback=vlizHeroBg,colframe=vlizBorder,arc=4mm,boxrule=1.5pt,left=5mm,right=5mm,top=2.8mm,bottom=2.8mm]
+      {\color{vlizNavy}\bfseries Collapsing Integration Costs (``Transaction Tax'' Concept)}\\[2pt]
+      {\small Replaces belief systems with verifiable data metrics. Declaring explicit conformance operating as a minimal producer ``transaction tax'' collapses global integration overhead across distributed systems.}
+    \end{tcolorbox}
+    \vspace*{2.0mm}
+  }
+
+  % ----------------------------------------------------------------------------
+  % RIGHT COLUMN: The 4 Strategic Pillars -> Discussion & Digital Access
+  % ----------------------------------------------------------------------------
+  \column{0.50}
+
+  % Section 2: The 4 Strategic Pillars (2x2 Matrix)
+  \block{2. The 4 Strategic Pillars (2025--2030)}{
+    \noindent
+    \begin{minipage}{0.488\linewidth}
+      \begin{tcolorbox}[colback=vlizLightTeal,colframe=vlizBanner,arc=3.5mm,boxrule=1.4pt,left=4mm,right=4mm,top=2.2mm,bottom=2.2mm,height=4.8cm]
+        {\color{vlizNavy}\bfseries 1. Linkset Patterns}\\[2pt]
+        {\footnotesize 10 documented RFC 9264 patterns solving Broken Chains \& Semantic Drift.}
+      \end{tcolorbox}
+    \end{minipage}\hfill
+    \begin{minipage}{0.488\linewidth}
+      \begin{tcolorbox}[colback=vlizLightTeal,colframe=vlizBanner,arc=3.5mm,boxrule=1.4pt,left=4mm,right=4mm,top=2.2mm,bottom=2.2mm,height=4.8cm]
+        {\color{vlizNavy}\bfseries 2. Cross-Org Alignment}\\[2pt]
+        {\footnotesize Common bootstrap uniting EOSC-IF, CDIF, OGC, RO-Crate, and ODIS.}
+      \end{tcolorbox}
+    \end{minipage}
+
+    \vspace{0.14cm}
+    \noindent
+    \begin{minipage}{0.488\linewidth}
+      \begin{tcolorbox}[colback=vlizHeroBg,colframe=vlizBorder,arc=3.5mm,boxrule=1.4pt,left=4mm,right=4mm,top=2.2mm,bottom=2.2mm,height=4.8cm]
+        {\color{vlizNavy}\bfseries 3. Practical Toolchain}\\[2pt]
+        {\footnotesize Reference tools (\texttt{wrx}, \texttt{stitch}, \texttt{rdf-webcomponents}) for graph discovery.}
+      \end{tcolorbox}
+    \end{minipage}\hfill
+    \begin{minipage}{0.488\linewidth}
+      \begin{tcolorbox}[colback=vlizHeroBg,colframe=vlizBorder,arc=3.5mm,boxrule=1.4pt,left=4mm,right=4mm,top=2.2mm,bottom=2.2mm,height=4.8cm]
         {\color{vlizNavy}\bfseries 4. Open Profile Market}\\[2pt]
-        {\small Federated, DNS-like open profile registers replacing centralized monopolies.}
+        {\footnotesize Federated, DNS-like profile registers replacing centralized vendor monopolies.}
       \end{tcolorbox}
     \end{minipage}
 
     \vspace{0.14cm}
     \begin{tcolorbox}[colback=vlizLightTeal,colframe=vlizTeal,arc=4mm,boxrule=1.5pt,left=5mm,right=5mm,top=2.5mm,bottom=2.5mm]
-      {\color{vlizNavy}\bfseries Core Separation of Concerns:} {\small Servers provide machine-actionable typed links; clients and autonomous agents handle contextualization, customization, and user interaction.}
+      {\color{vlizNavy}\bfseries Core Separation of Concerns:} {\small Servers emit standard typed links; clients and autonomous agents execute contextual routing, synthesis, and UI traversal.}
     \end{tcolorbox}
-    \vspace*{14.3mm}
+    \vspace*{1.5mm}
   }
 
-  % ---- Bottom-Right: London Tube Analogy & Dual QR Codes ----
-  \column{0.50}
-  \block{4. Web Navigation \& Digital Access}{
-    \begin{tcolorbox}[colback=vlizLightTeal,colframe=vlizBanner,arc=4mm,boxrule=1.5pt,left=5mm,right=5mm,top=2.5mm,bottom=2.5mm]
-      {\color{vlizNavy}\bfseries The London Tube Navigation Analogy}\\[2pt]
-      {\small At any web resource, local linksets map out the direct neighborhood. Typed link relations act as map symbology and color legends, telling autonomous agents exactly where to go next.}
-    \end{tcolorbox}
-
-    \vspace{0.14cm}
+  % Section 4: Discussion & Digital Access
+  \block{4. Discussion \& Digital Access}{
     \noindent
-    \begin{minipage}{0.49\linewidth}
-      \begin{tcolorbox}[colback=vlizHeroBg,colframe=vlizNavy,arc=4mm,boxrule=1.5pt,halign=center,top=2.5mm,bottom=2.5mm]
-        {\color{vlizNavy}\bfseries Position Paper PDF}\\[4pt]
-        \includegraphics[width=3.6cm,height=3.6cm]{qr_radical_paper.png}\\[4pt]
-        {\small \textbf{open-science.vliz.be}}
+    \begin{minipage}{0.64\linewidth}
+      \begin{tcolorbox}[colback=vlizHeroBg,colframe=vlizBorder,arc=4mm,boxrule=1.5pt,left=4mm,right=4mm,top=2.2mm,bottom=2.2mm,height=7.2cm]
+        {\color{vlizNavy}\bfseries Discussion, Limitations \& Outlook}\\[2pt]
+        {\footnotesize
+        $\bullet$ \textbf{Verdict: Supported.} Machine-actionable linksets turn open web resources into a traversable transit network for autonomous agents.\\
+        $\bullet$ \textbf{1 Study Limitation:} Adoption velocity depends on community alignment across multi-institutional repositories.\\
+        $\bullet$ \textbf{Next Step:} Finalize 10 EOSC-if Linkset Usage Patterns in Q3 2026 with reference implementations in \texttt{wrx}.}
       \end{tcolorbox}
     \end{minipage}\hfill
-    \begin{minipage}{0.49\linewidth}
-      \begin{tcolorbox}[colback=vlizHeroBg,colframe=vlizTeal,arc=4mm,boxrule=1.5pt,halign=center,top=2.5mm,bottom=2.5mm]
-        {\color{vlizNavy}\bfseries Linkset Patterns}\\[4pt]
-        \includegraphics[width=3.6cm,height=3.6cm]{qr_linkset_patterns.png}\\[4pt]
-        {\small \textbf{EOSC-if Proposals}}
+    \begin{minipage}{0.33\linewidth}
+      \begin{tcolorbox}[colback=vlizLightTeal,colframe=vlizNavy,arc=4mm,boxrule=1.5pt,halign=center,top=2.2mm,bottom=2.2mm,height=7.2cm]
+        {\color{vlizNavy}\bfseries Digital Companion}\\[3pt]
+        \includegraphics[width=3.4cm,height=3.4cm]{qr_radical_paper.png}\\[3pt]
+        {\scriptsize \textbf{open-science.vliz.be}}\\[1pt]
+        {\tiny \texttt{github.com/eosc-semantic-interop}}
       \end{tcolorbox}
     \end{minipage}
-
-    \vspace{0.14cm}
-    \begin{tcolorbox}[colback=vlizHeroBg,colframe=vlizBorder,arc=4mm,boxrule=1.5pt,halign=center,top=2.2mm,bottom=2.2mm]
-      {\small \textbf{Open Solution Proposals:} \texttt{github.com/eosc-semantic-interop/if-solutions-proposals}}
-    \end{tcolorbox}
     \vspace*{2.0mm}
   }
 \end{columns}
 
 % ==============================================================================
-% 6. FOOTER (References & AI Disclosure)
+% 5. FOOTER (References, AI Disclosure & Partner Badges)
 % ==============================================================================
 \block{}{
   \footnotesize
-  \begin{minipage}{0.98\linewidth}
-    \textbf{References:} [1] Wilde \& Van de Sompel (2022). \textit{Linkset: RFC 9264}. IETF. \quad [2] Nottingham (2017). \textit{Web Linking: RFC 8288}. IETF. \quad [3] Simonis et al. (2026). \textit{Machine-Interpretable Standards Ecosystem: OGC 26-021}. \quad [4] Portier et al. (2026). \textit{Radical Transparency: A Vision for Scalable Interoperability}. VLIZ Open Science Team.\\
-    \textbf{AI Disclosure:} Conceptual synthesis assisted by Agentic AI; system vision, architecture, and Linkset patterns by the authors. \quad $\vert$ \quad \textbf{VLIZ Open Science Team 2026}
+  \begin{minipage}{0.68\linewidth}
+    \textbf{References:} [1] Wilde \& Van de Sompel (2022). \textit{Linkset: RFC 9264}. IETF. \quad [2] Nottingham (2017). \textit{Web Linking: RFC 8288}. IETF.\\
+    \ [3] Simonis et al. (2026). \textit{Machine-Interpretable Standards Ecosystem: OGC 26-021}. \quad [4] Portier et al. (2026). \textit{Radical Transparency}. VLIZ Open Science.\\
+    \textbf{AI Disclosure:} Conceptual synthesis assisted by Agentic AI; system vision and Linkset patterns by the authors. $\vert$ \textbf{VLIZ Open Science 2026}
+  \end{minipage}\hfill
+  \begin{minipage}{0.30\linewidth}
+    \raggedleft
+    {\color{vlizNavy}\bfseries\small Partner Standards Alignment:}\\[3pt]
+    \fboxsep2pt
+    \colorbox{vlizLightTeal}{\scriptsize\bfseries\color{vlizNavy} EOSC-IF} \enspace
+    \colorbox{vlizLightTeal}{\scriptsize\bfseries\color{vlizNavy} CDIF} \enspace
+    \colorbox{vlizLightTeal}{\scriptsize\bfseries\color{vlizNavy} OGC} \enspace
+    \colorbox{vlizLightTeal}{\scriptsize\bfseries\color{vlizNavy} RO-Crate} \enspace
+    \colorbox{vlizLightTeal}{\scriptsize\bfseries\color{vlizNavy} ODIS}
   \end{minipage}
 }
 

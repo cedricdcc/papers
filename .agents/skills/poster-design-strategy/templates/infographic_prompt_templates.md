@@ -95,8 +95,11 @@ SPATIAL GEOMETRY & COMPOSITION:
 - Reading Flow: Unambiguous left-to-right (or top-to-bottom) visual progression
 
 STRICT NEGATIVE CONSTRAINTS:
-- No figure numbers (do NOT write "Figure 1", "Fig.", or captions)
-- No narrative sentences or paragraphs of text; maximum 10 single-word labels total
+- No figure numbers (do NOT write "Figure 1", "Fig.", or captions; external caption handled in poster markup strictly <= 12-15 words)
+- No narrative sentences or paragraphs of text; maximum 10 single-word structural labels total
+- Unified 2D flat vector aesthetic across all panels/stages (prohibit mixing 3D glass, photorealism, and cartoon stick figures)
+- Prohibit pseudo-3D translucent glass cubes, boxes, or nested flowchart containers with micro-text inside; use clean 2D node-and-link signposts
+- Prohibit stacked duplicate labels on parallel arrows or connector lines
 - Pure solid white background (no dark mode, no gradients, no borders)
 - High contrast, colorblind-friendly (zero red-green conflicts)
 ```

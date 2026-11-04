@@ -120,33 +120,42 @@ Apply the **10-10 Rule**: Attendees scan from 10 feet for 10 seconds. The target
 
 1. **Title Block**:
    - Informative, descriptive headline highlighting primary discovery or key variables.
-   - Full author names, institutional affiliations, ORCIDs, and corresponding email (from `provenance.md`).
+   - Author attribution: Bold or underline the presenting/corresponding author; group co-authors in a clean, slightly lighter typographical weight to maintain clear visual dominance for the title.
    - Conference logo or reserved `[ Conference Logo ]` placeholder box on the right side of the Title Header zone if enabled in `provenance.md`.
 2. **Background & Context (Condensed Introduction)**:
-   - **Strictly 2 to 4 concise bullet points** citing seminal literature.
+   - **Strictly 2 to 4 concise points** citing seminal literature.
+   - **Hybrid Mini-Cards**: Prohibit plain unstyled bullet walls; format points as styled mini-cards with bold micro-headers.
    - What is known $\rightarrow$ The specific scientific gap.
    - **Explicit Statement of Research Question (RQ)**.
    - **Explicit Statement of Hypothesis or Prediction**.
-   - **PROHIBITION**: Never paste an abstract text block ($\beta = -0.10$ negative impression driver).
-3. **Methods Overview**:
-   - State study system, experimental approach, independent/dependent variables, sample size ($n$).
-   - **Visual Anchor**: Anchored by a visual experimental setup diagram or flowchart ($\beta = +0.15$).
-4. **Results Visualization (The Focal Point)**:
+   - **PROHIBITIONS**:
+     - Never paste an abstract text block ($\beta = -0.10$ negative impression driver).
+     - Never insert redundant italic section sub-headers directly beneath a numbered section banner (e.g., `1. Context...` followed immediately by `The Interoperability Bottleneck in Open Science:`). Let the section header and mini-cards carry the structure.
+     - Never print floating, raw duplicate URLs in body text that mirror the QR code destination.
+3. **Methods & Architectural Pillars**:
+   - State study system, experimental approach, independent/dependent variables, sample size ($n$), or strategic framework pillars.
+   - **Visual Anchor**: Anchored by a visual experimental setup diagram, pipeline flowchart ($\beta = +0.15$), or an even **$2 \times 2$ grid of mini-cards** for 4-element structures (e.g., 4 Strategic Pillars), avoiding monotonous stacked text bars.
+4. **Results Visualization & Empirical Metrics (The Focal Point)**:
    - **1 to 3 high-value figures** or **bold metric callout badges** showcasing primary data trends.
-   - Brief standalone descriptive caption below every figure.
-   - Bullet points highlighting statistical findings ($p$-values, effect sizes).
+   - Standalone figure captions strictly limited to **$\le 12\text{--}15$ words** stating the single core takeaway (zero duplication of hypothesis or discussion prose).
+   - **Empirical Metric Credibility Rule**:
+     - Metric badges must represent **verifiable, empirical quantities** (e.g., `80% Time Reclaimed`, `10 Patterns`, `5 Standards United`, `3 Reference Tools`, sample size $n$, effect sizes, $p$-values, or runtime speedups).
+     - **PROHIBITION**: Never use humorous, subjective, or ironic metrics (e.g., `0 Bottlenecks`, `Max Boredom`, `100% Happiness`) in empirical metric slots; they undermine scientific credibility and peer review rigor.
+     - **Deduplication Rule**: Never duplicate statistics between metric badges and adjacent body bullets (e.g., stating "80% of their time" in a bullet next to an "80% Time Reclaimed" badge).
    - **PROHIBITIONS**: Zero raw data tables; zero narrative literature interpretation.
-5. **Discussion & Mechanisms**:
+5. **Discussion, Mechanisms & Takeaways**:
    - Clear statement: Was the hypothesis supported or refuted?
    - Explanatory mechanism (chemical, physical, biological, or computational).
    - Broad domain-level implications.
+   - **Analogy & Legend Integration**: Merge explanatory analogies (e.g., transit map navigation metaphors) and visual legends directly into the hero figure rather than consuming dedicated text cards.
    - **Exactly ONE major study limitation**.
    - **Exactly ONE actionable future direction** directly addressing that limitation.
 6. **Supplemental, Extra Logos & Digital Integration**:
    - **2 to 5 key references** cited in-text.
    - Mandatory AI / super-intelligence tool disclosures.
-   - **Scannable QR code** ($\beta = +0.12$) linking to the full paper, dataset, or live platform.
-   - **Extra Partner / Funder Logos** rendered in the Footer Bar (or their configured placement zone from `provenance.md`).
+   - **Scannable QR code** ($\beta = +0.12$) linking to the full paper, dataset, or live platform, anchored in a dedicated bottom card.
+   - **Extra Partner / Funder Logos** rendered as clean monochrome badges in the Footer Bar (or configured zone).
+   - **Baseline Alignment Rule**: Ensure all columns terminate at the exact same horizontal baseline without dead vertical voids.
 
 ### Mandatory Gate 2: Update `provenance.md` (Distilled Narrative)
 Once the author approves the distilled content, write the finalized bullets, RQ, Hypothesis, Methods summary, Results metrics, Limitation, and Future Direction into Section 2 of `posters/<poster-name>/provenance.md` and set `poster.status: "distilled"`.
@@ -183,63 +192,69 @@ Always present **two tailored ASCII options** explicitly annotated with 70/30 sp
 | [ TOP BANNER: Primary Institution Logo (Left) | URL (Right) ]|
 +-------------------------------------------------------------+
 | [ TITLE BLOCK: Subtitle, Title, Authors ]   [ CONF. LOGO /  |
-|                                               PLACEHOLDER ] |
+| (Bold Presenting Author; Lighter Co-Authors)  PLACEHOLDER ] |
 +-------------------------------------------------------------+
 |                                                             |
 |   =======================================================   |
-|   |         CENTRAL HERO INFOGRAPHIC / PIPELINE         |   |
-|   |             (~45% TOTAL POSTER AREA)                |   |
-|   |   High-impact visual representation generated via   |   |
-|   |     Nano Banana 2 in A0 Portrait aspect ratio       |   |
+|   |         DOMINANT HERO INFOGRAPHIC / PIPELINE        |   |
+|   |             (~42-45% TOTAL POSTER AREA)             |   |
+|   |   High-impact visual representation (16:9 banner)   |   |
+|   |   (Includes visual legends; <=12-word bold caption) |   |
 |   =======================================================   |
 |                                                             |
 +------------------------------+------------------------------+
-| [ CONTEXT & HYPOTHESIS: 15% ]| [ RESULTS VISUAL: 25% AREA ] |
-| • 2-3 Context Bullets        | +--------------------------+ |
-| • Explicit Research Question | | Empirical Data Plot /    | |
-| • Explicit Hypothesis        | | Metric Callout Badges    | |
-|                              | +--------------------------+ |
-| [ METHODS SUMMARY: 10% AREA ]| • Statistical Key Findings   |
-| • System, Variables, n       +------------------------------+
-| • Rounded Feature Sub-Cards  | [ DISCUSSION & TAKEAWAY: 5% ]|
-+------------------------------+ • Hypothesis Supported?      |
-| [ FOOTER: References & AI ]  | • 1 Limitation & 1 Outlook   |
-| [ EXTRA LOGOS / PARTNERS ]   | [ QR CODE CARD ]             |
+| [ 1. CONTEXT & RQ / HYPOTHESIS] [ 2. METHODS & PILLARS ]   |
+| • 2-3 Styled Mini-Cards      | +--------------+-----------+ |
+| +--------------------------+ | | Pillar 1     | Pillar 2  | |
+| | Research Question (RQ)   | | +--------------+-----------+ |
+| +--------------------------+ | | Pillar 3     | Pillar 4  | |
+| +--------------------------+ | +--------------+-----------+ |
+| | Hypothesis Statement     | | • System Architecture /     |
+| +--------------------------+ |   Implementation Toolchain   |
+|                              +------------------------------+
+| [ 3. EMPIRICAL RESULTS / ROI]| [ 4. DISCUSSION & ACCESS ]   |
+| [ Metric 1 ] [ Metric 2 ]    | • Hypothesis Supported?      |
+| [ Metric 3 ] [ Metric 4 ]    | • 1 Study Limitation         |
+| • Verifiable Project Findings| • 1 Actionable Next Outlook  |
+| • Quantitative Outcomes      | [ QR CODE CARD: Clean Base ] |
 +------------------------------+------------------------------+
+| [ FOOTER: References [1-4] | AI Disclosure | Partner Badges ]|
++-------------------------------------------------------------+
   Spatial Budget: ~70% Visual Assets & Negative Space | ~30% Text
 ```
 
-#### Option 2: Central Hero Box + Flanking Context (70% Visual / 30% Text)
+#### Option 2: Reordered Central Hero Box + Chronological Flow (70% Visual / 30% Text)
 ```
 +-------------------------------------------------------------+
 | [ TOP BANNER: Primary Institution Logo (Left) | URL (Right) ]|
 +-------------------------------------------------------------+
 | [ TITLE BLOCK: Subtitle, Title, Authors ]   [ CONF. LOGO /  |
-|                                               PLACEHOLDER ] |
+| (Bold Presenting Author; Lighter Co-Authors)  PLACEHOLDER ] |
 +------------------------------+------------------------------+
-| [ CONTEXT & HYPOTHESIS: 15% ]| [ RESULTS HIGHLIGHT: 20% ]   |
-| • 2-3 Literature Bullets     | +--------------------------+ |
-| • Research Question (RQ)     | | Key Finding Chart /      | |
-| • Explicit Prediction        | | Metric Callout Badges    | |
-| • Study Variables & n        | +--------------------------+ |
+| [ 1. CONTEXT & RQ: 15% ]     | [ 2. HYPOTHESIS & SETUP: 15%]|
+| • 2-3 Problem Mini-Cards     | • Explicit Hypothesis Card   |
+| • Research Question (RQ) Card| • Conceptual Analogy Setup   |
 +------------------------------+------------------------------+
 |                                                             |
 |   =======================================================   |
 |   |          DOMINANT PROJECT HERO INFOGRAPHIC          |   |
-|   |               (~50% TOTAL CANVAS AREA)              |   |
-|   |      Comprehensive visual representation of the     |   |
-|   |     entire mechanism, dataset, or spatial model     |   |
+|   |               (~45-50% TOTAL CANVAS AREA)           |   |
+|   |      Comprehensive visual representation bridging   |   |
+|   |     problem to solution; <=12-word bold caption     |   |
 |   =======================================================   |
 |                                                             |
 +------------------------------+------------------------------+
-| [ METHODS & MECHANISMS: 10% ]| [ DISCUSSION & FUTURE: 5% ]  |
-| • Experimental Workflow      | • Primary Mechanism Summary  |
-| • Rounded Feature Sub-Cards  | • 1 Constraint | 1 Next Step |
-|                              | • [ QR CODE TO DATA / PAPER ]|
+| [ 3. METHODS & PILLARS: 15% ]| [ 4. RESULTS & DISCUSSION:20%|
+| • 2x2 Pillar Matrix / Schema | • Verifiable Metric Badges   |
+| • Implementation Toolchain   | • Hypothesis Verdict & Impact|
+| • Separation of Concerns     | • 1 Limitation & 1 Outlook   |
+|                              | [ QR CODE CARD: Clean Base ] |
 +------------------------------+------------------------------+
-| [ FOOTER: References & AI Disclosure | EXTRA LOGOS BAR ]    |
+| [ FOOTER: References & AI Disclosure | Partner Badges ]      |
 +-------------------------------------------------------------+
   Spatial Budget: ~70% Visual Assets & Negative Space | ~30% Text
+  *Chronology Rule*: Top quadrants setup the study; bottom quadrants deliver results and discussion.
+  Never place Results or Discussion above the Hero Infographic.
 ```
 
 ### Step 4B: Author Approval & Layout Adjustment
@@ -249,22 +264,26 @@ Prompt the author:
 ### Step 4C: Interactive Infographic Creator & Multi-Modal Self-Critique Loop
 Once the layout is approved, launch the iterative visual creator loop using [templates/infographic_prompt_templates.md](templates/infographic_prompt_templates.md):
 
-1. **Assemble Master Prompt (Eliminating Text Hallucinations)**:
+1. **Assemble Master Prompt (Eliminating Style Clash & Text Hallucinations)**:
    - Target zone geometry (`16:9` wide banner, `1:1` square, or `3:4` vertical).
    - Apply domain theme preset (e.g. VLIZ Marine Sea-teal `#91C8CD`, Deep Navy `#002B49`).
-   - Strict negative constraint: Zero AI prose, no figure numbers, maximum 10 single-word structural labels total. Detailed explanations are delegated strictly to LaTeX/PPTX markup.
+   - **Unified Vector Aesthetic**: Enforce a coherent 2D flat vector aesthetic across all stages/panels. Prohibit mixing disparate illustration styles (e.g., cartoon sketches on one side and 3D renders on the other).
+   - **Prohibit 3D Glass / Cramped Containers**: Prohibit pseudo-3D glass cubes, translucent volumetric blocks, or nested flowchart boxes with micro-text labels inside. Replace with crisp 2D node-and-link signposts.
+   - **Eliminate Label Redundancy**: Prohibit repeating the exact same label across parallel stacked arrows or lines.
+   - **Strict Negative Constraints**: Zero AI prose, no figure numbers, maximum 10 single-word structural labels total. Figure caption strictly $\le 12\text{--}15$ words. Detailed explanations are delegated strictly to LaTeX/PPTX markup.
 2. **Execute Generation**:
-   Generate publication-grade visual asset using Nano Banana 2 / `generate_image`.
+   Generate publication-grade visual asset using Nano Banana 2 / `generate_image` or `scientific-schematics`.
 3. **Multi-Modal AI Self-Critique**:
    Before presenting to the author, inspect the image to verify:
    - Ample whitespace ($50\text{--}60\%$ negative space).
+   - Unified visual style across all stages (zero stylistic clash).
    - Clear left-to-right or top-to-bottom directional conduit.
-   - Absence of distorted synthetic pseudo-fonts or unwanted palette legends.
+   - Absence of distorted synthetic pseudo-fonts, repetitive arrow text, or unwanted palette legends.
 4. **Interactive HITL Feedback Step (Mandatory Modal Gate)**:
    - Present the image preview to the author using an interactive modal (`ask_question`).
    - Prompt the author for direct feedback:
      - *"Does this visual representation accurately reflect your project?"*
-     - *"Are the theme colors, containers, and element weights balanced?"*
+     - *"Are the theme colors, containers, element weights, and illustration style balanced and unified?"*
    - **Iterative Refinement Rule**: If the author comments or requests adjustments, regenerate the infographic and present again. Only advance to the next step once the author explicitly approves the visual asset.
 
 ### Mandatory Gate 3: Update `provenance.md` (Layout & Infographic Log)
@@ -309,12 +328,14 @@ When PowerPoint output is requested (either standalone or alongside LaTeX):
    - Ensure all column cards start and end at the exact same vertical coordinates ($y_{\text{top}}$ and $y_{\text{bottom}}$), and all lowest inner sub-cards across columns terminate at the same horizontal baseline.
    - Ensure sibling shapes inside a container card never overlap each other.
 
-### Step 5B: Automated Visual Inspection & 4-Point Visual QA
+### Step 5B: Automated Visual Inspection & 6-Point Visual QA
 Inspect the rendered visual output (`preview_poster.png` and/or `.pptx` shape geometry):
 1. **Bottom Baseline Alignment**: Verify that all columns terminate at the exact same horizontal baseline. No column should leave an empty bottom void.
 2. **Dead Whitespace Minimization**: Eliminate dead vertical gaps between the title block, hero infographic, columns, and footer.
-3. **Bullet Point Transformation Check**: Ensure no walls of plain dot-bullet items remain unstyled.
-4. **Collision & Clipping Verification**: Verify clear separation between title text, conference/extra logo slots, block headers, and QR codes.
+3. **Bullet Point Transformation Check**: Ensure no walls of plain dot-bullet items remain unstyled (convert to styled mini-cards or $2 \times 2$ grid).
+4. **Redundant Sub-Header Check**: Verify that no numbered section banner is followed by an immediate italic subtitle or secondary header line.
+5. **Empirical Metric Credibility Check**: Ensure all metric callout badges display verifiable project metrics (prohibit "Max Boredom", "0 Bottlenecks", etc.).
+6. **Collision & Clipping Verification**: Verify clear separation between title text, conference/extra logo slots, block headers, and QR codes.
 
 ### Step 5C: Human Check-in Before Layout Changes (Mandatory HITL Gate)
 When visual defects or alignment improvements are detected during inspection:
@@ -337,8 +358,8 @@ The script verifies `posters/<poster-name>/provenance.md` completeness and audit
 
 | Rubric Dimension | Poor [1] | Sub-par [2] | Acceptable [3] | Exemplary [4] |
 | :--- | :--- | :--- | :--- | :--- |
-| **1. Organization** | Unstructured flow; abstract included. | Awkward progression; missing RQ/Hypothesis. | Generally organized IMRaD sequence. | Exceptionally clean visual hierarchy; explicit RQ/Hypothesis; no abstract. |
-| **2. Poster Design & Visuals** | Visually unengaging; raw tables present. | Weak visuals; raw data tables clutter results. | Functional graphics; pleasant layout. | High figure-to-text ratio; visual schemas replace prose; QR offloads details. |
+| **1. Organization** | Unstructured flow; abstract included. | Inverted sequence (e.g. Discussion before Hero); missing RQ/Hypothesis. | Generally organized IMRaD sequence. | Exceptionally clean hierarchy; chronological narrative flow; explicit RQ/Hypothesis; no abstract. |
+| **2. Poster Design & Visuals** | Visually unengaging; raw tables present. | Plain bullet walls; raw tables; clashing styles or subjective metrics. | Functional graphics; pleasant layout. | High figure-to-text ratio; styled mini-cards; verifiable empirical metrics; unified visual aesthetic; QR offloads details. |
 | **3. Wordiness / Text Density** | $>800$ words (severe overload). | $600\text{--}800$ words (excessive dwell time). | $400\text{--}600$ words (manageable). | **$250\text{--}400$ words** (optimal 30% text budget). |
 | **4. Visual Ratio (70/30 Rule)** | Severe violation; wall of text; no hero graphic. | $<50\%$ visual area; text heavy; lacks hero visual. | $\sim 60\%$ visual balance; multiple graphics present. | **$\ge 70\%$ visual dominance**; prominent hero infographic; clean focal figures. |
 
