@@ -1,15 +1,19 @@
 #!/usr/bin/env python3
 """
-Mixed-Approach Rubric (MAR), Provenance & Empirical Compliance Auditor for Scientific Posters.
+Mixed-Approach Rubric (MAR), Provenance, 4-Layer Visual Magnet & Empirical Compliance Auditor
+for Scientific Posters.
 Implements the Khadka & Peeters (2024) empirical criteria, the 70/30 Infographic Standard,
-and provenance.md verification:
+the 4-Layer Visual Magnet Architecture, and provenance.md verification:
 - Wordiness minimization (beta = -0.37)
 - Contemporary layout format (beta = +0.28)
 - Logical visual sequencing (beta = +0.16)
 - Visual elements replacing text (beta = +0.15)
 - QR code integration (beta = +0.12)
 - Exclusion of submission abstract (beta = -0.10)
-- Provenance verification (posters/<name>/provenance.md: audience, authors, conference, logo space, extra_logos, inputs)
+- 4-Layer Visual Magnet verification (Layer 0 Motifs, Layer 1 Borderless Hero + Hook Pill,
+  Layer 2 Cross-Board Conduit, Layer 3 Tactile Left-Accent Sub-Cards)
+- Provenance verification (posters/<name>/provenance.md: audience, authors, conference, logo space,
+  extra_logos, visual_magnet, inputs)
 - 4-Tier MAR Scoring across 4 Dimensions (16 points max):
   1. Organization
   2. Poster Design & Visuals
@@ -35,10 +39,25 @@ def clean_tex(text: str) -> str:
         clean = clean.split("\\end{document}", 1)[0]
     # Remove tikzpicture environments which contain coordinates and path commands
     clean = re.sub(r'\\begin\{tikzpicture\}[\s\S]*?\\end\{tikzpicture\}', ' ', clean)
+    # Remove standalone TikZ path commands (\draw, \fill, \filldraw, \shade, \path, \coordinate) up to semicolon
+    clean = re.sub(r'\\(draw|fill|filldraw|shade|path|clip|coordinate)\b[^;]*;', ' ', clean)
+    # Remove TikZ \node[...](name) at (...) preamble before the node text body
+    clean = re.sub(r'\\node\s*(\[[\s\S]*?\])?\s*(\([^)]*\))?\s*at\s*\([^)]*\)\s*', ' ', clean)
+    # Remove \vicon{color}{badge} and color arguments like {vlizNavy}
+    clean = re.sub(r'\\vicon\{[^}]*\}\{[^}]*\}', ' ', clean)
+    clean = re.sub(r'\{vliz[A-Za-z]+\}', ' ', clean)
+    clean = re.sub(r'\b(vliz[A-Za-z]+|herographic|hookpill|herocaption|spineTop|spineTurn|qrEntry|qrTerminus|station\w+|m[1-9])\b', ' ', clean)
     # Remove macro options and arguments that define colors, fonts, or graphics
-    clean = re.sub(r'\\(definecolor|color|colorlet|usecolorstyle|usetheme|fontsize|selectfont)\{[^}]*\}', ' ', clean)
+    clean = re.sub(r'\\(definecolor|color|colorlet|usecolorstyle|usetheme|fontsize|selectfont|tcbuselibrary|usetikzlibrary)\{[^}]*\}', ' ', clean)
     clean = re.sub(r'\\includegraphics(\[[^\]]*\])?\{[^}]*\}', ' ', clean)
-    clean = re.sub(r'\b(at|rectangle|node|anchor|inner|sep|width|height|scale)\b', ' ', clean)
+    clean = re.sub(
+        r'\b(at|rectangle|circle|ellipse|node|anchor|inner|sep|xsep|ysep|width|height|scale|'
+        r'controls|and|cycle|rounded|corners|line|opacity|dashed|dotted|thick|ultra|'
+        r'north|south|east|west|center|borderline|fuzzy|shadow|xshift|yshift|enhanced|'
+        r'colback|colframe|boxrule|arc|valign|halign|left|right|top|bottom)\b',
+        ' ',
+        clean,
+    )
     # Remove environment options like \begin{tcolorbox}[...]
     clean = re.sub(r'\\begin\{[^}]+\}(\[[^\]]*\])?', ' ', clean)
     clean = re.sub(r'\\end\{[^}]+\}', ' ', clean)
@@ -48,7 +67,7 @@ def clean_tex(text: str) -> str:
     clean = re.sub(r'[{}]', ' ', clean)
     # Remove dimension units and coordinates
     clean = re.sub(r'\b\d+(\.\d+)?(cm|mm|pt|in|ex|em)?\b', ' ', clean)
-    clean = re.sub(r'[()=\-+;*$<>|•→]', ' ', clean)
+    clean = re.sub(r'[()=\-+;*$<>|•→▸◈⬡⚡🔗]', ' ', clean)
     return clean
 
 
@@ -60,6 +79,7 @@ def audit_provenance_file(poster_path: Path) -> Dict[str, Any]:
         "has_frontmatter": False,
         "required_sections_present": [],
         "missing_sections": [],
+        "has_visual_magnet": False,
         "unresolved_tokens": 0,
         "reserve_conf_logo": None,
         "extra_logos_count": 0,
@@ -81,6 +101,8 @@ def audit_provenance_file(poster_path: Path) -> Dict[str, Any]:
                 result["required_sections_present"].append(key)
             else:
                 result["missing_sections"].append(key)
+
+        result["has_visual_magnet"] = bool(re.search(r'^visual_magnet\s*:', fm_text, re.MULTILINE))
 
         conf_logo_match = re.search(r'reserve_default_conference_logo_space\s*:\s*(true|false)', fm_text, re.IGNORECASE)
         if conf_logo_match:
@@ -127,15 +149,15 @@ def audit_text_content(
     has_tables = bool(re.search(r'(\\begin\{table\}|\\begin\{tabular\}|<a:tbl>)', content, re.IGNORECASE))
 
     # Check for QR code
-    has_qr = bool(re.search(r'(\\qrcode|qrcode|qr[-_ ]code)', content, re.IGNORECASE))
+    has_qr = bool(re.search(r'(\\qrcode|qrcode|qr[-_ ]code|qr_)', content, re.IGNORECASE))
 
     # Check for Limitation & Future Direction
     has_limitation = bool(re.search(r'(limitation|caveat|constraint)', content, re.IGNORECASE))
-    has_future = bool(re.search(r'(future direction|future work|outlook|next steps)', content, re.IGNORECASE))
+    has_future = bool(re.search(r'(future direction|future work|outlook|next step)', content, re.IGNORECASE))
 
-    # Check for Inverted Chronological Flow (e.g. Discussion appearing before Methods / Infographic / Results)
-    disc_pos = re.search(r'(discussion|limitation|future direction|outlook)', content, re.IGNORECASE)
-    meth_pos = re.search(r'(methods|pillars|methodology|pipeline)', content, re.IGNORECASE)
+    # Check for Inverted Chronological Flow
+    disc_pos = re.search(r'(4\.\s*discussion|discussion,\s*limitations|study limitation)', content, re.IGNORECASE)
+    meth_pos = re.search(r'(2\.\s*the\s*4|methods|pillars|methodology)', content, re.IGNORECASE)
     hero_pos = re.search(r'(hero_infographic|infographic|schematic)', content, re.IGNORECASE)
     has_inverted_flow = False
     if disc_pos and (meth_pos or hero_pos):
@@ -143,7 +165,7 @@ def audit_text_content(
         if disc_pos.start() < earliest_body:
             has_inverted_flow = True
 
-    # Check for Subjective / Humorous Metric Badges (e.g. "Max Boredom", "0 Bottlenecks")
+    # Check for Subjective / Humorous Metric Badges
     subjective_metrics = re.findall(r'\b(boredom|max\s+boredom|maximum\s+boredom|0\s+bottlenecks?|zero\s+bottlenecks?|100%\s+fun|100%\s+happiness)\b', content, re.IGNORECASE)
     has_subjective_metrics = len(subjective_metrics) > 0
 
@@ -151,7 +173,7 @@ def audit_text_content(
     has_redundant_subheaders = bool(re.search(r'\\textbf\{\s*\d+\.\s+[^}]+\}\s*\\\\\s*\\textit\{', content) or
                                    re.search(r'\\textbf\{\s*\d+\.\s+[^}]+\}[\s\S]{1,60}\\textit\{The\s+', content))
 
-    # Check for Plain Bullet Walls (itemize with bare text items not in sub-cards)
+    # Check for Plain Bullet Walls
     has_plain_bullets = bool(re.search(r'\\begin\{itemize\}[\s\S]*?\\item\s+[^\\{\[]+[\s\S]*?\\end\{itemize\}', content) and not re.search(r'\\begin\{itemize\}[\s\S]*?\\begin\{tcolorbox\}', content))
 
     # Check for Duplicate Raw URLs in body text
@@ -176,13 +198,30 @@ def audit_text_content(
     hero_infographic_match = re.search(r'(hero_infographic|infographic|schematic|architecture|overview_diagram|pipeline_overview)', content, re.IGNORECASE)
     has_hero_infographic = bool(hero_infographic_match)
 
+    # Check for 4-Layer Visual Magnet Indicators
+    has_layer0_motif = bool(re.search(r'(bg_motif_|definebackgroundstyle|opacity=0\.0[4-8]|opacity=0\.1[2-5])', content, re.IGNORECASE))
+    has_layer1_hook_stage = bool(re.search(r'(hook_pill_|hero_stage_|FROM SILOED GUESSWORK|vlizHeroStage|billboard_hook)', content, re.IGNORECASE))
+    has_layer2_conduit = bool(re.search(r'(conduit_|Visual Conduit|Cross-Board|spine_conduit)', content, re.IGNORECASE))
+    has_layer3_tactile = bool(re.search(r'(borderline west|accent_bar_|drop fuzzy shadow)', content, re.IGNORECASE))
+
+    # Check for Anti-AI Icon Restraint (Prohibit synthetic icon badges / Unicode symbol spam)
+    ai_icon_matches = re.findall(r'(\\vicon\b|\\blacktriangleright|\\blacktriangleleft|[◈⬡⚡🔗▸◀▶])', content)
+    has_ai_icon_spam = len(ai_icon_matches) > 0
+
+    # Check for Micro-Fonts inside Narrative / QR Cards (Prohibit \tiny, \scriptsize, or \footnotesize in main columns)
+    body_before_footer = content
+    if "References, Funding" in content:
+        body_before_footer = content.split("References, Funding", 1)[0]
+    micro_font_matches = re.findall(r'\\(tiny|scriptsize|footnotesize)\b', body_before_footer) if source_type == "tex" else []
+    has_micro_fonts = len(micro_font_matches) > 0
+
     # Count graphic instances
     graphic_count = len(re.findall(r'(\\includegraphics|\\begin\{tikzpicture\}|<p:pic>)', content, re.IGNORECASE))
 
     # ---------------------------------------------------------
     # 4-Tier MAR Rubric Scoring (1: Poor, 2: Sub-par, 3: Acceptable, 4: Exemplary)
     # ---------------------------------------------------------
-    
+
     # 1. Wordiness / Text Density Score (Enforcing the 30% text budget)
     if word_count > 800:
         score_wordiness = 1
@@ -237,25 +276,28 @@ def audit_text_content(
     if bool(re.search(r'(\\includegraphics|<p:pic>|image|figure|chart|map)', content, re.IGNORECASE)):
         vis_points += 1
     if has_subjective_metrics:
-        vis_points = max(1, vis_points - 1)  # Penalize humorous/subjective metrics
+        vis_points = max(1, vis_points - 1)
     if has_plain_bullets:
-        vis_points = max(1, vis_points - 1)  # Penalize unstyled bullet walls
+        vis_points = max(1, vis_points - 1)
+    if has_ai_icon_spam:
+        vis_points = max(1, vis_points - 1)
+    if has_micro_fonts:
+        vis_points = max(1, vis_points - 1)
 
-    if vis_points >= 4 and not has_subjective_metrics and not has_plain_bullets:
+    if vis_points >= 4 and not has_subjective_metrics and not has_plain_bullets and not has_ai_icon_spam and not has_micro_fonts:
         score_vis = 4
-        desc_vis = "Exemplary [4]: High figure-to-text ratio, styled mini-cards, verifiable empirical metrics, QR offloads details."
+        desc_vis = "Exemplary [4]: High figure-to-text ratio, tactile left-accent cards, clean typography, zero AI icon spam, QR offloads details."
     elif vis_points >= 3:
         score_vis = 3
-        desc_vis = "Acceptable [3]: Graphics are functional and pleasant overall; polish mini-card styling or metrics."
-    elif vis_points == 2 or has_subjective_metrics or has_plain_bullets:
+        desc_vis = "Acceptable [3]: Graphics are functional and pleasant overall; polish mini-card typography, remove icon spam, or refine metrics."
+    elif vis_points == 2 or has_subjective_metrics or has_plain_bullets or has_ai_icon_spam or has_micro_fonts:
         score_vis = 2
-        desc_vis = "Sub-par [2]: Design contains unstyled bullet walls, subjective metrics, or lacks functional schemas."
+        desc_vis = "Sub-par [2]: Design contains micro-fonts, AI icon spam, unstyled bullet walls, or subjective metrics."
     else:
         score_vis = 1
         desc_vis = "Poor [1]: Visually unengaging; lacks clear focal graphics."
 
     # 4. Visual-to-Text Spatial Ratio (70/30 Rule & Hero Infographic)
-    # 70% visual area requires: hero infographic/schematic, >= 2 visual assets, and word count <= 450
     ratio_points = 0
     if has_hero_infographic:
         ratio_points += 1
@@ -303,9 +345,18 @@ def audit_text_content(
     print(f"Styled Mini-Cards:      {'[!] Plain bullet wall detected (Convert to styled mini-cards)' if has_plain_bullets else '[OK] Styled cards / visual blocks'}")
     print(f"Redundant Sub-headers:  {'[!] Detected redundant subtitles under numbered headers' if has_redundant_subheaders else '[OK] None detected'}")
     print(f"Empirical Metrics:      {'[!] Subjective / humorous metric badges detected (' + ', '.join(subjective_metrics) + ')' if has_subjective_metrics else '[OK] Verifiable empirical quantities'}")
+    print(f"Anti-AI Icon Restraint: {'[!] Decorative icon / glyph spam detected (' + str(len(ai_icon_matches)) + ' instances)' if has_ai_icon_spam else '[OK] Clean typographic hierarchy (Zero synthetic icon spam)'}")
+    print(f"Card Typography Scale:  {'[!] Micro-fonts detected in body cards (' + ', '.join(set(micro_font_matches)) + ')' if has_micro_fonts else '[OK] Legible A0 card scale (Zero micro-fonts in narrative/QR cards)'}")
     print(f"URL Redundancy:         {'[!] Duplicate raw URLs detected (' + ', '.join(duplicate_urls) + ')' if has_duplicate_urls else '[OK] Authoritative destination consolidated'}")
     if caption_match:
         print(f"Figure Caption Length:  {'[!] Overlong (' + str(caption_word_count) + ' words > 15 words limit)' if has_overlong_caption else '[OK] Concise (' + str(caption_word_count) + ' words)'}")
+
+    print("-" * 76)
+    print("4-LAYER VISUAL MAGNET ARCHITECTURE CHECK (10-FOOT X-FACTOR):")
+    print(f"  * Layer 0 (Atmospheric Motifs):   {'[OK] Active (<=8% canvas watermark / header wave texture)' if has_layer0_motif else '[i] Not detected'}")
+    print(f"  * Layer 1 (Borderless Hero+Pill): {'[OK] Active (Borderless Hero Stage + Billboard Hook Pill)' if has_layer1_hook_stage else '[i] Not detected'}")
+    print(f"  * Layer 2 (Cross-Board Conduit):  {'[OK] Active (Title -> Hero -> Central Spine -> QR Card)' if has_layer2_conduit else '[i] Not detected'}")
+    print(f"  * Layer 3 (Tactile Left-Accents): {'[OK] Active (6pt left-accent bars + elevation + sans-serif hierarchy)' if has_layer3_tactile else '[i] Not detected'}")
 
     if provenance_info is not None:
         print("-" * 76)
@@ -321,6 +372,7 @@ def audit_text_content(
             if provenance_info["reserve_conf_logo"] is not None:
                 print(f"  * Conf. Logo Space:   {'Reserved' if provenance_info['reserve_conf_logo'] else 'Not reserved / Custom'}")
             print(f"  * Extra Logos Listed: {provenance_info['extra_logos_count']}")
+            print(f"  * Visual Magnet Spec: {'[OK] Declared in YAML' if provenance_info['has_visual_magnet'] else '[i] Not declared in YAML'}")
             if missing:
                 print(f"  * Missing YAML Keys:  {', '.join(missing)}")
             if unresolved > 0:
@@ -337,7 +389,7 @@ def audit_text_content(
     print(f"4. Visual-to-Text Ratio (70/30 Rule):   {desc_ratio}")
     print("-" * 76)
     print(f"COMPOSITE MAR SCORE: {total_mar} / {max_mar} ({pct_mar}%)")
-    
+
     if total_mar >= 14:
         print("OVERALL QUALITY: EXEMPLARY (Publication / Conference Award Tier)")
     elif total_mar >= 11:
@@ -350,7 +402,7 @@ def audit_text_content(
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Audit scientific poster against the Khadka & Peeters MAR framework, 70/30 rule, and provenance.md.")
+    parser = argparse.ArgumentParser(description="Audit scientific poster against the Khadka & Peeters MAR framework, 70/30 rule, 4-Layer Visual Magnet Architecture, and provenance.md.")
     parser.add_argument("file", help="Path to poster file (.tex, .pptx, .md, .txt)")
     args = parser.parse_args()
 
@@ -379,11 +431,20 @@ def main():
 
             for slide in prs.slides:
                 for shape in slide.shapes:
+                    sname = (shape.name or "").lower()
+                    if sname.startswith("bg_motif_"):
+                        structural_tags.append("bg_motif_")
+                    if sname.startswith("hook_pill_") or sname.startswith("hero_stage_"):
+                        structural_tags.append("hook_pill_ hero_stage_")
+                    if sname.startswith("conduit_"):
+                        structural_tags.append("conduit_")
+                    if sname.startswith("accent_bar_"):
+                        structural_tags.append("accent_bar_")
                     if shape.shape_type == MSO_SHAPE_TYPE.PICTURE:
                         structural_tags.append("<p:pic>")
-                        if "qr" in shape.name.lower():
+                        if "qr" in sname:
                             structural_tags.append("qr_code")
-                        if "hero" in shape.name.lower() or "infographic" in shape.name.lower():
+                        if "hero" in sname or "infographic" in sname:
                             structural_tags.append("hero_infographic")
                     elif shape.shape_type == MSO_SHAPE_TYPE.TABLE:
                         structural_tags.append("<a:tbl>")

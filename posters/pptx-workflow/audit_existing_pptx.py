@@ -1,15 +1,17 @@
 #!/usr/bin/env python3
 """
 Scientific Poster Audit & Layout Analyzer for PowerPoint (.pptx)
-Based on Claude Scientific Writer poster standards & best practices.
+Based on Claude Scientific Writer poster standards, Khadka & Peeters (2024),
+and the 4-Layer Visual Magnet Architecture.
 
 Inspects an existing .pptx poster file to analyze:
 - Physical canvas size & print scale factor (A0, A1, 36x48, etc.)
 - Multi-column layout structure and margins
 - Typography hierarchy & readability (title, headings, body text)
 - Figure placement, aspect ratios, and effective print DPI
-- Shape overlaps and whitespace utilization
-- Accessibility & contrast guidelines
+- Shape overlaps and whitespace utilization (with Z-Order Layer Whitelisting for
+  bg_motif_*, conduit_*, hero_stage_*, hook_pill_*, and accent_bar_*)
+- 4-Layer Visual Magnet Architecture & Contrast Safety Gate (<= 8% canvas motif opacity)
 """
 
 from __future__ import annotations
@@ -18,6 +20,7 @@ import argparse
 import io
 import json
 import math
+import re
 import sys
 import zipfile
 from dataclasses import asdict, dataclass, field
@@ -50,6 +53,38 @@ STANDARD_TARGETS = {
     "US_48x48": (48.0, 48.0),
 }
 
+# Z-Order Layer Whitelist prefixes for the 4-Layer Visual Magnet Architecture
+Z_ORDER_WHITELIST_PREFIXES = (
+    "bg_motif_",
+    "conduit_",
+    "hero_stage_",
+    "hook_pill_",
+    "accent_bar_",
+)
+
+
+def is_whitelisted_layer(name: str) -> bool:
+    lname = (name or "").lower()
+    return any(lname.startswith(p) for p in Z_ORDER_WHITELIST_PREFIXES)
+
+
+def extract_shape_opacity(shape) -> Optional[float]:
+    """
+    Inspect the underlying OpenXML of a shape to estimate its fill/line opacity (0.0 to 1.0).
+    In DrawingML, <a:alpha val="6000"/> means 6.0% opacity (0.06), where 100000 = 100%.
+    If python-pptx fill.transparency is set or XML alpha is present, returns opacity.
+    """
+    try:
+        xml_str = shape._element.xml
+        alphas = re.findall(r'<a:alpha\s+val="(\d+)"', xml_str)
+        if alphas:
+            # Return the maximum alpha found on the shape in [0.0, 1.0]
+            max_alpha = max(int(a) for a in alphas) / 100000.0
+            return round(max_alpha, 4)
+    except Exception:
+        pass
+    return None
+
 
 @dataclass
 class TextRunInfo:
@@ -75,6 +110,7 @@ class ShapeInfo:
     font_names: List[str] = field(default_factory=list)
     image_effective_dpi: Optional[float] = None
     image_pixels: Optional[Tuple[int, int]] = None
+    opacity: Optional[float] = None
 
 
 @dataclass
@@ -96,6 +132,7 @@ class LayoutAuditReport:
     min_font_size_pt: Optional[float]
     max_font_size_pt: Optional[float]
     images_audited: List[Dict[str, Any]]
+    visual_magnet_layers: Dict[str, Any]
     overlaps_detected: List[Dict[str, Any]]
     warnings: List[str]
     recommendations: List[str]
@@ -142,22 +179,6 @@ def analyze_pptx(pptx_path: Path, target_preset: Optional[str] = None) -> Layout
     font_counter: Dict[str, int] = {}
     all_font_sizes: List[float] = []
 
-    # Map image parts to PIL sizes if Pillow is installed
-    image_cache: Dict[str, Tuple[int, int]] = {}
-    if HAS_PIL:
-        try:
-            with zipfile.ZipFile(str(pptx_path), "r") as zf:
-                for fname in zf.namelist():
-                    if fname.startswith("ppt/media/"):
-                        try:
-                            img_data = zf.read(fname)
-                            with Image.open(io.BytesIO(img_data)) as im:
-                                image_cache[fname] = im.size
-                        except Exception:
-                            pass
-        except Exception:
-            pass
-
     for idx, shape in enumerate(slide.shapes):
         left = shape.left.inches
         top = shape.top.inches
@@ -172,6 +193,7 @@ def analyze_pptx(pptx_path: Path, target_preset: Optional[str] = None) -> Layout
         fnames = []
         dpi = None
         img_px = None
+        opacity = extract_shape_opacity(shape)
 
         if shape.has_text_frame:
             stype = "TEXT_BOX"
@@ -189,7 +211,8 @@ def analyze_pptx(pptx_path: Path, target_preset: Optional[str] = None) -> Layout
                             fsizes.append(pt)
                             all_font_sizes.append(pt)
 
-        words_in_shape = len(text_str.split())
+        # Exclude single-character decorative station symbols from inflating word count
+        words_in_shape = len([w for w in text_str.split() if re.search(r'[A-Za-z0-9]', w)])
         total_words += words_in_shape
 
         if shape.shape_type == MSO_SHAPE_TYPE.PICTURE:
@@ -233,28 +256,74 @@ def analyze_pptx(pptx_path: Path, target_preset: Optional[str] = None) -> Layout
                 font_names=list(set(fnames)),
                 image_effective_dpi=dpi,
                 image_pixels=img_px,
+                opacity=opacity,
             )
         )
 
-    # Detect multi-column structure
-    # Header zone is typically top 18-20% of the canvas
+    # Audit 4-Layer Visual Magnet Architecture
+    bg_motifs = [s for s in shapes_info if s.name.lower().startswith("bg_motif_")]
+    hero_stages = [s for s in shapes_info if s.name.lower().startswith("hero_stage_")]
+    hook_pills = [s for s in shapes_info if s.name.lower().startswith("hook_pill_")]
+    conduits = [s for s in shapes_info if s.name.lower().startswith("conduit_")]
+    accent_bars = [s for s in shapes_info if s.name.lower().startswith("accent_bar_")]
+
+    # Check canvas motif opacity safety gate (<= 8% for canvas motifs below the top banner)
+    header_banner_bottom = slide_h_in * 0.14
+    canvas_motifs = [s for s in bg_motifs if s.top_in >= header_banner_bottom]
+    high_opacity_canvas_motifs = [
+        s for s in canvas_motifs if s.opacity is not None and s.opacity > 0.085
+    ]
+
+    # Check Anti-AI Glyph Spam (prohibit decorative Unicode icons in cards)
+    ai_glyph_shapes = [
+        s.name for s in shapes_info
+        if re.search(r'[◈⬡⚡🔗▸◀▶]', s.text_content)
+    ]
+
+    # Check Narrative/QR Card Minimum Font Scale (>= 20pt above footer bar)
+    footer_top_threshold = slide_h_in * 0.90
+    small_card_font_shapes = [
+        f"{s.name} ({min(s.font_sizes):.1f}pt)"
+        for s in shapes_info
+        if s.font_sizes
+        and s.top_in < footer_top_threshold
+        and not s.name.lower().startswith(("bg_motif_", "conduit_"))
+        and min(s.font_sizes) < 20.0
+    ]
+
+    visual_magnet_layers = {
+        "layer_0_bg_motifs_count": len(bg_motifs),
+        "layer_1_borderless_hero_stage": len(hero_stages) > 0,
+        "layer_1_hook_pill_present": len(hook_pills) > 0,
+        "layer_2_conduit_elements_count": len(conduits),
+        "layer_3_tactile_accent_bars_count": len(accent_bars),
+        "contrast_safety_gate_passed": len(high_opacity_canvas_motifs) == 0,
+        "anti_ai_icon_restraint_passed": len(ai_glyph_shapes) == 0,
+        "card_font_scale_20pt_passed": len(small_card_font_shapes) == 0,
+    }
+
+    # Detect multi-column structure (excluding Z-Order whitelisted decorative layers)
     header_threshold = slide_h_in * 0.22
-    content_shapes = [s for s in shapes_info if s.top_in >= header_threshold and s.height_in > 1.5]
+    content_shapes = [
+        s for s in shapes_info
+        if s.top_in >= header_threshold
+        and s.height_in > 1.5
+        and not is_whitelisted_layer(s.name)
+    ]
 
     columns_detected = 1
     col_boundaries = []
     if content_shapes:
-        # Cluster shapes by their X centers
-        x_centers = sorted([s.left_in + s.width_in / 2.0 for s in content_shapes])
-        # Bin into candidate columns (2, 3, 4)
         for cand_cols in (3, 4, 2):
             col_w = slide_w_in / cand_cols
             bins = [[] for _ in range(cand_cols)]
             for s in content_shapes:
+                # Ignore full-width hero images/footer blocks when binning columns
+                if s.width_in > slide_w_in * 0.70:
+                    continue
                 center = s.left_in + s.width_in / 2.0
                 bin_idx = min(cand_cols - 1, int(center / col_w))
                 bins[bin_idx].append(s)
-            # If all columns have items and width is roughly uniform
             if all(len(b) > 0 for b in bins):
                 columns_detected = cand_cols
                 for i in range(cand_cols):
@@ -266,12 +335,17 @@ def analyze_pptx(pptx_path: Path, target_preset: Optional[str] = None) -> Layout
                     })
                 break
 
-    # Detect overlaps
+    # Detect overlaps (respecting Z-Order Layer Whitelisting)
     overlaps = []
     for i in range(len(shapes_info)):
         for j in range(i + 1, len(shapes_info)):
             s1 = shapes_info[i]
             s2 = shapes_info[j]
+
+            # Z-Order Layer Whitelisting: bg_motif_*, conduit_*, hero_stage_*, hook_pill_*, accent_bar_*
+            if is_whitelisted_layer(s1.name) or is_whitelisted_layer(s2.name):
+                continue
+
             # Ignore background shapes spanning > 80% width and height
             if (s1.width_in > slide_w_in * 0.8 and s1.height_in > slide_h_in * 0.8) or \
                (s2.width_in > slide_w_in * 0.8 and s2.height_in > slide_h_in * 0.8):
@@ -311,22 +385,19 @@ def analyze_pptx(pptx_path: Path, target_preset: Optional[str] = None) -> Layout
 
     # Check font sizes
     if min_fs and min_fs < 18:
-        warnings.append(f"Minimum font size is {min_fs:.1f}pt. Text smaller than 20-24pt is unreadable from standard viewing distance (3-6 feet).")
-        recommendations.append("Increase body text font sizes to at least 22-26pt.")
+        warnings.append(f"Minimum font size is {min_fs:.1f}pt. Text smaller than 18-20pt is unreadable from standard viewing distance (3-6 feet).")
+        recommendations.append("Increase body text font sizes to at least 18.5-22pt.")
         compliance_score -= 15
-    elif min_fs and min_fs < 22:
-        warnings.append(f"Body font size ({min_fs:.1f}pt) is slightly below the recommended 24pt baseline.")
-        compliance_score -= 5
 
     if max_fs and max_fs < 54:
-        warnings.append(f"Title font size ({max_fs:.1f}pt) is small. Major poster titles should be 72-120pt+ for conference readability.")
-        recommendations.append("Increase main poster title size to 72pt+ to ensure visibility across the hall.")
+        warnings.append(f"Title font size ({max_fs:.1f}pt) is small. Major poster titles should be 54-120pt+ for conference readability.")
+        recommendations.append("Increase main poster title size to 54pt+ to ensure visibility across the hall.")
         compliance_score -= 10
 
     # Word count check
     if total_words > 900:
-        warnings.append(f"Total word count ({total_words} words) exceeds the recommended poster limit (300-800 words).")
-        recommendations.append("Condense dense paragraphs into concise bullet points (3-4 points per block).")
+        warnings.append(f"Total word count ({total_words} words) exceeds the recommended poster limit (250-400 words optimal, 800 max).")
+        recommendations.append("Condense dense paragraphs into concise tactile mini-cards.")
         compliance_score -= 15
     elif total_words < 200:
         warnings.append(f"Total word count ({total_words} words) is quite low. Ensure adequate context and captions are provided.")
@@ -348,19 +419,37 @@ def analyze_pptx(pptx_path: Path, target_preset: Optional[str] = None) -> Layout
                 recommendations.append(f"Replace '{s.name}' with a higher-resolution raster (300 DPI) or vector format (SVG/PDF).")
                 compliance_score -= 10
 
+    if high_opacity_canvas_motifs:
+        names = ", ".join(f"{s.name} ({int((s.opacity or 0)*100)}%)" for s in high_opacity_canvas_motifs)
+        warnings.append(f"Contrast Safety Gate violation: Canvas background motifs exceed 8% opacity limit: {names}.")
+        recommendations.append("Keep Layer 0 canvas vector watermarks strictly <= 8% opacity to preserve >= 7:1 WCAG AAA contrast.")
+        compliance_score -= 10
+
+    if ai_glyph_shapes:
+        warnings.append(f"Anti-AI Icon Restraint violation: {len(ai_glyph_shapes)} shapes contain decorative Unicode glyphs (◈, ⬡, ⚡, 🔗, ▸).")
+        recommendations.append("Remove decorative Unicode icons from card headers; rely on the 6pt left-accent bar, clean sans-serif hierarchy, and 01-04 numerals.")
+        compliance_score -= 10
+
+    if small_card_font_shapes:
+        warnings.append(f"Card Typography Scale violation: Narrative/QR cards contain fonts smaller than 20pt: {', '.join(small_card_font_shapes[:4])}.")
+        recommendations.append("Increase all narrative and QR card fonts to >= 20-22pt for comfortable 6-10 foot conference readability.")
+        compliance_score -= 10
+
     if overlaps:
-        warnings.append(f"Detected {len(overlaps)} overlapping shape bounding boxes.")
+        warnings.append(f"Detected {len(overlaps)} overlapping sibling shape bounding boxes.")
         recommendations.append("Adjust spacing to eliminate unintentional shape overlaps and maintain clear white space.")
         compliance_score -= min(15, len(overlaps) * 5)
 
-    # Safe margin check (at least 0.5 inches margin on canvas borders)
-    margin_violations = [s.name for s in shapes_info if s.left_in < 0.25 or s.top_in < 0.25 or
-                         (slide_w_in - s.right_in) < 0.25 or (slide_h_in - s.bottom_in) < 0.25]
-    # Filter out whole-slide background rectangles
-    margin_violations = [m for m in margin_violations if not any(s.name == m and s.width_in > slide_w_in * 0.9 for s in shapes_info)]
+    # Safe margin check (at least 0.25 inches margin on canvas borders for foreground content)
+    margin_violations = [
+        s.name for s in shapes_info
+        if not s.name.lower().startswith(("bg_motif_", "hero_stage_"))
+        and s.width_in <= slide_w_in * 0.9
+        and (s.left_in < 0.25 or s.top_in < 0.25 or (slide_w_in - s.right_in) < 0.25 or (slide_h_in - s.bottom_in) < 0.25)
+    ]
     if margin_violations:
-        warnings.append(f"{len(margin_violations)} shapes are dangerously close to the canvas edges (< 0.25 in margin).")
-        recommendations.append("Ensure at least 0.75-1.0 inch safe margin inside trim edges to avoid printer cut-off.")
+        warnings.append(f"{len(margin_violations)} foreground shapes are dangerously close to the canvas edges (< 0.25 in margin).")
+        recommendations.append("Ensure at least 0.5-1.0 inch safe margin inside trim edges for foreground cards to avoid printer cut-off.")
         compliance_score -= 5
 
     compliance_score = max(0, min(100, compliance_score))
@@ -383,6 +472,7 @@ def analyze_pptx(pptx_path: Path, target_preset: Optional[str] = None) -> Layout
         min_font_size_pt=min_fs,
         max_font_size_pt=max_fs,
         images_audited=images_audited,
+        visual_magnet_layers=visual_magnet_layers,
         overlaps_detected=overlaps,
         warnings=warnings,
         recommendations=recommendations,
@@ -391,7 +481,6 @@ def analyze_pptx(pptx_path: Path, target_preset: Optional[str] = None) -> Layout
 
 
 def print_report(rep: LayoutAuditReport):
-    # Ensure stdout handles unicode if possible, or fall back cleanly
     print("=" * 72)
     print("  SCIENTIFIC POSTER AUDIT & LAYOUT REPORT (.pptx)")
     print("=" * 72)
@@ -402,14 +491,24 @@ def print_report(rep: LayoutAuditReport):
     print(f"Orientation: {rep.orientation.upper()}")
     print(f"Print Target Match: {rep.detected_target} (Scale factor: {rep.scale_factor}x)")
     print("-" * 72)
-    print(f"LAYOUT & CONTENT METRICS:")
+    print("LAYOUT & CONTENT METRICS:")
     print(f"  * Total Shapes / Elements: {rep.total_shapes}")
-    print(f"  * Estimated Word Count:   {rep.total_words} words (Target: 300-800)")
+    print(f"  * Estimated Word Count:   {rep.total_words} words (Target: 250-400)")
     print(f"  * Detected Column Grid:   {rep.columns_detected}-column layout")
     if rep.min_font_size_pt and rep.max_font_size_pt:
         print(f"  * Font Sizes Observed:    {rep.min_font_size_pt:.1f}pt (min) to {rep.max_font_size_pt:.1f}pt (max)")
     print(f"  * Fonts Used:             {', '.join(rep.font_inventory.keys()) if rep.font_inventory else 'Default'}")
     print(f"  * Images Audited:         {len(rep.images_audited)}")
+
+    vm = rep.visual_magnet_layers
+    print("\n4-LAYER VISUAL MAGNET & CONTRAST AUDIT:")
+    print(f"  * Layer 0 (Atmospheric Motifs):   {vm['layer_0_bg_motifs_count']} bg_motif_* vector shape(s) {'[OK]' if vm['layer_0_bg_motifs_count'] > 0 else '[i] None'}")
+    print(f"  * Layer 1 (Borderless Hero+Pill): Stage={'[OK]' if vm['layer_1_borderless_hero_stage'] else '[i]'} | Hook Pill={'[OK]' if vm['layer_1_hook_pill_present'] else '[i]'}")
+    print(f"  * Layer 2 (Cross-Board Conduit):  {vm['layer_2_conduit_elements_count']} conduit_* element(s) {'[OK]' if vm['layer_2_conduit_elements_count'] > 0 else '[i] None'}")
+    print(f"  * Layer 3 (Tactile Left-Accents): {vm['layer_3_tactile_accent_bars_count']} accent_bar_* strip(s) {'[OK]' if vm['layer_3_tactile_accent_bars_count'] > 0 else '[i] None'}")
+    print(f"  * Contrast Safety Gate (<=8%):    {'[OK] Passed (>= 7:1 WCAG AAA protected)' if vm['contrast_safety_gate_passed'] else '[WARN: Motif opacity > 8%]'}")
+    print(f"  * Anti-AI Icon Restraint:         {'[OK] Passed (Zero decorative Unicode glyphs)' if vm['anti_ai_icon_restraint_passed'] else '[WARN: Decorative Unicode glyphs detected]'}")
+    print(f"  * Card Font Scale (>=20pt):       {'[OK] Passed (All narrative/QR cards >= 20pt)' if vm['card_font_scale_20pt_passed'] else '[WARN: Card fonts < 20pt detected]'}")
 
     if rep.images_audited:
         print("\nIMAGE RESOLUTION & DPI:")

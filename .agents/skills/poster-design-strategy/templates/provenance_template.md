@@ -1,5 +1,5 @@
 ---
-schema_version: "1.0"
+schema_version: "1.1"
 poster:
   id: "REPLACE_ME_POSTER_SLUG"
   title: "REPLACE_ME_POSTER_TITLE"
@@ -54,10 +54,20 @@ branding:
   #   placeholder: false
   #   position: "footer_right" # footer_right | top_banner_right | title_header_right
 
+visual_magnet:
+  header_motif: "vliz_wave_harmonics" # vliz_wave_harmonics | sonar_arcs | circuit_traces | botanical_veins | helix_ribbons
+  header_motif_opacity: 0.14
+  canvas_motif: "hybrid_wave_mesh" # bathymetry_waves | network_mesh | hybrid_wave_mesh | topography | molecular
+  canvas_motif_opacity: 0.055 # Must be strictly <= 0.08 (4%-8%)
+  hero_stage_bg: "#F4F9FA" # Borderless Hero Stage background (#FFFFFF or #F4F9FA)
+  billboard_hook_pill: "REPLACE_ME_5_TO_7_WORD_HOOK_PILL" # e.g. "FROM SILOED GUESSWORK TO AUTONOMOUS WEB MAPS"
+  cross_board_conduit: "central_spine_to_qr" # Originates at Title/Hero, runs down column spine, terminates at QR Card
+  tactile_left_accent_pt: 6 # 6pt left-accent border + soft elevation shadow + vector icons on sub-cards
+
 inputs:
   source_documents:
     - path_or_url: "REPLACE_ME_SOURCE_PAPER_OR_DOC"
-      type: "manuscript" # manuscript | repository | dataset | slides | interview_notes
+    - type: "manuscript" # manuscript | repository | dataset | slides | interview_notes
       description: "Primary scientific source material"
   provided_assets:
     - path: "assets/vliz_logo.png"
@@ -73,8 +83,9 @@ inputs:
   ai_disclosure: "Assisted with language polish and schematic layout; system design and evaluation by the author."
 
 audit_summary:
-  mar_score: null # e.g. "15 / 16 (93.8%) - EXEMPLARY"
+  mar_score: null # e.g. "16 / 16 (100.0%) - EXEMPLARY"
   pptx_score: null # e.g. "100 / 100" (when pptx is generated)
+  visual_magnet_verified: null # true / false (all 4 Visual Magnet layers + >=7:1 WCAG AAA contrast verified)
   estimated_word_count: null
 ---
 
@@ -87,12 +98,19 @@ audit_summary:
   - **Target Event**: `REPLACE_ME_CONFERENCE_NAME`
   - **Conference Logo Slot**: Specify whether a dedicated conference logo or reserved placeholder box is included in the header/title zone.
   - **Extra Partner / Funder Logos**: List any additional project, partner, or grant logos and their assigned layout zones.
+- **4-Layer Visual Magnet Configuration**:
+  - **Layer 0 (Atmospheric Motifs)**: Specify header texture (`12–15%` opacity) and canvas corner motif (`4–8%` opacity).
+  - **Layer 1 (Borderless Hero Stage & Hook Pill)**: Record the stage background hex and the 5-to-7-word Billboard Hook Pill text.
+  - **Layer 2 (Cross-Board Conduit)**: Specify the visual transit conduit routing from Title/Hero to the QR Code Card.
+  - **Layer 3 (Tactile UI Micro-Styling)**: 6pt left-accent borders, soft elevation shadows, and thematic vector icons on sub-cards.
 - **Captured Source Inputs**: Summarize the manuscripts, repositories, datasets, or user answers used as ground truth.
 
 ---
 
 ## 2. Phase 2: Distilled Scientific Narrative (30% Text Budget: 250–400 Words)
 
+- **10-Foot Billboard Hook Pill (5–7 Words)**:
+  - `REPLACE_ME_5_TO_7_WORD_HOOK_PILL`
 - **Background & Context Bullets (2–4 points)**:
   1. `REPLACE_ME_CONTEXT_1`
   2. `REPLACE_ME_CONTEXT_2`
@@ -113,17 +131,17 @@ audit_summary:
 
 ## 3. Phase 4: Layout Wireframe & Hero Infographic Provenance
 
-- **Selected Layout Option**: `Option 1 (Top Hero Banner + Columns)` or `Option 2 (Central Hero Box + Flanking Context)`
+- **Selected Layout Option**: `Option 1 (Top Borderless Hero Stage + Central Conduit Spine)` or `Option 2 (Central Breakout Hero Stage + Chronological Flow)`
 - **Approved ASCII Wireframe**:
   ```text
-  [Paste approved ASCII wireframe with 70/30 spatial allocation and logo slots]
+  [Paste approved ASCII wireframe with 70/30 spatial allocation, 4-Layer Visual Magnet markers, and logo slots]
   ```
 - **Hero Infographic Generation Log**:
   - **Asset Path**: `assets/hero_infographic.png`
   - **Aspect Ratio & Zone**: `16:9 Wide Banner` / `1:1 Central Box` / `3:4 Vertical`
   - **Master Prompt Used**:
     ```text
-    [Record exact Nano Banana 2 prompt used]
+    [Record exact Nano Banana 2 prompt used, including Seamless Stage Integration rules]
     ```
   - **HITL Refinement Notes**: Record author feedback and iterations (`v1 -> v2`).
 
@@ -134,6 +152,11 @@ audit_summary:
 - **Generated Deliverables**:
   - LaTeX: `poster.tex` / `poster.pdf` (if selected)
   - PowerPoint: `poster.pptx` (if selected — generated directly via ephemeral `python-pptx` execution without leaving a build script in the poster folder)
+- **4-Layer Visual Magnet & Contrast Safety Verification**:
+  - **Layer 0 (Atmospheric Motifs)**: Verified ($\le 8\%$ canvas watermark opacity; $\ge 7:1$ WCAG AAA text contrast)
+  - **Layer 1 (Borderless Hero Stage & Hook Pill)**: Verified
+  - **Layer 2 (Cross-Board Conduit)**: Verified
+  - **Layer 3 (Tactile Left-Accent Cards & Icons)**: Verified
 - **MAR 70/30 Rubric Audit**:
   - Organization: `X / 4`
   - Poster Design & Visuals: `X / 4`
@@ -143,4 +166,3 @@ audit_summary:
 - **PowerPoint Technical Audit** (if `.pptx` generated):
   - **PPTX Compliance Score**: `100 / 100`
   - **Effective Image DPIs**: Record audited DPIs (`>= 150-300 DPI`)
-

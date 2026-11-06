@@ -1,9 +1,12 @@
 % ==============================================================================
-% VLIZ Scientific Research Poster - Radical Transparency (Option 1 Top-Hero Flow)
+% VLIZ Scientific Research Poster - Radical Transparency (4-Layer Visual Magnet)
 % ==============================================================================
 % Audience: Interdisciplinary Researchers, Dataspace Architects & Data Stewards
-% Layout: Option 1 — Top Hero Showcase + Multi-Column Chronological Flow
-% Branding: VLIZ Sea-Teal (#91C8CD) + Corporate Navy (#3057A5)
+% Layout: Option 1 — Top Borderless Hero Stage + Central Conduit Spine (70/30)
+% Branding: VLIZ Sea-Teal (#91C8CD) + Corporate Navy (#3057A5) + Deep Navy (#002B49)
+% Visual Magnet: Layer 0 Hybrid Wave/Mesh + Layer 1 Borderless Hero & Hook Pill +
+%                Layer 2 London-Tube Conduit Spine + Layer 3 Tactile 6pt Cards
+% Typography: Clean Sans-Serif (\sffamily), Ragged-Right Anti-Orphan, Zero Icon Spam
 % Empirical Standard: Khadka & Peeters (2024) MAR Exemplary Tier (70/30 Rule)
 % ==============================================================================
 
@@ -12,36 +15,45 @@
   a0paper,
   portrait,
   margin=0mm,
-  innermargin=15mm,
+  innermargin=16mm,
   blockverticalspace=7mm,
-  colspace=10mm,
+  colspace=16mm,
   subcolspace=8mm
 ]{tikzposter}
 
+\usepackage[T1]{fontenc}
+\usepackage{helvet}
+\renewcommand{\familydefault}{\sfdefault}
 \usepackage{graphicx}
 \graphicspath{{assets/}{posters/radical-transparency/assets/}{templates/posters/assets/}}
 \usepackage{amsmath,amssymb}
 \usepackage{qrcode}
 \usepackage{hyperref}
 \usepackage{tikz}
-\usetikzlibrary{positioning,calc,arrows.meta}
-\usepackage{tcolorbox}
+\usetikzlibrary{positioning,calc,arrows.meta,shadows,shadows.blur,decorations.pathmorphing}
+\usepackage[skins]{tcolorbox}
+
+% Prevent awkward word hyphenation across all poster cards
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
 
 % ------------------------------------------------------------------------------
-% VLIZ Institutional Color Palette
+% VLIZ Institutional & 4-Layer Visual Magnet Color Palette
 % ------------------------------------------------------------------------------
 \definecolor{vlizBanner}{HTML}{91C8CD}       % Sea-teal top banner
 \definecolor{vlizTeal}{HTML}{31B7BC}         % Vibrant teal subtitle & accents
 \definecolor{vlizNavy}{HTML}{3057A5}         % VLIZ Corporate Navy
+\definecolor{vlizDeepNavy}{HTML}{002B49}     % Deep Ocean Navy (Billboard Hook Pill)
 \definecolor{vlizCharcoal}{HTML}{231F20}     % Dark Charcoal author text
-\definecolor{vlizSlateText}{HTML}{1E293B}    % Main body text
-\definecolor{vlizSlateMuted}{HTML}{64748B}   % Muted caption/affiliation text
-\definecolor{vlizCardBg}{HTML}{FFFFFF}       % White card background
-\definecolor{vlizHeroBg}{HTML}{F8FAFC}       % Soft slate sub-card background
-\definecolor{vlizBorder}{HTML}{CBD5E1}       % Card border
-\definecolor{vlizLightTeal}{HTML}{E6F7F8}   % Light teal callout background
+\definecolor{vlizSlateText}{HTML}{1E293B}    % Main body text (> 12:1 contrast on white)
+\definecolor{vlizSlateMuted}{HTML}{475569}   % Muted caption/affiliation text
+\definecolor{vlizCardBg}{HTML}{FFFFFF}       % 100% opaque white card background
+\definecolor{vlizHeroStage}{HTML}{F4F9FA}    % Soft sea-tint Borderless Hero Stage
+\definecolor{vlizHeroBg}{HTML}{F8FAFC}       % Soft slate block container background
+\definecolor{vlizBorder}{HTML}{CBD5E1}       % Subtle card border
+\definecolor{vlizLightTeal}{HTML}{E6F7F8}    % Light teal callout tint
 
-% Set custom tikzposter style
+% Set custom tikzposter color style
 \definecolorstyle{VLIZStyle}{
   \definecolor{colorOne}{HTML}{3057A5}
   \definecolor{colorTwo}{HTML}{31B7BC}
@@ -52,7 +64,7 @@
   \colorlet{titlefgcolor}{vlizNavy}
   \colorlet{titlebgcolor}{white}
   \colorlet{blocktitlebgcolor}{white}
-  \colorlet{blocktitlefgcolor}{vlizNavy}
+  \colorlet{blocktitlefgcolor}{vlizDeepNavy}
   \colorlet{blockbodybgcolor}{vlizCardBg}
   \colorlet{blockbodyfgcolor}{vlizSlateText}
 }
@@ -61,17 +73,57 @@
 \usecolorstyle{VLIZStyle}
 \tikzposterlatexaffectionproofoff
 
-% Custom block style: Clean rounded card with crisp border
+% Custom block style: Soft elevated container with top Navy header bar
 \defineblockstyle{VLIZBlock}{
   titlewidthscale=1.0, bodywidthscale=1.0,
   titleoffsetx=0pt, titleoffsety=0pt, bodyoffsetx=0pt, bodyoffsety=0pt,
-  bodyverticalshift=0pt, roundedcorners=14, linewidth=2pt,
-  titleinnersep=4mm, bodyinnersep=5.5mm
+  bodyverticalshift=0pt, roundedcorners=12, linewidth=1.4pt,
+  titleinnersep=4.2mm, bodyinnersep=5.5mm
 }{
-  \draw[color=vlizBorder, fill=blockbodybgcolor, rounded corners=14, line width=2pt]
+  \draw[color=vlizBorder, fill=vlizHeroBg, rounded corners=12, line width=1.4pt,
+        drop shadow={opacity=0.07, shadow xshift=1.2mm, shadow yshift=-1.2mm}]
     (blockbody.south west) rectangle (blocktitle.north east);
+  % Left accent bar on section header
+  \ifBlockHasTitle
+    \fill[vlizTeal, rounded corners=2pt]
+      ([xshift=5mm, yshift=-3mm]blocktitle.north west)
+      rectangle ([xshift=9.5mm, yshift=2mm]blocktitle.south west);
+  \fi
 }
 \useblockstyle{VLIZBlock}
+
+% ==============================================================================
+% LAYER 3 (Z-Index 3): Tactile Left-Accent Sub-Cards (Zero Decorative Icon Spam)
+% ==============================================================================
+% Tactile Mini-Card with 6pt Left-Accent Bar, Soft Shadow & Ragged-Right Sans-Serif
+\newtcolorbox{tactilecard}[2][]{
+  enhanced,
+  colback=white,
+  colframe=vlizBorder,
+  boxrule=1.1pt,
+  borderline west={6pt}{0pt}{#2},
+  arc=3.2mm,
+  left=5.2mm, right=4.4mm, top=3.4mm, bottom=3.4mm,
+  fontupper=\sffamily\fontsize{22pt}{27.5pt}\selectfont\raggedright,
+  drop fuzzy shadow={opacity=0.10, shadow xshift=1.0mm, shadow yshift=-1.0mm},
+  #1
+}
+
+% Tactile Metric Callout Badge with 6pt Left Accent, Giant Numerals & Elevation
+\newtcolorbox{metricbadge}[2][]{
+  enhanced,
+  colback=white,
+  colframe=vlizBorder,
+  boxrule=1.1pt,
+  borderline west={6pt}{0pt}{#2},
+  arc=3.2mm,
+  halign=center,
+  valign=center,
+  left=2.2mm, right=2.2mm, top=3.2mm, bottom=3.2mm,
+  fontupper=\sffamily,
+  drop fuzzy shadow={opacity=0.10, shadow xshift=1.0mm, shadow yshift=-1.0mm},
+  #1
+}
 
 \title{}
 \author{}
@@ -80,69 +132,168 @@
 \begin{document}
 
 % ==============================================================================
-% 1. TOP BANNER (Official VLIZ Vector Header)
+% LAYER 0 (Z-Index 0): Atmospheric Canvas & Header Vector Motifs +
+% LAYER 1 (Z-Index 1): Full-Bleed Borderless Hero Stage Band
 % ==============================================================================
+% --- LAYER 0A: Top Institutional Header Banner + Wave Harmonics (14% Opacity) ---
 \fill[vlizBanner] (-0.5\paperwidth, 0.5\paperheight)
-  rectangle (0.5\paperwidth, {0.5\paperheight - 0.112\paperheight});
+  rectangle (0.5\paperwidth, {0.5\paperheight - 0.096\paperheight});
 
+\begin{scope}
+  \clip (-0.5\paperwidth, {0.5\paperheight - 0.096\paperheight})
+    rectangle (0.5\paperwidth, 0.5\paperheight);
+  % Harmonic marine wave isolines across the header banner
+  \draw[color=white, opacity=0.15, line width=2.8pt]
+    (-0.52\paperwidth, {0.5\paperheight - 0.074\paperheight})
+    .. controls (-0.20\paperwidth, {0.5\paperheight - 0.012\paperheight})
+    and (0.15\paperwidth, {0.5\paperheight - 0.108\paperheight}) ..
+    (0.52\paperwidth, {0.5\paperheight - 0.030\paperheight});
+  \draw[color=white, opacity=0.13, line width=2.0pt]
+    (-0.52\paperwidth, {0.5\paperheight - 0.038\paperheight})
+    .. controls (-0.15\paperwidth, {0.5\paperheight - 0.100\paperheight})
+    and (0.20\paperwidth, {0.5\paperheight - 0.010\paperheight}) ..
+    (0.52\paperwidth, {0.5\paperheight - 0.068\paperheight});
+  \draw[color=vlizDeepNavy, opacity=0.07, line width=1.6pt]
+    (-0.52\paperwidth, {0.5\paperheight - 0.022\paperheight})
+    .. controls (-0.10\paperwidth, {0.5\paperheight - 0.084\paperheight})
+    and (0.25\paperwidth, {0.5\paperheight - 0.025\paperheight}) ..
+    (0.52\paperwidth, {0.5\paperheight - 0.086\paperheight});
+  % Subtle acoustic sonar rings on right header
+  \draw[color=white, opacity=0.12, line width=1.8pt]
+    ({0.5\paperwidth - 0.088\paperwidth}, {0.5\paperheight - 0.048\paperheight}) circle (46mm);
+  \draw[color=white, opacity=0.09, line width=1.4pt]
+    ({0.5\paperwidth - 0.088\paperwidth}, {0.5\paperheight - 0.048\paperheight}) circle (74mm);
+\end{scope}
+
+% --- LAYER 0B: Canvas Corner Watermarks (Bathymetric Contours + Semantic Node Mesh, <=6% Opacity) ---
+% Left margin bathymetric depth contours (5.5% opacity)
+\draw[color=vlizTeal, opacity=0.055, line width=2.2pt]
+  (-0.5\paperwidth, -0.02\paperheight)
+  .. controls (-0.36\paperwidth, -0.05\paperheight) and (-0.42\paperwidth, -0.24\paperheight) ..
+  (-0.5\paperwidth, -0.32\paperheight);
+\draw[color=vlizNavy, opacity=0.045, line width=1.8pt]
+  (-0.5\paperwidth, 0.01\paperheight)
+  .. controls (-0.31\paperwidth, -0.03\paperheight) and (-0.37\paperwidth, -0.27\paperheight) ..
+  (-0.5\paperwidth, -0.37\paperheight);
+\draw[color=vlizTeal, opacity=0.05, line width=1.6pt]
+  (-0.5\paperwidth, -0.38\paperheight)
+  .. controls (-0.38\paperwidth, -0.42\paperheight) and (-0.32\paperwidth, -0.47\paperheight) ..
+  (-0.22\paperwidth, -0.5\paperheight);
+
+% Right margin isometric constellation node-link mesh (5% opacity)
+\coordinate (m1) at ({0.5\paperwidth - 18mm}, {0.34\paperheight});
+\coordinate (m2) at ({0.5\paperwidth - 52mm}, {0.31\paperheight});
+\coordinate (m3) at ({0.5\paperwidth - 28mm}, {0.26\paperheight});
+\coordinate (m4) at ({0.5\paperwidth - 14mm}, {-0.12\paperheight});
+\coordinate (m5) at ({0.5\paperwidth - 44mm}, {-0.18\paperheight});
+\coordinate (m6) at ({0.5\paperwidth - 22mm}, {-0.26\paperheight});
+\coordinate (m7) at ({0.5\paperwidth - 48mm}, {-0.43\paperheight});
+\coordinate (m8) at ({0.5\paperwidth - 16mm}, {-0.47\paperheight});
+\draw[color=vlizNavy, opacity=0.05, line width=1.6pt]
+  (m1) -- (m2) -- (m3) -- (m1)
+  (m4) -- (m5) -- (m6) -- (m4)
+  (m6) -- (m7) -- (m8) -- (m6);
+\foreach \pt in {m1,m2,m3,m4,m5,m6,m7,m8} {
+  \fill[color=vlizTeal, opacity=0.06] (\pt) circle (4.5mm);
+}
+
+% --- LAYER 1 (Z-Index 1): Full-Bleed Borderless Hero Stage Band (#F4F9FA) ---
+\fill[vlizHeroStage]
+  (-0.5\paperwidth, {0.5\paperheight - 0.190\paperheight})
+  rectangle (0.5\paperwidth, {0.5\paperheight - 0.606\paperheight});
+% Subtle top and bottom stage horizon lines (zero side borders!)
+\draw[color=vlizBanner, opacity=0.55, line width=1.6pt]
+  (-0.5\paperwidth, {0.5\paperheight - 0.190\paperheight}) --
+  (0.5\paperwidth, {0.5\paperheight - 0.190\paperheight});
+\draw[color=vlizBanner, opacity=0.55, line width=1.6pt]
+  (-0.5\paperwidth, {0.5\paperheight - 0.606\paperheight}) --
+  (0.5\paperwidth, {0.5\paperheight - 0.606\paperheight});
+
+% ==============================================================================
+% 1. TOP BANNER FOREGROUND (Official VLIZ Vector Header)
+% ==============================================================================
 % Vector VLIZ Logo (Left)
-\node[anchor=west, inner sep=0pt] at ({-0.5\paperwidth + 0.088\paperwidth}, {0.5\paperheight - 0.056\paperheight}) {
-  \includegraphics[height=0.064\paperheight]{vliz_logo.png}
+\node[anchor=west, inner sep=0pt] at ({-0.5\paperwidth + 0.088\paperwidth}, {0.5\paperheight - 0.048\paperheight}) {
+  \includegraphics[height=0.060\paperheight]{vliz_logo.png}
 };
 
 % Native Vector Typography for URL (Right)
-\node[anchor=east, inner sep=0pt] at ({0.5\paperwidth - 0.088\paperwidth}, {0.5\paperheight - 0.056\paperheight}) {
-  {\color{vlizNavy}\sffamily\bfseries\fontsize{34pt}{40pt}\selectfont vliz.be}
+\node[anchor=east, inner sep=0pt] at ({0.5\paperwidth - 0.088\paperwidth}, {0.5\paperheight - 0.048\paperheight}) {
+  {\color{vlizDeepNavy}\sffamily\bfseries\fontsize{34pt}{40pt}\selectfont vliz.be}
 };
 
 % ==============================================================================
 % 2. TITLE & AUTHORS SECTION (With Conference Logo Slot)
 % ==============================================================================
-\node[anchor=north west, text width=0.68\paperwidth, align=flush left, inner sep=0pt]
-  at ({-0.5\paperwidth + 0.06\paperwidth}, {0.5\paperheight - 0.122\paperheight}) {
-  % Subtitle / Topic Callout
-  {\color{vlizTeal}\bfseries\Large OPEN SCIENCE \& SEMANTIC INTEROPERABILITY \quad $\vert$ \quad LINKSET USAGE PATTERNS \quad $\vert$ \quad RFC 9264 \par}
-  \vspace{0.22cm}
+\node[anchor=north west, text width=0.73\paperwidth, align=flush left, inner sep=0pt]
+  at ({-0.5\paperwidth + 0.038\paperwidth}, {0.5\paperheight - 0.105\paperheight}) {
+  % Subtitle / Topic Callout (Single clean line)
+  {\color{vlizTeal}\bfseries\large OPEN SCIENCE \& SEMANTIC INTEROPERABILITY \quad $\vert$ \quad LINKSET USAGE PATTERNS \quad $\vert$ \quad RFC 9264 \par}
+  \vspace{0.14cm}
   % Main Title
-  {\color{vlizNavy}\bfseries\fontsize{38pt}{46pt}\selectfont Radical Transparency: A Vision for Scalable Interoperability \par}
-  \vspace{0.24cm}
+  {\color{vlizDeepNavy}\bfseries\fontsize{38pt}{44pt}\selectfont Radical Transparency: A Vision for Scalable Interoperability \par}
+  \vspace{0.16cm}
   % Authors List: Presenting author emphasized; co-authors in clean lighter font
-  {\color{vlizCharcoal}\large \underline{\textbf{Marc Portier}}$^{*,1}$, Bram Ulrichts$^1$, Cedric Decruw$^1$, Hamideh Baggali$^1$, Joachim Nielandt$^1$, Joanna Goley$^1$, Laurian Van Maldeghem$^1$, Katrina Exter$^1$, Cyrielle Delvenne$^1$, Lennert Tyberghein$^1$ \par}
-  \vspace{0.12cm}
+  {\color{vlizCharcoal}\normalsize \underline{\textbf{Marc Portier}}$^{*,1}$, Bram Ulrichts$^1$, Cedric Decruw$^1$, Hamideh Baggali$^1$, Joachim Nielandt$^1$, Joanna Goley$^1$, Laurian Van Maldeghem$^1$, Katrina Exter$^1$, Cyrielle Delvenne$^1$, Lennert Tyberghein$^1$ \par}
+  \vspace{0.08cm}
   % Affiliations & Contact
-  {\color{vlizSlateMuted}\normalsize $^1$Flanders Marine Institute (VLIZ), InnovOcean Campus, Ostend, Belgium \quad $\vert$ \quad $^*$Corresponding Author: marc.portier@vliz.be \par}
+  {\color{vlizSlateMuted}\small $^1$Flanders Marine Institute (VLIZ), InnovOcean Campus, Ostend, Belgium \quad $\vert$ \quad $^*$Corresponding Author: marc.portier@vliz.be \par}
 };
 
 % Reserved Conference Logo Slot (Top-Right Header)
-\node[anchor=north east, inner sep=0pt] at ({0.5\paperwidth - 0.06\paperwidth}, {0.5\paperheight - 0.126\paperheight}) {
-  \begin{tcolorbox}[colback=vlizHeroBg,colframe=vlizBorder,arc=4mm,boxrule=1.5pt,width=0.17\paperwidth,height=3.6cm,valign=center,halign=center]
-    {\color{vlizNavy}\bfseries\large [ Conference Logo ]}\\[2pt]
-    {\footnotesize\color{vlizSlateMuted} Reserved Space}
+\node[anchor=north east, inner sep=0pt] at ({0.5\paperwidth - 0.038\paperwidth}, {0.5\paperheight - 0.107\paperheight}) {
+  \begin{tcolorbox}[enhanced,colback=white,colframe=vlizBorder,borderline west={5pt}{0pt}{vlizTeal},arc=3.5mm,boxrule=1.2pt,width=0.17\paperwidth,height=3.2cm,valign=center,halign=center,drop fuzzy shadow={opacity=0.08}]
+    {\color{vlizDeepNavy}\bfseries\large [ Conference Logo ]}\\[3pt]
+    {\small\color{vlizSlateMuted} Reserved Space}
   \end{tcolorbox}
 };
 
 % ==============================================================================
-% Set starting vertical position for tikzposter blocks
+% 3. LAYER 1: BORDERLESS HERO STAGE & 10-FOOT BILLBOARD HOOK PILL
+% ==============================================================================
+% Seamless Hero Infographic placed directly on the borderless #F4F9FA stage
+\node[anchor=center, inner sep=0pt] (herographic)
+  at (0, {0.5\paperheight - 0.398\paperheight}) {
+  \includegraphics[height=0.376\paperheight]{hero_infographic_hd.png}
+};
+
+% 10-Foot Billboard Hook Pill crowning the top center of the Borderless Hero Stage
+\node[
+  anchor=center,
+  fill=vlizDeepNavy,
+  draw=vlizTeal,
+  line width=2.4pt,
+  rounded corners=14pt,
+  inner xsep=15mm,
+  inner ysep=4.4mm,
+  drop shadow={opacity=0.18, shadow xshift=1.2mm, shadow yshift=-1.4mm}
+] (hookpill) at (0, {0.5\paperheight - 0.190\paperheight}) {
+  {\color{white}\sffamily\bfseries\fontsize{26pt}{30pt}\selectfont FROM SILOED GUESSWORK TO AUTONOMOUS WEB MAPS}
+};
+
+% Concise 12-word Figure 1 Takeaway Pill anchored on the bottom edge of the Hero Stage
+\node[
+  anchor=center,
+  fill=white,
+  draw=vlizBanner,
+  line width=1.6pt,
+  rounded corners=10pt,
+  inner xsep=10mm,
+  inner ysep=3.0mm,
+  drop shadow={opacity=0.10, shadow xshift=0.8mm, shadow yshift=-0.8mm}
+] (herocaption) at (0, {0.5\paperheight - 0.606\paperheight}) {
+  {\color{vlizDeepNavy}\normalsize \textbf{Figure 1:} Shifting from implicit API guesswork to producer-declared RFC 9264 linkset transit networks.}
+};
+
+% ==============================================================================
+% Set starting vertical position for tikzposter 2-column narrative blocks
 % ==============================================================================
 \makeatletter
-\setlength{\TP@blocktop}{0.5\textheight - 250mm}
+\setlength{\TP@blocktop}{0.5\textheight - 740mm}
 \makeatother
 
 % ==============================================================================
-% 3. HERO INFOGRAPHIC SHOWCASE (Top Banner Zone, 42% Canvas Height)
-% ==============================================================================
-\block{}{
-  \centering
-  \vspace{-0.15cm}
-  {\color{vlizNavy}\bfseries\huge Central Architecture: Shifting the Burden via RFC 9264 Linksets \par}
-  \vspace{0.14cm}
-  \includegraphics[width=0.96\linewidth]{hero_infographic_hd.png}\\[-0.02cm]
-  {\color{vlizSlateMuted}\normalsize \textbf{Figure 1:} Shifting from implicit API guesswork to producer-declared RFC 9264 linkset transit networks.}
-  \vspace{-0.1cm}
-}
-
-% ==============================================================================
-% 4. BALANCED 2-COLUMN NARRATIVE (Below Hero Infographic)
+% 4. BALANCED 2-COLUMN NARRATIVE (Layer 3 Tactile 6pt Cards + Clean Typography)
 % ==============================================================================
 \begin{columns}
   % ----------------------------------------------------------------------------
@@ -150,76 +301,81 @@
   % ----------------------------------------------------------------------------
   \column{0.50}
 
-  % Section 1: Context & Core Proposition (Styled Mini-Cards)
-  \block{1. Context \& Core Proposition}{
+  % Section 1: Context & Core Proposition (Symmetrical 2x2 Grid + 1 Full-Width Card)
+  \block{\hspace{7mm}1. Context \& Core Proposition}{
     \noindent
-    \begin{minipage}{0.315\linewidth}
-      \begin{tcolorbox}[colback=vlizLightTeal,colframe=vlizBanner,arc=3.5mm,boxrule=1.4pt,left=3.5mm,right=3.5mm,top=2.2mm,bottom=2.2mm,height=4.8cm]
-        {\color{vlizNavy}\bfseries Assumed Compatibility}\\[2pt]
-        {\footnotesize Systems rely on unproven guesses that endpoints share implicit schemas and APIs.}
-      \end{tcolorbox}
+    \begin{minipage}{0.488\linewidth}
+      \begin{tactilecard}[height=5.20cm,valign=center]{vlizNavy}
+        {\fontsize{25pt}{29pt}\selectfont\color{vlizDeepNavy}\bfseries Assumed Schemas}\\[5pt]
+        Systems rely on unproven assumptions that remote endpoints share implicit schemas and APIs.
+      \end{tactilecard}
     \end{minipage}\hfill
-    \begin{minipage}{0.315\linewidth}
-      \begin{tcolorbox}[colback=vlizLightTeal,colframe=vlizBanner,arc=3.5mm,boxrule=1.4pt,left=3.5mm,right=3.5mm,top=2.2mm,bottom=2.2mm,height=4.8cm]
-        {\color{vlizNavy}\bfseries Trapped Discovery}\\[2pt]
-        {\footnotesize Discovery is buried in HTML landing pages; agents cannot parse without signposts.}
-      \end{tcolorbox}
+    \begin{minipage}{0.488\linewidth}
+      \begin{tactilecard}[height=5.20cm,valign=center]{vlizTeal}
+        {\fontsize{25pt}{29pt}\selectfont\color{vlizDeepNavy}\bfseries Trapped Discovery}\\[5pt]
+        Critical metadata stays buried in HTML pages that autonomous web agents cannot parse.
+      \end{tactilecard}
+    \end{minipage}\par\vspace{0.32cm}
+    \noindent
+    \begin{minipage}{0.488\linewidth}
+      \begin{tactilecard}[height=5.20cm,valign=center]{vlizTeal}
+        {\fontsize{25pt}{29pt}\selectfont\color{vlizDeepNavy}\bfseries Displaced Labor}\\[5pt]
+        Stewards lose most of their time to repetitive manual mapping instead of domain science.
+      \end{tactilecard}
     \end{minipage}\hfill
-    \begin{minipage}{0.315\linewidth}
-      \begin{tcolorbox}[colback=vlizLightTeal,colframe=vlizBanner,arc=3.5mm,boxrule=1.4pt,left=3.5mm,right=3.5mm,top=2.2mm,bottom=2.2mm,height=4.8cm]
-        {\color{vlizNavy}\bfseries Displaced Labor}\\[2pt]
-        {\footnotesize Stewards lose majority of time on repetitive manual mapping instead of science.}
-      \end{tcolorbox}
+    \begin{minipage}{0.488\linewidth}
+      \begin{tactilecard}[height=5.20cm,valign=center]{vlizNavy}
+        {\fontsize{25pt}{29pt}\selectfont\color{vlizDeepNavy}\bfseries Research Question (RQ)}\\[5pt]
+        How can distributed ecosystems achieve scalable interoperability without central APIs or guesswork?
+      \end{tactilecard}
+    \end{minipage}\par\vspace{0.32cm}
+    \noindent
+    \begin{minipage}{\linewidth}
+      \begin{tactilecard}[height=4.90cm,valign=center]{vlizNavy}
+        {\fontsize{25pt}{29pt}\selectfont\color{vlizDeepNavy}\bfseries Hypothesis \& Core Proposition}\\[5pt]
+        Shifting from consumer inference to producer declaration via \textbf{RFC 9264 Linksets} and verifiable conformity profiles enables autonomous web-scale discovery.
+      \end{tactilecard}
     \end{minipage}
-
-    \vspace{0.16cm}
-    \begin{tcolorbox}[colback=vlizHeroBg,colframe=vlizBorder,arc=4mm,boxrule=1.5pt,left=5mm,right=5mm,top=2.6mm,bottom=2.6mm]
-      {\color{vlizNavy}\bfseries Research Question (RQ)}\\[2pt]
-      {\small\textit{How can distributed data ecosystems achieve scalable interoperability without enforcing fragile, centralized APIs or burdensome consumer-side guesswork?}}
-    \end{tcolorbox}
-
-    \vspace{0.14cm}
-    \begin{tcolorbox}[colback=vlizLightTeal,colframe=vlizTeal,arc=4mm,boxrule=1.5pt,left=5mm,right=5mm,top=2.6mm,bottom=2.6mm]
-      {\color{vlizNavy}\bfseries Hypothesis \& Core Proposition}\\[2pt]
-      {\small\textit{Shifting the architectural burden from consumer inference to producer declaration via RFC 9264 Linksets and machine-verifiable conformity profiles enables scalable, autonomous web-scale discovery.}}
-    \end{tcolorbox}
-    \vspace*{1.5mm}
   }
 
-  % Section 3: Empirical ROI Metrics (Verifiable Badges & Costs)
-  \block{3. Empirical ROI Metrics}{
+  % Section 3: Empirical ROI Metrics
+  \block{\hspace{7mm}3. Empirical ROI Metrics}{
     \noindent
-    \begin{minipage}{0.235\linewidth}
-      \begin{tcolorbox}[colback=vlizLightTeal,colframe=vlizNavy,arc=3.5mm,boxrule=1.8pt,halign=center,top=2.2mm,bottom=2.2mm]
-        {\color{vlizNavy}\bfseries\fontsize{24pt}{28pt}\selectfont 80\%}\\[2pt]
-        {\footnotesize\textbf{Time Reclaimed}}
-      \end{tcolorbox}
+    \begin{minipage}{0.236\linewidth}
+      \begin{metricbadge}[height=5.60cm]{vlizNavy}
+        {\color{vlizDeepNavy}\bfseries\fontsize{48pt}{52pt}\selectfont 80\%}\\[7pt]
+        {\fontsize{22pt}{26pt}\selectfont\color{vlizSlateText}\textbf{Time Reclaimed}}\\[3pt]
+        {\small\color{vlizSlateMuted}for core science}
+      \end{metricbadge}
     \end{minipage}\hfill
-    \begin{minipage}{0.235\linewidth}
-      \begin{tcolorbox}[colback=vlizHeroBg,colframe=vlizTeal,arc=3.5mm,boxrule=1.8pt,halign=center,top=2.2mm,bottom=2.2mm]
-        {\color{vlizTeal}\bfseries\fontsize{24pt}{28pt}\selectfont 10}\\[2pt]
-        {\footnotesize\textbf{Linkset Patterns}}
-      \end{tcolorbox}
+    \begin{minipage}{0.236\linewidth}
+      \begin{metricbadge}[height=5.60cm]{vlizTeal}
+        {\color{vlizTeal}\bfseries\fontsize{48pt}{52pt}\selectfont 10}\\[7pt]
+        {\fontsize{22pt}{26pt}\selectfont\color{vlizSlateText}\textbf{Linkset Patterns}}\\[3pt]
+        {\small\color{vlizSlateMuted}RFC 9264 specs}
+      \end{metricbadge}
     \end{minipage}\hfill
-    \begin{minipage}{0.235\linewidth}
-      \begin{tcolorbox}[colback=vlizLightTeal,colframe=vlizNavy,arc=3.5mm,boxrule=1.8pt,halign=center,top=2.2mm,bottom=2.2mm]
-        {\color{vlizNavy}\bfseries\fontsize{24pt}{28pt}\selectfont 5}\\[2pt]
-        {\footnotesize\textbf{Standards United}}
-      \end{tcolorbox}
+    \begin{minipage}{0.236\linewidth}
+      \begin{metricbadge}[height=5.60cm]{vlizNavy}
+        {\color{vlizDeepNavy}\bfseries\fontsize{48pt}{52pt}\selectfont 5}\\[7pt]
+        {\fontsize{22pt}{26pt}\selectfont\color{vlizSlateText}\textbf{Standards United}}\\[3pt]
+        {\small\color{vlizSlateMuted}shared bootstrap}
+      \end{metricbadge}
     \end{minipage}\hfill
-    \begin{minipage}{0.235\linewidth}
-      \begin{tcolorbox}[colback=vlizHeroBg,colframe=vlizTeal,arc=3.5mm,boxrule=1.8pt,halign=center,top=2.2mm,bottom=2.2mm]
-        {\color{vlizTeal}\bfseries\fontsize{24pt}{28pt}\selectfont 3}\\[2pt]
-        {\footnotesize\textbf{Reference Tools}}
-      \end{tcolorbox}
+    \begin{minipage}{0.236\linewidth}
+      \begin{metricbadge}[height=5.60cm]{vlizTeal}
+        {\color{vlizTeal}\bfseries\fontsize{48pt}{52pt}\selectfont 3}\\[7pt]
+        {\fontsize{22pt}{26pt}\selectfont\color{vlizSlateText}\textbf{Reference Tools}}\\[3pt]
+        {\small\color{vlizSlateMuted}open-source stack}
+      \end{metricbadge}
+    \end{minipage}\par\vspace{0.32cm}
+    \noindent
+    \begin{minipage}{\linewidth}
+      \begin{tactilecard}[height=5.70cm,valign=center]{vlizNavy}
+        {\fontsize{25pt}{29pt}\selectfont\color{vlizDeepNavy}\bfseries Collapsing Integration Costs (``Transaction Tax'' Model)}\\[5pt]
+        Replaces implicit belief systems with verifiable conformance metrics. Declaring explicit Linkset profiles acts as a lightweight producer ``transaction tax'' that collapses global $O(N \times M)$ consumer integration overhead.
+      \end{tactilecard}
     \end{minipage}
-
-    \vspace{0.16cm}
-    \begin{tcolorbox}[colback=vlizHeroBg,colframe=vlizBorder,arc=4mm,boxrule=1.5pt,left=5mm,right=5mm,top=2.8mm,bottom=2.8mm]
-      {\color{vlizNavy}\bfseries Collapsing Integration Costs (``Transaction Tax'' Concept)}\\[2pt]
-      {\small Replaces belief systems with verifiable data metrics. Declaring explicit conformance operating as a minimal producer ``transaction tax'' collapses global integration overhead across distributed systems.}
-    \end{tcolorbox}
-    \vspace*{2.0mm}
   }
 
   % ----------------------------------------------------------------------------
@@ -227,65 +383,62 @@
   % ----------------------------------------------------------------------------
   \column{0.50}
 
-  % Section 2: The 4 Strategic Pillars (2x2 Matrix)
-  \block{2. The 4 Strategic Pillars (2025--2030)}{
+  % Section 2: The 4 Strategic Pillars (Exact match to Section 1: 5.20 + 5.20 + 4.90cm)
+  \block{\hspace{7mm}2. The 4 Strategic Pillars (2025--2030)}{
     \noindent
     \begin{minipage}{0.488\linewidth}
-      \begin{tcolorbox}[colback=vlizLightTeal,colframe=vlizBanner,arc=3.5mm,boxrule=1.4pt,left=4mm,right=4mm,top=2.2mm,bottom=2.2mm,height=4.8cm]
-        {\color{vlizNavy}\bfseries 1. Linkset Patterns}\\[2pt]
-        {\footnotesize 10 documented RFC 9264 patterns solving Broken Chains \& Semantic Drift.}
-      \end{tcolorbox}
+      \begin{tactilecard}[height=5.20cm,valign=center]{vlizNavy}
+        {\fontsize{25pt}{29pt}\selectfont\color{vlizDeepNavy}\bfseries 01 \enspace Linkset Usage Patterns}\\[5pt]
+        Ten documented RFC 9264 blueprints solving broken provenance chains and semantic drift.
+      \end{tactilecard}
     \end{minipage}\hfill
     \begin{minipage}{0.488\linewidth}
-      \begin{tcolorbox}[colback=vlizLightTeal,colframe=vlizBanner,arc=3.5mm,boxrule=1.4pt,left=4mm,right=4mm,top=2.2mm,bottom=2.2mm,height=4.8cm]
-        {\color{vlizNavy}\bfseries 2. Cross-Org Alignment}\\[2pt]
-        {\footnotesize Common bootstrap uniting EOSC-IF, CDIF, OGC, RO-Crate, and ODIS.}
-      \end{tcolorbox}
-    \end{minipage}
-
-    \vspace{0.14cm}
+      \begin{tactilecard}[height=5.20cm,valign=center]{vlizTeal}
+        {\fontsize{25pt}{29pt}\selectfont\color{vlizDeepNavy}\bfseries 02 \enspace Cross-Org Alignment}\\[5pt]
+        Shared semantic bootstrap uniting EOSC-IF, CDIF, OGC, RO-Crate, and ODIS standards.
+      \end{tactilecard}
+    \end{minipage}\par\vspace{0.32cm}
     \noindent
     \begin{minipage}{0.488\linewidth}
-      \begin{tcolorbox}[colback=vlizHeroBg,colframe=vlizBorder,arc=3.5mm,boxrule=1.4pt,left=4mm,right=4mm,top=2.2mm,bottom=2.2mm,height=4.8cm]
-        {\color{vlizNavy}\bfseries 3. Practical Toolchain}\\[2pt]
-        {\footnotesize Reference tools (\texttt{wrx}, \texttt{stitch}, \texttt{rdf-webcomponents}) for graph discovery.}
-      \end{tcolorbox}
+      \begin{tactilecard}[height=5.20cm,valign=center]{vlizTeal}
+        {\fontsize{25pt}{29pt}\selectfont\color{vlizDeepNavy}\bfseries 03 \enspace Practical Toolchain}\\[5pt]
+        Reference tools (\texttt{wrx}, \texttt{stitch}, \texttt{rdf-webcomponents}) for automated graph discovery.
+      \end{tactilecard}
     \end{minipage}\hfill
     \begin{minipage}{0.488\linewidth}
-      \begin{tcolorbox}[colback=vlizHeroBg,colframe=vlizBorder,arc=3.5mm,boxrule=1.4pt,left=4mm,right=4mm,top=2.2mm,bottom=2.2mm,height=4.8cm]
-        {\color{vlizNavy}\bfseries 4. Open Profile Market}\\[2pt]
-        {\footnotesize Federated, DNS-like profile registers replacing centralized vendor monopolies.}
-      \end{tcolorbox}
+      \begin{tactilecard}[height=5.20cm,valign=center]{vlizNavy}
+        {\fontsize{25pt}{29pt}\selectfont\color{vlizDeepNavy}\bfseries 04 \enspace Open Profile Market}\\[5pt]
+        Federated, DNS-like profile registries replacing brittle centralized vendor monopolies.
+      \end{tactilecard}
+    \end{minipage}\par\vspace{0.32cm}
+    \noindent
+    \begin{minipage}{\linewidth}
+      \begin{tactilecard}[height=4.90cm,valign=center]{vlizTeal}
+        {\fontsize{25pt}{29pt}\selectfont\color{vlizDeepNavy}\bfseries Architectural Separation of Concerns}\\[5pt]
+        Servers emit standardized typed Linksets at the HTTP boundary; client apps and autonomous agents execute contextual graph routing and UI traversal.
+      \end{tactilecard}
     \end{minipage}
-
-    \vspace{0.14cm}
-    \begin{tcolorbox}[colback=vlizLightTeal,colframe=vlizTeal,arc=4mm,boxrule=1.5pt,left=5mm,right=5mm,top=2.5mm,bottom=2.5mm]
-      {\color{vlizNavy}\bfseries Core Separation of Concerns:} {\small Servers emit standard typed links; clients and autonomous agents execute contextual routing, synthesis, and UI traversal.}
-    \end{tcolorbox}
-    \vspace*{1.5mm}
   }
 
-  % Section 4: Discussion & Digital Access
-  \block{4. Discussion \& Digital Access}{
+  % Section 4: Discussion & Digital Access (Exact match to Section 3 height)
+  \block{\hspace{7mm}4. Discussion \& Digital Access}{
     \noindent
-    \begin{minipage}{0.64\linewidth}
-      \begin{tcolorbox}[colback=vlizHeroBg,colframe=vlizBorder,arc=4mm,boxrule=1.5pt,left=4mm,right=4mm,top=2.2mm,bottom=2.2mm,height=7.2cm]
-        {\color{vlizNavy}\bfseries Discussion, Limitations \& Outlook}\\[2pt]
-        {\footnotesize
-        $\bullet$ \textbf{Verdict: Supported.} Machine-actionable linksets turn open web resources into a traversable transit network for autonomous agents.\\
-        $\bullet$ \textbf{1 Study Limitation:} Adoption velocity depends on community alignment across multi-institutional repositories.\\
-        $\bullet$ \textbf{Next Step:} Finalize 10 EOSC-if Linkset Usage Patterns in Q3 2026 with reference implementations in \texttt{wrx}.}
-      \end{tcolorbox}
+    \begin{minipage}{0.635\linewidth}
+      \begin{tactilecard}[height=12.08cm,valign=center]{vlizNavy}
+        {\fontsize{25pt}{29pt}\selectfont\color{vlizDeepNavy}\bfseries Discussion, Limitation \& Next Step}\\[7pt]
+        \textbf{Verdict --- Supported:} Producer-declared RFC 9264 Linksets turn isolated endpoints into an autonomous agent transit network.\\[9pt]
+        \textbf{1 Study Limitation:} Adoption velocity depends on coordinated governance across multi-institutional repositories.\\[9pt]
+        \textbf{Actionable Next Step:} Finalize all 10 EOSC-IF Linkset Usage Patterns in Q3 2026 with reference validation in \texttt{wrx}.
+      \end{tactilecard}
     \end{minipage}\hfill
-    \begin{minipage}{0.33\linewidth}
-      \begin{tcolorbox}[colback=vlizLightTeal,colframe=vlizNavy,arc=4mm,boxrule=1.5pt,halign=center,top=2.2mm,bottom=2.2mm,height=7.2cm]
-        {\color{vlizNavy}\bfseries Digital Companion}\\[3pt]
-        \includegraphics[width=3.4cm,height=3.4cm]{qr_radical_paper.png}\\[3pt]
-        {\scriptsize \textbf{open-science.vliz.be}}\\[1pt]
-        {\tiny \texttt{github.com/eosc-semantic-interop}}
-      \end{tcolorbox}
+    \begin{minipage}{0.340\linewidth}
+      \begin{tactilecard}[height=12.08cm,valign=center,halign=center]{vlizTeal}
+        {\fontsize{25pt}{29pt}\selectfont\color{vlizDeepNavy}\bfseries Digital Companion}\\[7pt]
+        \includegraphics[width=6.8cm,height=6.8cm]{qr_radical_paper.png}\\[7pt]
+        {\fontsize{22pt}{26pt}\selectfont\color{vlizDeepNavy}\textbf{open-science.vliz.be}}\\[3pt]
+        {\small\color{vlizSlateMuted}\texttt{eosc-semantic-interop}}
+      \end{tactilecard}
     \end{minipage}
-    \vspace*{2.0mm}
   }
 \end{columns}
 
@@ -293,22 +446,55 @@
 % 5. FOOTER (References, AI Disclosure & Partner Badges)
 % ==============================================================================
 \block{}{
-  \footnotesize
+  \small
   \begin{minipage}{0.68\linewidth}
-    \textbf{References:} [1] Wilde \& Van de Sompel (2022). \textit{Linkset: RFC 9264}. IETF. \quad [2] Nottingham (2017). \textit{Web Linking: RFC 8288}. IETF.\\
-    \ [3] Simonis et al. (2026). \textit{Machine-Interpretable Standards Ecosystem: OGC 26-021}. \quad [4] Portier et al. (2026). \textit{Radical Transparency}. VLIZ Open Science.\\
-    \textbf{AI Disclosure:} Conceptual synthesis assisted by Agentic AI; system vision and Linkset patterns by the authors. $\vert$ \textbf{VLIZ Open Science 2026}
+    \textbf{References \& Disclosures:} [1] Wilde \& Van de Sompel (2022). \textit{RFC 9264}. IETF. \quad [2] Nottingham (2017). \textit{RFC 8288}. IETF.\\
+    \ [3] Simonis et al. (2026). \textit{OGC 26-021}. \quad [4] Portier et al. (2026). \textit{Radical Transparency}. VLIZ Open Science.\\
+    \textbf{AI Disclosure:} Synthesis assisted by Agentic AI; architecture by the authors. $\vert$ \textbf{VLIZ Open Science 2026}
   \end{minipage}\hfill
   \begin{minipage}{0.30\linewidth}
     \raggedleft
-    {\color{vlizNavy}\bfseries\small Partner Standards Alignment:}\\[3pt]
-    \fboxsep2pt
-    \colorbox{vlizLightTeal}{\scriptsize\bfseries\color{vlizNavy} EOSC-IF} \enspace
-    \colorbox{vlizLightTeal}{\scriptsize\bfseries\color{vlizNavy} CDIF} \enspace
-    \colorbox{vlizLightTeal}{\scriptsize\bfseries\color{vlizNavy} OGC} \enspace
-    \colorbox{vlizLightTeal}{\scriptsize\bfseries\color{vlizNavy} RO-Crate} \enspace
-    \colorbox{vlizLightTeal}{\scriptsize\bfseries\color{vlizNavy} ODIS}
+    {\color{vlizDeepNavy}\bfseries\normalsize Partner Standards:}\\[5pt]
+    \fboxsep3.5pt
+    \colorbox{vlizLightTeal}{\small\bfseries\color{vlizDeepNavy} EOSC-IF} \enspace
+    \colorbox{vlizLightTeal}{\small\bfseries\color{vlizDeepNavy} CDIF} \enspace
+    \colorbox{vlizLightTeal}{\small\bfseries\color{vlizDeepNavy} OGC} \enspace
+    \colorbox{vlizLightTeal}{\small\bfseries\color{vlizDeepNavy} RO-Crate} \enspace
+    \colorbox{vlizLightTeal}{\small\bfseries\color{vlizDeepNavy} ODIS}
   \end{minipage}
+}
+
+% ==============================================================================
+% 6. LAYER 2 (Z-Index 2): Cross-Board Visual Conduit (Title -> Hero -> Spine -> QR)
+% ==============================================================================
+% Segment A: Origin below Title Header feeding into the Billboard Hook Pill
+\draw[color=vlizTeal, line width=3.5pt]
+  (0, {0.5\paperheight - 0.168\paperheight}) -- (hookpill.north);
+\filldraw[fill=white, draw=vlizDeepNavy, line width=2.2pt]
+  (0, {0.5\paperheight - 0.168\paperheight}) circle (3.5mm);
+
+% Segment B: Central Spine Conduit emerging from Hero Stage Caption down between Columns
+\coordinate (spineTop) at (herocaption.south);
+\coordinate (station12) at (0, {0.5\paperheight - 0.648\paperheight});
+\coordinate (stationMid) at (0, {0.5\paperheight - 0.752\paperheight});
+\coordinate (station34) at (0, {0.5\paperheight - 0.825\paperheight});
+\coordinate (spineTurn) at (0, {0.5\paperheight - 0.922\paperheight});
+\coordinate (qrEntry) at ({0.395\paperwidth}, {0.5\paperheight - 0.922\paperheight});
+\coordinate (qrTerminus) at ({0.395\paperwidth}, {0.5\paperheight - 0.916\paperheight});
+
+% Outer glowing teal conduit track along the central gutter & into the QR Companion Card
+\draw[color=vlizTeal, opacity=0.28, line width=7.5pt, rounded corners=6mm]
+  (spineTop) -- (spineTurn) -- (qrEntry) -- (qrTerminus);
+\draw[color=vlizTeal, line width=3.2pt, rounded corners=6mm, -{Latex[length=4.5mm, width=3.8mm]}]
+  (spineTop) -- (spineTurn) -- (qrEntry) -- (qrTerminus);
+\draw[color=vlizDeepNavy, line width=1.2pt, densely dashed, rounded corners=6mm]
+  (spineTop) -- (spineTurn) -- (qrEntry);
+
+% Horizontal branch station ticks connecting Left and Right Column blocks
+\foreach \st in {station12, stationMid, station34} {
+  \draw[color=vlizTeal, line width=2.4pt] ([xshift=-7.5mm]\st) -- ([xshift=7.5mm]\st);
+  \filldraw[fill=white, draw=vlizDeepNavy, line width=2.4pt] (\st) circle (4.2mm);
+  \fill[vlizTeal] (\st) circle (1.8mm);
 }
 
 \end{document}
